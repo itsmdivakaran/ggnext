@@ -13,11 +13,15 @@ One plot object renders to a standalone **SVG** or a self-contained
 **interactive HTML page** from a single computed-geometry buffer, so the
 two targets can never disagree.
 
+**[Documentation and gallery](https://itsmdivakaran.github.io/ggplot3/)** |
+[Cookbook](https://itsmdivakaran.github.io/ggplot3/cookbook.html) |
+[Source](https://github.com/itsmdivakaran/ggplot3)
+
 ## Install
 
 ```r
 # install.packages("remotes")
-remotes::install_github("maheshdivakaran/ggplot3")
+remotes::install_github("itsmdivakaran/ggplot3")
 ```
 
 ## Quick start
@@ -128,9 +132,10 @@ build_site("docs")   # builds the full site, rendering every gallery
                      # figure with ggplot3 itself
 ```
 
-Open `docs/index.html`. The **Guide** page walks through the grammar end
-to end, including how to add your own geoms; the **Gallery** has a worked
-example of every layer.
+The rendered site lives at
+<https://itsmdivakaran.github.io/ggplot3/>. The **Guide** walks through the
+grammar end to end, the **Gallery** has a worked example of every layer,
+and the **Cookbook** demonstrates every function and option with output.
 
 ## Acknowledgements
 

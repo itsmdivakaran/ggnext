@@ -108,6 +108,8 @@ nav img { width: 34px; height: 39px; }
 nav a { color: var(--muted); text-decoration: none; font-size: 15px; }
 nav a:hover, nav a.on { color: var(--accent); }
 nav .brand { font-weight: 700; color: var(--ink); font-size: 17px; }
+nav .repo { margin-left: auto; border: 1px solid var(--line);
+            border-radius: 20px; padding: 3px 14px; }
 main { max-width: 1080px; margin: 0 auto; padding: 36px 24px 80px; }
 h1 { font-size: 34px; line-height: 1.2; margin: 0 0 10px; letter-spacing: -0.5px; }
 h2 { font-size: 23px; margin: 44px 0 14px; letter-spacing: -0.2px; }
@@ -200,9 +202,14 @@ site_page <- function(title, active, body) {
     "<header><nav><img src=\"logo.svg\" alt=\"ggplot3\">",
     "<span class=\"brand\">ggplot3</span>",
     paste(links, collapse = ""),
+    "<a class=\"repo\" href=\"https://github.com/itsmdivakaran/ggplot3\">",
+    "GitHub</a>",
     "</nav></header>\n<main>\n", body, "\n</main>\n",
     "<footer>ggplot3 \u2014 a next-generation Grammar of Graphics for R. ",
-    "Built on S7. <a href=\"credits.html\">Credits</a>.</footer>\n",
+    "Built on S7. ",
+    "<a href=\"https://itsmdivakaran.github.io/ggplot3/\">Documentation</a> ",
+    "&middot; <a href=\"https://github.com/itsmdivakaran/ggplot3\">Source</a> ",
+    "&middot; <a href=\"credits.html\">Credits</a>.</footer>\n",
     "</body>\n</html>\n"
   )
 }
@@ -942,7 +949,7 @@ site_index <- function(figs, examples) {
     "<h2>Install</h2>",
     code_block(c(
       "# install.packages(\"remotes\")",
-      "remotes::install_github(\"maheshdivakaran/ggplot3\")"
+      "remotes::install_github(\"itsmdivakaran/ggplot3\")"
     )),
 
     "<h2>Quick start</h2>",

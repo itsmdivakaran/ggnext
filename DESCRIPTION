@@ -22,8 +22,9 @@ Description: An implementation of the Grammar of Graphics described by
     Fruchterman and Reingold (1991) <doi:10.1002/spe.4380211102> for
     force-directed graphs, and Kaplan and Meier (1958)
     <doi:10.1080/01621459.1958.10501452> for survival curves.
-URL: https://github.com/maheshdivakaran/ggplot3
-BugReports: https://github.com/maheshdivakaran/ggplot3/issues
+URL: https://itsmdivakaran.github.io/ggplot3/,
+    https://github.com/itsmdivakaran/ggplot3
+BugReports: https://github.com/itsmdivakaran/ggplot3/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -35,6 +36,7 @@ Imports:
     utils
 Suggests:
     knitr,
+    markdown,
     rmarkdown,
     testthat (>= 3.0.0),
     xml2

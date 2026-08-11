@@ -32,6 +32,8 @@ nav img { width: 34px; height: 39px; }
 nav a { color: var(--muted); text-decoration: none; font-size: 15px; }
 nav a:hover, nav a.on { color: var(--accent); }
 nav .brand { font-weight: 700; color: var(--ink); font-size: 17px; }
+nav .repo { margin-left: auto; border: 1px solid var(--line);
+            border-radius: 20px; padding: 3px 14px; }
 main { max-width: 1080px; margin: 0 auto; padding: 36px 24px 80px; }
 h1 { font-size: 34px; line-height: 1.2; margin: 0 0 10px; letter-spacing: -0.5px; }
 h2 { font-size: 23px; margin: 44px 0 14px; letter-spacing: -0.2px; }
@@ -106,7 +108,7 @@ h3 { scroll-margin-top: 70px; }
 </style>
 </head>
 <body>
-<header><nav><img src="logo.svg" alt="ggplot3"><span class="brand">ggplot3</span><a href="index.html">Overview</a><a href="guide.html">Guide</a><a href="gallery.html">Gallery</a><a href="cookbook.html" class="on">Cookbook</a><a href="reference.html">Reference</a><a href="themes.html">Themes</a><a href="credits.html">Credits</a></nav></header>
+<header><nav><img src="logo.svg" alt="ggplot3"><span class="brand">ggplot3</span><a href="index.html">Overview</a><a href="guide.html">Guide</a><a href="gallery.html">Gallery</a><a href="cookbook.html" class="on">Cookbook</a><a href="reference.html">Reference</a><a href="themes.html">Themes</a><a href="credits.html">Credits</a><a class="repo" href="https://github.com/itsmdivakaran/ggplot3">GitHub</a></nav></header>
 <main>
 <h1>Cookbook</h1><p class="lead">Every exported function and every option that changes the output, as worked examples. Each figure below was rendered by ggplot3 when this page was built, and several sections check the computed numbers against base R.</p><div class="note"><p>This page is generated from <code>inst/examples/ggplot3-full-reference.Rmd</code>, which ships with the package. Open it in RStudio to run any of it yourself: <code>system.file("examples", "ggplot3-full-reference.Rmd", package = "ggplot3")</code></p></div><div class="toc"><strong>Sections</strong><ol><li><a href="#1-the-grammar">1. The grammar</a></li><li><a href="#2-essential-geoms">2. Essential geoms</a></li><li><a href="#3-distributions">3. Distributions</a></li><li><a href="#4-scales-and-axes">4. Scales and axes</a></li><li><a href="#5-coordinates">5. Coordinates</a></li><li><a href="#6-facets">6. Facets</a></li><li><a href="#7-titles-labels-and-themes">7. Titles, labels and themes</a></li><li><a href="#8-layout-geoms">8. Layout geoms</a></li><li><a href="#9-machine-learning-geoms">9. Machine-learning geoms</a></li><li><a href="#10-clinical-geoms">10. Clinical geoms</a></li><li><a href="#11-interactivity-and-animation">11. Interactivity and animation</a></li><li><a href="#12-exact-data-export">12. Exact data export</a></li><li><a href="#13-rendering-and-the-logo">13. Rendering and the logo</a></li><li><a href="#14-extending-the-package">14. Extending the package</a></li><li><a href="#15-error-handling">15. Error handling</a></li><li><a href="#16-edge-cases">16. Edge cases</a></li><li><a href="#17-session-information">17. Session information</a></li></ol></div><div id="TOC">
 <ul>
@@ -11068,7 +11070,7 @@ do.call(rbind, list(
 </code></pre>
 
 </main>
-<footer>ggplot3 — a next-generation Grammar of Graphics for R. Built on S7. <a href="credits.html">Credits</a>.</footer>
+<footer>ggplot3 — a next-generation Grammar of Graphics for R. Built on S7. <a href="https://itsmdivakaran.github.io/ggplot3/">Documentation</a> &middot; <a href="https://github.com/itsmdivakaran/ggplot3">Source</a> &middot; <a href="credits.html">Credits</a>.</footer>
 </body>
 </html>
 

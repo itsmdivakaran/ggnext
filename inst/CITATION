@@ -4,6 +4,6 @@ bibentry(
   author   = person("Mahesh", "Divakaran"),
   year     = "2026",
   note     = sprintf("R package version %s", meta$Version),
-  url      = "https://github.com/maheshdivakaran/ggplot3",
+  url      = "https://github.com/itsmdivakaran/ggplot3",
   header   = "To cite ggplot3 in publications, use:"
 )

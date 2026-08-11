@@ -32,6 +32,8 @@ nav img { width: 34px; height: 39px; }
 nav a { color: var(--muted); text-decoration: none; font-size: 15px; }
 nav a:hover, nav a.on { color: var(--accent); }
 nav .brand { font-weight: 700; color: var(--ink); font-size: 17px; }
+nav .repo { margin-left: auto; border: 1px solid var(--line);
+            border-radius: 20px; padding: 3px 14px; }
 main { max-width: 1080px; margin: 0 auto; padding: 36px 24px 80px; }
 h1 { font-size: 34px; line-height: 1.2; margin: 0 0 10px; letter-spacing: -0.5px; }
 h2 { font-size: 23px; margin: 44px 0 14px; letter-spacing: -0.2px; }
@@ -106,10 +108,10 @@ h3 { scroll-margin-top: 70px; }
 </style>
 </head>
 <body>
-<header><nav><img src="logo.svg" alt="ggplot3"><span class="brand">ggplot3</span><a href="index.html" class="on">Overview</a><a href="guide.html">Guide</a><a href="gallery.html">Gallery</a><a href="cookbook.html">Cookbook</a><a href="reference.html">Reference</a><a href="themes.html">Themes</a><a href="credits.html">Credits</a></nav></header>
+<header><nav><img src="logo.svg" alt="ggplot3"><span class="brand">ggplot3</span><a href="index.html" class="on">Overview</a><a href="guide.html">Guide</a><a href="gallery.html">Gallery</a><a href="cookbook.html">Cookbook</a><a href="reference.html">Reference</a><a href="themes.html">Themes</a><a href="credits.html">Credits</a><a class="repo" href="https://github.com/itsmdivakaran/ggplot3">GitHub</a></nav></header>
 <main>
 <div class="hero"><img src="logo.svg" alt="ggplot3 hex logo"><div><h1>ggplot3</h1><p class="lead">Data visualisations, reimagined, using a next-generation Grammar of Graphics — the familiar grammar, extended with native interactivity, animation, exact data export, and a far larger geom catalog.</p><span class="tag">S7 &middot; SVG &middot; canvas &middot; 59 geoms</span></div></div><h2>Install</h2><pre><code># install.packages("remotes")
-remotes::install_github("maheshdivakaran/ggplot3")</code></pre><h2>Quick start</h2><pre><code>library(ggplot3)
+remotes::install_github("itsmdivakaran/ggplot3")</code></pre><h2>Quick start</h2><pre><code>library(ggplot3)
 
 p &lt;- ggplot3(cars, aes(speed, dist)) +
   geom_point(alpha = 0.6) +
@@ -132,7 +134,7 @@ render(p + interact())                     # tooltips + zoom + brush
 render(p + interact(tooltip = c("model"))) # tooltip from data columns
 render(p + animate(year))                  # frame scrubber</code></pre><h2>Credits</h2><p>ggplot3 takes its vocabulary from Leland Wilkinson’s <em>The Grammar of Graphics</em> and from Hadley Wickham’s <strong>ggplot2</strong>, whose API design this package deliberately preserves. The extended catalog follows conventions established by the wider R visualisation community — ggridges, ggalluvial, ggraph, treemapify, ggradar, ggstream, ggupset, circlize, GGally, ggbump, ggiraph, gganimate, survminer, DALEX and others. See the <a href="credits.html">credits page</a> for the full list and the algorithm references.</p><p>The implementation is independent: it is written on <a href="reference.html">S7</a> from first principles, and no code is derived from those packages.</p>
 </main>
-<footer>ggplot3 — a next-generation Grammar of Graphics for R. Built on S7. <a href="credits.html">Credits</a>.</footer>
+<footer>ggplot3 — a next-generation Grammar of Graphics for R. Built on S7. <a href="https://itsmdivakaran.github.io/ggplot3/">Documentation</a> &middot; <a href="https://github.com/itsmdivakaran/ggplot3">Source</a> &middot; <a href="credits.html">Credits</a>.</footer>
 </body>
 </html>
 

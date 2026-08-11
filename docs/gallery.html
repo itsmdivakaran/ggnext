@@ -32,6 +32,8 @@ nav img { width: 34px; height: 39px; }
 nav a { color: var(--muted); text-decoration: none; font-size: 15px; }
 nav a:hover, nav a.on { color: var(--accent); }
 nav .brand { font-weight: 700; color: var(--ink); font-size: 17px; }
+nav .repo { margin-left: auto; border: 1px solid var(--line);
+            border-radius: 20px; padding: 3px 14px; }
 main { max-width: 1080px; margin: 0 auto; padding: 36px 24px 80px; }
 h1 { font-size: 34px; line-height: 1.2; margin: 0 0 10px; letter-spacing: -0.5px; }
 h2 { font-size: 23px; margin: 44px 0 14px; letter-spacing: -0.2px; }
@@ -106,7 +108,7 @@ h3 { scroll-margin-top: 70px; }
 </style>
 </head>
 <body>
-<header><nav><img src="logo.svg" alt="ggplot3"><span class="brand">ggplot3</span><a href="index.html">Overview</a><a href="guide.html">Guide</a><a href="gallery.html" class="on">Gallery</a><a href="cookbook.html">Cookbook</a><a href="reference.html">Reference</a><a href="themes.html">Themes</a><a href="credits.html">Credits</a></nav></header>
+<header><nav><img src="logo.svg" alt="ggplot3"><span class="brand">ggplot3</span><a href="index.html">Overview</a><a href="guide.html">Guide</a><a href="gallery.html" class="on">Gallery</a><a href="cookbook.html">Cookbook</a><a href="reference.html">Reference</a><a href="themes.html">Themes</a><a href="credits.html">Credits</a><a class="repo" href="https://github.com/itsmdivakaran/ggplot3">GitHub</a></nav></header>
 <main>
 <h1>Gallery</h1><p class="lead">58 worked examples. Every figure was rendered by ggplot3 when this site was built, and the code under each one is exactly what produced it.</p><div class="secnav"><a href="#essentials">Essentials</a><a href="#distributions">Distributions</a><a href="#layout">Layout</a><a href="#machine-learning">Machine learning</a><a href="#clinical">Clinical</a></div><h2 id="essentials">Essentials</h2><p>The everyday layers. Each takes the same aesthetics you would expect, and several can be stacked in one plot - layers draw in the order they are added.</p><div class="item"><h3 id="point">Scatter plot</h3><p>The default view of a relationship between two continuous variables.</p><p class="aes">Aesthetics: <code>x, y, color, size, alpha</code></p><figure class="fig"><img src="fig-point.svg" alt="Scatter plot"></figure><pre><code>ggplot3(cars, aes(speed, dist)) + geom_point() + labs(title = "Stopping distance rises with speed", 
     x = "Speed (mph)", y = "Distance (ft)")</code></pre></div><div class="item"><h3 id="jitter">Jittered points</h3><p>Points nudged by a reproducible random offset so overlapping observations stay countable; pair with a boxplot or violin.</p><p class="aes">Aesthetics: <code>x, y, color</code></p><figure class="fig"><img src="fig-jitter.svg" alt="Jittered points"></figure><pre><code>ggplot3(iris, aes(Species, Sepal.Width, color = Species)) + geom_jitter(alpha = 0.7) + 
@@ -276,7 +278,7 @@ h3 { scroll-margin-top: 70px; }
     n = c(420, 300, 291, 276, 271)), aes(label = stage, size = n)) + 
     geom_consort()</code></pre></div>
 </main>
-<footer>ggplot3 — a next-generation Grammar of Graphics for R. Built on S7. <a href="credits.html">Credits</a>.</footer>
+<footer>ggplot3 — a next-generation Grammar of Graphics for R. Built on S7. <a href="https://itsmdivakaran.github.io/ggplot3/">Documentation</a> &middot; <a href="https://github.com/itsmdivakaran/ggplot3">Source</a> &middot; <a href="credits.html">Credits</a>.</footer>
 </body>
 </html>
 
