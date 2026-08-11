@@ -59,6 +59,10 @@ pre code { background: none; padding: 0; font-size: inherit; }
 .fig { border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
        margin: 18px 0 28px; background: var(--bg); }
 .fig img { display: block; width: 100%; height: auto; }
+/* Inline SVG (the Cookbook embeds plots directly rather than as <img>).
+   Without a cap, a wide plot forces the whole page to scroll sideways. */
+main svg { display: block; max-width: 100%; height: auto; margin: 14px 0 22px;
+           border: 1px solid var(--line); border-radius: 8px; }
 .fig figcaption { padding: 12px 16px; border-top: 1px solid var(--line);
                   font-size: 14px; color: var(--muted); }
 .figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -102,7 +106,7 @@ h3 { scroll-margin-top: 70px; }
 </style>
 </head>
 <body>
-<header><nav><img src="logo.svg" alt="ggplot3"><span class="brand">ggplot3</span><a href="index.html">Overview</a><a href="guide.html" class="on">Guide</a><a href="gallery.html">Gallery</a><a href="reference.html">Reference</a><a href="themes.html">Themes</a><a href="credits.html">Credits</a></nav></header>
+<header><nav><img src="logo.svg" alt="ggplot3"><span class="brand">ggplot3</span><a href="index.html">Overview</a><a href="guide.html" class="on">Guide</a><a href="gallery.html">Gallery</a><a href="cookbook.html">Cookbook</a><a href="reference.html">Reference</a><a href="themes.html">Themes</a><a href="credits.html">Credits</a></nav></header>
 <main>
 <h1>Guide</h1><p class="lead">The grammar end to end: building a plot, controlling the axes, styling it, adding interactivity, and getting the numbers back out.</p><div class="toc"><strong>On this page</strong><ol><li><a href="#grammar">The grammar</a></li><li><a href="#layers">Layers, geoms and stats</a></li><li><a href="#aesthetics">Aesthetics and grouping</a></li><li><a href="#scales">Scales and axes</a></li><li><a href="#positions">Position adjustments</a></li><li><a href="#facets">Facets</a></li><li><a href="#coords">Coordinate systems</a></li><li><a href="#labels">Titles and labels</a></li><li><a href="#themes">Themes</a></li><li><a href="#legends">Legends</a></li><li><a href="#interactivity">Interactivity</a></li><li><a href="#animation">Animation</a></li><li><a href="#data">Getting the data back</a></li><li><a href="#output">Output and sizing</a></li><li><a href="#extending">Extending ggplot3</a></li><li><a href="#troubleshooting">Troubleshooting</a></li></ol></div><h2 id="grammar">The grammar</h2><p>A plot is <code>data</code>, an aesthetic <code>mapping</code>, and one or more <code>layers</code>. Scales, coordinates, facets and a theme are all optional — sensible defaults are chosen from the data.</p><pre><code>ggplot3(cars, aes(speed, dist)) +
   geom_point()</code></pre><p><code>aes()</code> captures unevaluated expressions, so you refer to columns by name. The first two unnamed arguments are <code>x</code> and <code>y</code>. Adding a component with <code>+</code> returns a <em>new</em> plot — plots are immutable values, so a partial specification can be reused as a template.</p><pre><code>base &lt;- ggplot3(iris, aes(Sepal.Length, Sepal.Width))

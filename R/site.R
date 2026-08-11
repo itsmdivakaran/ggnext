@@ -19,13 +19,19 @@
 #'
 #' @param dir Output directory (created if needed).
 #' @param quiet Suppress progress messages.
+#' @param cookbook Also build the Cookbook page by knitting the worked
+#'   reference shipped in `inst/examples/`. Needs the `knitr` and
+#'   `markdown` packages; the page is skipped with a message if either is
+#'   missing. It renders ~100 plots, so it is the slow part of the build —
+#'   pass `FALSE` for a quick rebuild of the rest.
 #' @return The output directory, invisibly.
 #' @examples
 #' out <- file.path(tempdir(), "ggplot3-site")
 #' build_site(out, quiet = TRUE)
 #' list.files(out)
 #' @export
-build_site <- function(dir = "docs", quiet = FALSE) {
+build_site <- function(dir = "docs", quiet = FALSE,
+                       cookbook = TRUE) {
   dir.create(dir, showWarnings = FALSE, recursive = TRUE)
   say <- function(...) if (!quiet) message(...)
 
@@ -57,6 +63,16 @@ build_site <- function(dir = "docs", quiet = FALSE) {
   writeLines(site_themes(dir), file.path(dir, "themes.html"), useBytes = TRUE)
   writeLines(site_guide(dir), file.path(dir, "guide.html"), useBytes = TRUE)
   writeLines(site_credits(), file.path(dir, "credits.html"), useBytes = TRUE)
+
+  if (isTRUE(cookbook)) {
+    say("Knitting cookbook (~100 plots)")
+    cb <- site_cookbook()
+    if (is.null(cb)) {
+      say("  skipped: needs the knitr and markdown packages")
+    } else {
+      writeLines(cb, file.path(dir, "cookbook.html"), useBytes = TRUE)
+    }
+  }
 
   say("Site written to ", normalizePath(dir))
   invisible(dir)
@@ -119,6 +135,10 @@ pre code { background: none; padding: 0; font-size: inherit; }
 .fig { border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
        margin: 18px 0 28px; background: var(--bg); }
 .fig img { display: block; width: 100%; height: auto; }
+/* Inline SVG (the Cookbook embeds plots directly rather than as <img>).
+   Without a cap, a wide plot forces the whole page to scroll sideways. */
+main svg { display: block; max-width: 100%; height: auto; margin: 14px 0 22px;
+           border: 1px solid var(--line); border-radius: 8px; }
 .fig figcaption { padding: 12px 16px; border-top: 1px solid var(--line);
                   font-size: 14px; color: var(--muted); }
 .figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -164,7 +184,8 @@ h3 { scroll-margin-top: 70px; }
 site_page <- function(title, active, body) {
   nav_items <- c(
     index = "Overview", guide = "Guide", gallery = "Gallery",
-    reference = "Reference", themes = "Themes", credits = "Credits"
+    cookbook = "Cookbook", reference = "Reference", themes = "Themes",
+    credits = "Credits"
   )
   links <- vapply(names(nav_items), function(k) {
     sprintf(
@@ -959,9 +980,10 @@ site_index <- function(figs, examples) {
       "  interact(tooltip = c(\"model\", \"hwy\"), brush = TRUE) +",
       "  theme_modern()"
     )),
-    "<p>See the <a href=\"guide.html\">Guide</a> for a walkthrough, or the ",
+    "<p>See the <a href=\"guide.html\">Guide</a> for a walkthrough, the ",
     "<a href=\"gallery.html\">Gallery</a> for ", length(examples),
-    " worked examples.</p>",
+    " worked examples, or the <a href=\"cookbook.html\">Cookbook</a> for ",
+    "every function and option demonstrated end to end.</p>",
 
     "<h2>Interactivity</h2>",
     "<p>Interactivity is an additive grammar verb, not a separate package ",
@@ -1226,6 +1248,81 @@ site_themes <- function(dir) {
     theme_settings_table()
   )
   site_page("Themes - ggplot3", "themes", body)
+}
+
+# The Cookbook page: the worked reference from inst/examples/, knitted so
+# the site and the shipped .Rmd can never drift apart. Returns NULL when
+# knitr or markdown is unavailable, so the rest of the site still builds.
+site_cookbook <- function() {
+  if (!requireNamespace("knitr", quietly = TRUE) ||
+      !requireNamespace("markdown", quietly = TRUE)) {
+    return(NULL)
+  }
+  rmd <- system.file("examples", "ggplot3-full-reference.Rmd",
+                     package = "ggplot3")
+  if (!nzchar(rmd) || !file.exists(rmd)) {
+    return(NULL)
+  }
+
+  md <- tempfile(fileext = ".md")
+  on.exit(unlink(md), add = TRUE)
+  # Knit in a throwaway working directory: the document writes a CSV and an
+  # SVG to demonstrate the file-output arguments, and those belong in a
+  # temporary place, not in the site folder.
+  wd <- tempfile("cookbook")
+  dir.create(wd)
+  on.exit(unlink(wd, recursive = TRUE), add = TRUE)
+  old <- setwd(wd)
+  on.exit(setwd(old), add = TRUE)
+
+  ok <- tryCatch({
+    knitr::knit(rmd, output = md, quiet = TRUE)
+    TRUE
+  }, error = function(e) {
+    warning("Cookbook page skipped: ", conditionMessage(e), call. = FALSE)
+    FALSE
+  })
+  if (!ok) {
+    return(NULL)
+  }
+
+  body <- paste(markdown::mark(md), collapse = "\n")
+
+  # The .Rmd carries its own page styling so it looks right when knitted
+  # standalone. Inside the site that would fight the site stylesheet, so
+  # strip it and let the site's CSS apply.
+  body <- gsub("<style[^>]*>.*?</style>", "", body)
+
+  paste0(
+    "<h1>Cookbook</h1>",
+    "<p class=\"lead\">Every exported function and every option that ",
+    "changes the output, as worked examples. Each figure below was ",
+    "rendered by ggplot3 when this page was built, and several sections ",
+    "check the computed numbers against base R.</p>",
+    "<div class=\"note\"><p>This page is generated from ",
+    "<code>inst/examples/ggplot3-full-reference.Rmd</code>, which ships ",
+    "with the package. Open it in RStudio to run any of it yourself: ",
+    "<code>system.file(\"examples\", ",
+    "\"ggplot3-full-reference.Rmd\", package = \"ggplot3\")</code></p></div>",
+    cookbook_toc(body),
+    body
+  ) |> site_page(title = "Cookbook - ggplot3", active = "cookbook")
+}
+
+# Build a two-column contents list from the knitted document's headings.
+cookbook_toc <- function(body) {
+  m <- gregexpr("<h1 id=\"([^\"]+)\">(.*?)</h1>", body, perl = TRUE)
+  hits <- regmatches(body, m)[[1]]
+  if (length(hits) == 0) {
+    return("")
+  }
+  ids <- sub(".*id=\"([^\"]+)\".*", "\\1", hits)
+  txt <- sub("<h1[^>]*>(.*?)</h1>", "\\1", hits)
+  txt <- gsub("<[^>]+>", "", txt)
+  items <- paste(sprintf("<li><a href=\"#%s\">%s</a></li>", ids, txt),
+                 collapse = "")
+  paste0("<div class=\"toc\"><strong>Sections</strong><ol>", items,
+         "</ol></div>")
 }
 
 # The long-form guide: the material that would otherwise be vignettes,

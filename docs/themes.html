@@ -59,6 +59,10 @@ pre code { background: none; padding: 0; font-size: inherit; }
 .fig { border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
        margin: 18px 0 28px; background: var(--bg); }
 .fig img { display: block; width: 100%; height: auto; }
+/* Inline SVG (the Cookbook embeds plots directly rather than as <img>).
+   Without a cap, a wide plot forces the whole page to scroll sideways. */
+main svg { display: block; max-width: 100%; height: auto; margin: 14px 0 22px;
+           border: 1px solid var(--line); border-radius: 8px; }
 .fig figcaption { padding: 12px 16px; border-top: 1px solid var(--line);
                   font-size: 14px; color: var(--muted); }
 .figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -102,7 +106,7 @@ h3 { scroll-margin-top: 70px; }
 </style>
 </head>
 <body>
-<header><nav><img src="logo.svg" alt="ggplot3"><span class="brand">ggplot3</span><a href="index.html">Overview</a><a href="guide.html">Guide</a><a href="gallery.html">Gallery</a><a href="reference.html">Reference</a><a href="themes.html" class="on">Themes</a><a href="credits.html">Credits</a></nav></header>
+<header><nav><img src="logo.svg" alt="ggplot3"><span class="brand">ggplot3</span><a href="index.html">Overview</a><a href="guide.html">Guide</a><a href="gallery.html">Gallery</a><a href="cookbook.html">Cookbook</a><a href="reference.html">Reference</a><a href="themes.html" class="on">Themes</a><a href="credits.html">Credits</a></nav></header>
 <main>
 <h1>Themes</h1><p class="lead">Six presets, and 35 individual settings you can override with <code>theme()</code>. Every setting travels inside the geometry buffer, so the static and interactive targets always agree.</p><div class="figs"><figure class="fig"><img src="theme-theme_ggplot3.svg" alt="theme_ggplot3"><figcaption><code>theme_ggplot3()</code> &mdash; The default: a softly tinted panel with white gridlines.</figcaption></figure><figure class="fig"><img src="theme-theme_minimal.svg" alt="theme_minimal"><figcaption><code>theme_minimal()</code> &mdash; No panel fill, light grey grid, no axis lines or ticks.</figcaption></figure><figure class="fig"><img src="theme-theme_classic.svg" alt="theme_classic"><figcaption><code>theme_classic()</code> &mdash; White panel, black axes, no grid, serif type - the statistical-journal look.</figcaption></figure><figure class="fig"><img src="theme-theme_modern.svg" alt="theme_modern"><figcaption><code>theme_modern()</code> &mdash; Editorial styling: large title, horizontal rules only, a brighter palette.</figcaption></figure><figure class="fig"><img src="theme-theme_dark.svg" alt="theme_dark"><figcaption><code>theme_dark()</code> &mdash; Dark background with a palette tuned for it.</figcaption></figure><figure class="fig"><img src="theme-theme_void.svg" alt="theme_void"><figcaption><code>theme_void()</code> &mdash; No chrome at all - for treemaps, networks, and sparkline-style output.</figcaption></figure></div><h2>Customizing</h2><p>Override any setting on top of any preset. <code>base</code> picks the preset to start from; everything else is applied over it.</p><pre><code>ggplot3(cars, aes(speed, dist)) + geom_point() +
   theme(

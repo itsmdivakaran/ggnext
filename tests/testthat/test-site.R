@@ -42,7 +42,7 @@ test_that("every gallery example renders", {
 test_that("build_site() writes a self-contained site", {
   dir <- tempfile("site")
   on.exit(unlink(dir, recursive = TRUE))
-  build_site(dir, quiet = TRUE)
+  build_site(dir, quiet = TRUE, cookbook = FALSE)
 
   for (page in c("index.html", "gallery.html", "reference.html",
                  "themes.html", "logo.svg")) {
@@ -59,7 +59,7 @@ test_that("site pages load no external assets", {
   # font, or image), which would break the site offline.
   dir <- tempfile("site")
   on.exit(unlink(dir, recursive = TRUE))
-  build_site(dir, quiet = TRUE)
+  build_site(dir, quiet = TRUE, cookbook = FALSE)
   for (page in list.files(dir, pattern = "\\.html$", full.names = TRUE)) {
     html <- paste(readLines(page, warn = FALSE), collapse = "\n")
     expect_no_match(html, "<script[^>]+src=", label = basename(page))
@@ -114,4 +114,46 @@ test_that("with_seed() restores an absent .Random.seed", {
   x <- ggplot3:::with_seed(1, stats::runif(3))
   expect_length(x, 3)
   expect_false(exists(".Random.seed", globalenv()))
+})
+
+test_that("the cookbook page knits the shipped reference document", {
+  skip_if_not_installed("knitr")
+  skip_if_not_installed("markdown")
+
+  html <- ggplot3:::site_cookbook()
+  expect_false(is.null(html))
+  expect_match(html, "<h1>Cookbook</h1>", fixed = TRUE)
+
+  # Every plot in the document rendered, and none is an empty panel.
+  n_svg <- length(gregexpr("<svg ", html, fixed = TRUE)[[1]])
+  expect_gt(n_svg, 80)
+  expect_false(grepl("Error in", html, fixed = TRUE))
+
+  # A contents list was built from the document's own headings.
+  expect_match(html, "class=\"toc\"", fixed = TRUE)
+
+  # The document's standalone page styling must not leak into the site,
+  # where it would fight the site stylesheet.
+  body <- sub(".*</head>", "", html)
+  expect_false(grepl("<style", body, fixed = TRUE))
+})
+
+test_that("build_site(cookbook = FALSE) skips the slow page", {
+  dir <- tempfile("site")
+  on.exit(unlink(dir, recursive = TRUE))
+  build_site(dir, quiet = TRUE, cookbook = FALSE)
+  expect_false(file.exists(file.path(dir, "cookbook.html")))
+  expect_true(file.exists(file.path(dir, "index.html")))
+})
+
+test_that("inline SVG is capped so wide plots cannot force page scroll", {
+  # The cookbook embeds plots as raw <svg>, not <img>; without a cap a
+  # 900px-wide plot makes the whole page scroll sideways.
+  dir <- tempfile("site")
+  on.exit(unlink(dir, recursive = TRUE))
+  build_site(dir, quiet = TRUE, cookbook = FALSE)
+  css <- paste(readLines(file.path(dir, "index.html"), warn = FALSE),
+               collapse = "\n")
+  expect_match(css, "main svg", fixed = TRUE)
+  expect_match(css, "max-width: 100%", fixed = TRUE)
 })

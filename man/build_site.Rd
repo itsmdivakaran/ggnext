@@ -4,12 +4,18 @@
 \alias{build_site}
 \title{Build the ggplot3 documentation site}
 \usage{
-build_site(dir = "docs", quiet = FALSE)
+build_site(dir = "docs", quiet = FALSE, cookbook = TRUE)
 }
 \arguments{
 \item{dir}{Output directory (created if needed).}
 
 \item{quiet}{Suppress progress messages.}
+
+\item{cookbook}{Also build the Cookbook page by knitting the worked
+reference shipped in \verb{inst/examples/}. Needs the \code{knitr} and
+\code{markdown} packages; the page is skipped with a message if either is
+missing. It renders ~100 plots, so it is the slow part of the build —
+pass \code{FALSE} for a quick rebuild of the rest.}
 }
 \value{
 The output directory, invisibly.

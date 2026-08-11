@@ -80,45 +80,46 @@ self-contained static site. No external site generator, no CDN assets.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"ggplot3-site"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">build_site</span><span class="op">(</span><span class="va">out</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "credits.html"               "fig-ae_heatmap.svg"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "fig-area.svg"               "fig-bar.svg"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "fig-bland.svg"              "fig-boundary.svg"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "fig-boxplot.svg"            "fig-bump.svg"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "fig-calibration.svg"        "fig-chord.svg"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "fig-combo.svg"              "fig-confusion.svg"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "fig-consort.svg"            "fig-cuminc.svg"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "fig-density.svg"            "fig-dose.svg"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "fig-dumbbell.svg"           "fig-embedding.svg"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "fig-errorbar.svg"           "fig-facet.svg"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "fig-facet_free.svg"         "fig-forecast.svg"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "fig-forest.svg"             "fig-funnel.svg"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "fig-histogram.svg"          "fig-jitter.svg"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "fig-km.svg"                 "fig-learning.svg"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "fig-lift.svg"               "fig-line.svg"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "fig-network.svg"            "fig-parallel.svg"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [33] "fig-pdp.svg"                "fig-point.svg"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "fig-polar_bar.svg"          "fig-radar.svg"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [37] "fig-reference.svg"          "fig-residual.svg"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [39] "fig-ribbon.svg"             "fig-ridgeline.svg"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [41] "fig-roc.svg"                "fig-sankey.svg"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [43] "fig-segment.svg"            "fig-shap.svg"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [45] "fig-silhouette.svg"         "fig-smooth.svg"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [47] "fig-spaghetti.svg"          "fig-spider.svg"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [49] "fig-stacked.svg"            "fig-step.svg"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [51] "fig-stream.svg"             "fig-swimmer.svg"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [53] "fig-text.svg"               "fig-tile.svg"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [55] "fig-treemap.svg"            "fig-upset.svg"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [57] "fig-violin.svg"             "fig-waterfall.svg"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [59] "fig-waterfall_response.svg" "gallery.html"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [61] "guide-facets.svg"           "guide-layers.svg"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [63] "guide-legend.svg"           "guide-polar.svg"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [65] "guide-positions.svg"        "guide-scales.svg"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [67] "guide-theming.svg"          "guide.html"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [69] "index.html"                 "logo.svg"                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [71] "reference.html"             "theme-theme_classic.svg"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [73] "theme-theme_dark.svg"       "theme-theme_ggplot3.svg"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [75] "theme-theme_minimal.svg"    "theme-theme_modern.svg"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [77] "theme-theme_void.svg"       "themes.html"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "cookbook.html"              "credits.html"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "fig-ae_heatmap.svg"         "fig-area.svg"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "fig-bar.svg"                "fig-bland.svg"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "fig-boundary.svg"           "fig-boxplot.svg"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "fig-bump.svg"               "fig-calibration.svg"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "fig-chord.svg"              "fig-combo.svg"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "fig-confusion.svg"          "fig-consort.svg"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "fig-cuminc.svg"             "fig-density.svg"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "fig-dose.svg"               "fig-dumbbell.svg"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "fig-embedding.svg"          "fig-errorbar.svg"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "fig-facet.svg"              "fig-facet_free.svg"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "fig-forecast.svg"           "fig-forest.svg"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "fig-funnel.svg"             "fig-histogram.svg"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "fig-jitter.svg"             "fig-km.svg"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "fig-learning.svg"           "fig-lift.svg"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "fig-line.svg"               "fig-network.svg"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [33] "fig-parallel.svg"           "fig-pdp.svg"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "fig-point.svg"              "fig-polar_bar.svg"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [37] "fig-radar.svg"              "fig-reference.svg"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [39] "fig-residual.svg"           "fig-ribbon.svg"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [41] "fig-ridgeline.svg"          "fig-roc.svg"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [43] "fig-sankey.svg"             "fig-segment.svg"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [45] "fig-shap.svg"               "fig-silhouette.svg"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [47] "fig-smooth.svg"             "fig-spaghetti.svg"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [49] "fig-spider.svg"             "fig-stacked.svg"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [51] "fig-step.svg"               "fig-stream.svg"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [53] "fig-swimmer.svg"            "fig-text.svg"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [55] "fig-tile.svg"               "fig-treemap.svg"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [57] "fig-upset.svg"              "fig-violin.svg"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [59] "fig-waterfall.svg"          "fig-waterfall_response.svg"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [61] "gallery.html"               "guide-facets.svg"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [63] "guide-layers.svg"           "guide-legend.svg"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [65] "guide-polar.svg"            "guide-positions.svg"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [67] "guide-scales.svg"           "guide-theming.svg"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [69] "guide.html"                 "index.html"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [71] "logo.svg"                   "reference.html"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [73] "theme-theme_classic.svg"    "theme-theme_dark.svg"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [75] "theme-theme_ggplot3.svg"    "theme-theme_minimal.svg"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [77] "theme-theme_modern.svg"     "theme-theme_void.svg"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [79] "themes.html"               </span>
 </code></pre></div>
     </div>
   </div>
@@ -133,7 +134,7 @@ self-contained static site. No external site generator, no CDN assets.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
       </footer></div>
