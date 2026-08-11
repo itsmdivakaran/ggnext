@@ -38,6 +38,35 @@ PANEL_SPAN_GEOMS <- c(
   "treemap", "network", "sankey", "chord", "upset", "funnel", "consort"
 )
 
+# Rows whose position cannot be drawn. Numeric positions must be finite
+# (NA, NaN, Inf all fail); a categorical position must simply be present.
+# Interval columns such as ymin/ymax are deliberately NOT checked: geoms
+# like geom_forecast_band() use NA there to mean "no interval on this row".
+non_finite_rows <- function(v) {
+  if (is.numeric(v)) !is.finite(v) else is.na(v)
+}
+
+# Drop rows the renderer could not place, once, with a count - silently
+# emitting `cx="NA"` into the SVG would produce an invalid document and put
+# the affected points at the panel origin.
+drop_non_finite <- function(values, geom_name) {
+  pos <- intersect(c("x", "y"), names(values))
+  if (length(pos) == 0) {
+    return(values)
+  }
+  n <- length(values[[pos[1]]])
+  bad <- Reduce(`|`, lapply(pos, function(k) non_finite_rows(values[[k]])))
+  if (!any(bad)) {
+    return(values)
+  }
+  warning(
+    "Removed ", sum(bad), " row", if (sum(bad) > 1) "s" else "",
+    " containing non-finite values (geom_", geom_name, "()).",
+    call. = FALSE
+  )
+  lapply(values, function(v) if (length(v) == n) v[!bad] else v)
+}
+
 # TRUE when any layer's geom does its own whole-panel layout.
 has_panel_span <- function(plot) {
   any(vapply(plot@layers, function(l) l@geom@name %in% PANEL_SPAN_GEOMS,
@@ -142,6 +171,13 @@ stage_values <- function(plot) {
       values$group <- as.character(values$group)
     }
 
+    keep_before <- length(values[[1]] %||% character())
+    values <- drop_non_finite(values, layer@geom@name)
+    if (!is.null(values[[1]]) && length(values[[1]]) < keep_before) {
+      data <- data[seq_len(nrow(data)) %in% seq_along(values[[1]]), ,
+                   drop = FALSE]
+    }
+
     list(values = values, mapping = mapping, layer = layer, data = data)
   })
 
@@ -229,6 +265,13 @@ stage_values <- function(plot) {
           values[[aes_name]] <- scale_discrete_index(sc, values[[aes_name]])
         }
       }
+      # A few layouts (sankey, chord, network, upset, consort) build their
+      # marks inside the stat, because their output is not one-row-per-
+      # observation. Those still have to honour the layer's styling
+      # arguments, so the merged params travel with the values.
+      values$params <- utils::modifyList(
+        lv$layer@geom@default_params, lv$layer@params
+      )
       values <- compute_stat(lv$layer@stat, values)
       pos <- lv$layer@params$position
       if (!is.null(pos)) values <- position_apply(pos, values)
@@ -317,10 +360,23 @@ build_panels <- function(plot, panel_specs, panel_scales, grid_shape,
       build_layer_marks(lv, scales, axes, plot, palette, th)
     })
 
+    # coord_flip() swaps the mark coordinates (in flip_positions()), so the
+    # axes have to swap with them or the plot is mislabelled: the category
+    # axis must end up wherever the categories were drawn. Marks are built
+    # against the *unflipped* axes above, because that is the space the
+    # scales were trained in — only the rendered guides swap.
+    out_axes <- axes
+    if (S7_inherits(plot@coord, CoordCartesian) && plot@coord@flip) {
+      out_axes <- list(x = axes$y, y = axes$x)
+      swap <- show_x_labels
+      show_x_labels <- show_y_labels
+      show_y_labels <- swap
+    }
+
     list(
       rect = rect,
-      x = axes$x,
-      y = axes$y,
+      x = out_axes$x,
+      y = out_axes$y,
       layers = layers,
       strip = ps$key,
       show_x_labels = show_x_labels,

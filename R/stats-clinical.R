@@ -310,6 +310,7 @@ method(compute_stat, StatConsort) <- function(stat, values) {
   n <- length(labels)
   # Boxes are stacked top to bottom with a fixed gap; arrows connect
   # consecutive boxes down the middle.
+  prm <- values$params %||% list()
   box_h <- min(0.16, 0.86 / n)
   gap <- (0.9 - box_h * n) / max(1, n - 1)
   marks <- list()
@@ -319,7 +320,7 @@ method(compute_stat, StatConsort) <- function(stat, values) {
     bot <- top - box_h
     centers[i] <- (top + bot) / 2
     marks <- c(marks, list(mk_rect(
-      0.2, 0.8, bot, top, fill = "#EDF1F7", alpha = 1,
+      0.2, 0.8, bot, top, fill = prm$box_fill %||% "#EDF1F7", alpha = 1,
       stroke = "#8595AC", stroke_width = 1
     )))
     txt <- if (is.null(counts)) {
@@ -327,7 +328,8 @@ method(compute_stat, StatConsort) <- function(stat, values) {
     } else {
       paste0(labels[i], "  (n = ", format(counts[i], big.mark = ","), ")")
     }
-    marks <- c(marks, list(mk_text(0.5, centers[i], txt, size = 12,
+    marks <- c(marks, list(mk_text(0.5, centers[i], txt,
+                                   size = prm$label_size %||% 12,
                                    color = "#1A2233")))
     if (i > 1) {
       prev_bot <- centers[i - 1] - box_h / 2

@@ -270,20 +270,28 @@ method(compute_stat, StatNetwork) <- function(stat, values) {
 
   # Emit finished marks rather than per-row positions: nodes are not
   # one-per-row, and the layout is already in panel coordinates.
+  prm <- values$params %||% list()
   marks <- list()
   for (e in seq_along(fi)) {
     marks <- c(marks, list(mk_line(
       c(px[fi[e]], px[ti[e]]), c(py[fi[e]], py[ti[e]]),
-      stroke = "#B8B8C4", width = 1, alpha = 0.8
+      stroke = prm$edge_color %||% "#B8B8C4",
+      width = prm$edge_width %||% 1, alpha = 0.8
     )))
   }
+  node_r <- prm$node_size %||% 6
   for (i in seq_len(n)) {
-    marks <- c(marks, list(mk_circle(px[i], py[i], 6, node_colors[i])))
-  }
-  for (i in seq_len(n)) {
-    marks <- c(marks, list(mk_text(
-      px[i], py[i] + 0.038, nodes[i], size = 11, color = "#3A3A3A"
+    marks <- c(marks, list(mk_circle(
+      px[i], py[i], node_r, node_colors[i], alpha = prm$alpha %||% 1
     )))
+  }
+  if (isTRUE(prm$label %||% TRUE)) {
+    for (i in seq_len(n)) {
+      marks <- c(marks, list(mk_text(
+        px[i], py[i] + 0.038, nodes[i],
+        size = prm$label_size %||% 11, color = "#3A3A3A"
+      )))
+    }
   }
   out <- list(
     x = c(0, 1), y = c(0, 1), group = c("a", "b"),
@@ -367,7 +375,8 @@ method(compute_stat, StatSankey) <- function(stat, values) {
 
   # Inset the node columns so the first and last stages' labels have room
   # inside the panel instead of running off the edge.
-  node_w <- 0.035
+  prm <- values$params %||% list()
+  node_w <- prm$node_width %||% 0.035
   pad <- 0.02
   span <- 1 - node_w - 2 * pad
   xpos <- if (n_stage > 1) {
@@ -409,7 +418,7 @@ method(compute_stat, StatSankey) <- function(stat, values) {
     marks <- c(marks, list(mk_polygon(
       c(curve_top$x, rev(curve_bot$x)),
       c(curve_top$y, rev(curve_bot$y)),
-      fill = node_color[[f]], alpha = 0.55
+      fill = node_color[[f]], alpha = prm$alpha %||% 0.55
     )))
   }
   # Node bars and labels on top of the ribbons.
@@ -418,12 +427,14 @@ method(compute_stat, StatSankey) <- function(stat, values) {
       xpos[[nd]], xpos[[nd]] + node_w, ypos[[nd]], ytop[[nd]],
       fill = node_color[[nd]], alpha = 1
     )))
-    anchor <- if (stage[[nd]] == max(stage)) "end" else "start"
-    lx <- if (anchor == "end") xpos[[nd]] - 0.01 else xpos[[nd]] + node_w + 0.01
-    marks <- c(marks, list(mk_text(
-      lx, (ypos[[nd]] + ytop[[nd]]) / 2, nd, size = 11,
-      color = "#3A3A3A", anchor = anchor
-    )))
+    if (isTRUE(prm$label %||% TRUE)) {
+      anchor <- if (stage[[nd]] == max(stage)) "end" else "start"
+      lx <- if (anchor == "end") xpos[[nd]] - 0.01 else xpos[[nd]] + node_w + 0.01
+      marks <- c(marks, list(mk_text(
+        lx, (ypos[[nd]] + ytop[[nd]]) / 2, nd, size = 11,
+        color = "#3A3A3A", anchor = anchor
+      )))
+    }
   }
 
   out <- list(
@@ -468,6 +479,7 @@ method(compute_stat, StatChord) <- function(stat, values) {
   names(starts) <- entities
   names(widths) <- entities
 
+  prm <- values$params %||% list()
   pal <- rep_len(GGPLOT3_DISCRETE_PALETTE, n)
   ecol <- stats::setNames(pal[seq_len(n)], entities)
   R <- 0.42
@@ -482,11 +494,13 @@ method(compute_stat, StatChord) <- function(stat, values) {
       c(0.5 + R * sin(a), rev(0.5 + (R + 0.04) * sin(a))),
       fill = ecol[[e]], alpha = 1
     )))
-    mid <- starts[[e]] + widths[[e]] / 2
-    marks <- c(marks, list(mk_text(
-      0.5 + (R + 0.09) * cos(mid), 0.5 + (R + 0.09) * sin(mid), e,
-      size = 11, color = "#3A3A3A"
-    )))
+    if (isTRUE(prm$label %||% TRUE)) {
+      mid <- starts[[e]] + widths[[e]] / 2
+      marks <- c(marks, list(mk_text(
+        0.5 + (R + 0.09) * cos(mid), 0.5 + (R + 0.09) * sin(mid), e,
+        size = prm$label_size %||% 11, color = "#3A3A3A"
+      )))
+    }
   }
   # Ribbons: quadratic curves through the circle center.
   used <- stats::setNames(numeric(n), entities)
@@ -509,7 +523,7 @@ method(compute_stat, StatChord) <- function(stat, values) {
     b2 <- quad_bezier(p2x[length(p2x)], p2y[length(p2y)], 0.5, 0.5, p1x[1], p1y[1])
     marks <- c(marks, list(mk_polygon(
       c(p1x, b1$x, p2x, b2$x), c(p1y, b1$y, p2y, b2$y),
-      fill = ecol[[f]], alpha = 0.45
+      fill = ecol[[f]], alpha = prm$alpha %||% 0.45
     )))
   }
   out <- list(
@@ -633,8 +647,10 @@ method(compute_stat, StatUpset) <- function(stat, values) {
   n_s <- length(sets)
 
   # Top 60% of the panel: intersection-size bars. Bottom 40%: dot matrix.
+  prm <- values$params %||% list()
   split_y <- 0.42
   bar_w <- 0.8 / n_c
+  dot_r <- prm$dot_size %||% 5
   marks <- list()
   maxc <- max(counts)
   for (i in seq_len(n_c)) {
@@ -642,7 +658,7 @@ method(compute_stat, StatUpset) <- function(stat, values) {
     h <- counts[[i]] / maxc * (1 - split_y - 0.08)
     marks <- c(marks, list(
       mk_rect(cx - bar_w / 2.4, cx + bar_w / 2.4, split_y, split_y + h,
-              fill = "#4A6DB5", alpha = 1),
+              fill = "#4A6DB5", alpha = prm$alpha %||% 1),
       mk_text(cx, split_y + h + 0.035, as.character(counts[[i]]),
               size = 10, color = "#3A3A3A")
     ))
@@ -652,7 +668,7 @@ method(compute_stat, StatUpset) <- function(stat, values) {
       sy <- split_y - 0.06 - (j - 0.5) / n_s * (split_y - 0.06)
       on <- sets[j] %in% members
       marks <- c(marks, list(mk_circle(
-        cx, sy, 5, if (on) "#2A2A33" else "#D8D8DE"
+        cx, sy, dot_r, if (on) "#2A2A33" else "#D8D8DE"
       )))
       if (on) {
         if (!is.null(prev)) {
