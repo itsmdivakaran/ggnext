@@ -49,6 +49,31 @@ with_seed <- function(seed, expr) {
   expr
 }
 
+# --- knitr integration -------------------------------------------------------
+#
+# In an R Markdown or Quarto document, writing `p` in a chunk should show the
+# plot. knitr dispatches on knit_print(), so registering methods here means a
+# report author never has to hand-roll an `results='asis'` helper.
+#
+# SVG is emitted inline for HTML output. Other formats (PDF via LaTeX) cannot
+# consume an inline SVG string, so those fall back to the console summary
+# rather than dumping markup into the document.
+
+knit_print_plot <- function(x, ...) {
+  if (!isTRUE(knitr::is_html_output())) {
+    return(knitr::normal_print(x))
+  }
+  knitr::asis_output(paste0("\n\n", as.character(render(x)), "\n\n"))
+}
+
+knit_print_render <- function(x, ...) {
+  if (!identical(attr(x, "target"), "static") ||
+      !isTRUE(knitr::is_html_output())) {
+    return(knitr::normal_print(x))
+  }
+  knitr::asis_output(paste0("\n\n", as.character(x), "\n\n"))
+}
+
 .onLoad <- function(libname, pkgname) {
   ## Register all S7 methods (including the `+` Ops method that powers
   ## `plot + geom_point()`) with the S3/S4 dispatch tables.
@@ -61,4 +86,13 @@ with_seed <- function(seed, expr) {
                    envir = asNamespace(pkgname))
   registerS3method("print", "ggplot3_render", print.ggplot3_render,
                    envir = asNamespace(pkgname))
+
+  ## Plots render inline in R Markdown / Quarto when knitr is present.
+  ## Registered conditionally so knitr stays an optional dependency.
+  if (requireNamespace("knitr", quietly = TRUE)) {
+    registerS3method("knit_print", "ggplot3::Ggplot3Plot", knit_print_plot,
+                     envir = asNamespace("knitr"))
+    registerS3method("knit_print", "ggplot3_render", knit_print_render,
+                     envir = asNamespace("knitr"))
+  }
 }
