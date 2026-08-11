@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
+<rect x="60" y="20" width="564" height="412" fill="#FFFFFF"/>
+<line x1="86.86" y1="20" x2="86.86" y2="432" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="221.14" y1="20" x2="221.14" y2="432" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="355.43" y1="20" x2="355.43" y2="432" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="489.71" y1="20" x2="489.71" y2="432" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="624" y1="20" x2="624" y2="432" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="60" y1="419.62" x2="624" y2="419.62" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="60" y1="356.14" x2="624" y2="356.14" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="60" y1="292.66" x2="624" y2="292.66" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="60" y1="229.17" x2="624" y2="229.17" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="60" y1="165.69" x2="624" y2="165.69" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="60" y1="102.21" x2="624" y2="102.21" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="60" y1="38.73" x2="624" y2="38.73" stroke="#E4E4E8" stroke-width="1"/>
+<clipPath id="panel1"><rect x="60" y="20" width="564" height="412"/></clipPath>
+<g clip-path="url(#panel1)">
+<circle cx="60" cy="413.27" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="60" cy="387.88" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="140.57" cy="406.92" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="140.57" cy="349.79" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="167.43" cy="368.84" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="194.29" cy="387.88" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="221.14" cy="362.49" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="221.14" cy="337.09" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="221.14" cy="311.7" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="248" cy="365.66" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="248" cy="330.75" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="274.86" cy="375.18" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="274.86" cy="356.14" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="274.86" cy="343.44" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="274.86" cy="330.75" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="301.71" cy="337.09" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="301.71" cy="311.7" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="301.71" cy="311.7" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="301.71" cy="273.61" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="328.57" cy="337.09" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="328.57" cy="305.35" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="328.57" cy="229.17" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="328.57" cy="165.69" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="355.43" cy="356.14" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="355.43" cy="337.09" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="355.43" cy="248.22" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="382.29" cy="318.05" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="382.29" cy="292.66" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="409.14" cy="318.05" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="409.14" cy="292.66" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="409.14" cy="260.92" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="436" cy="286.31" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="436" cy="241.87" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="436" cy="178.39" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="436" cy="153" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="462.86" cy="305.35" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="462.86" cy="273.61" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="462.86" cy="203.78" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="489.71" cy="318.05" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="489.71" cy="267.26" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="489.71" cy="254.57" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="489.71" cy="241.87" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="489.71" cy="216.48" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="543.43" cy="210.13" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="570.29" cy="248.22" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="597.14" cy="197.43" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="597.14" cy="127.6" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="597.14" cy="124.43" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="597.14" cy="38.73" r="3" fill="#000000" fill-opacity="1"/>
+<circle cx="624" cy="149.82" r="3" fill="#000000" fill-opacity="1"/>
+</g>
+<text x="86.86" y="448" text-anchor="middle" font-size="11" fill="#3A3A3A">5</text>
+<text x="221.14" y="448" text-anchor="middle" font-size="11" fill="#3A3A3A">10</text>
+<text x="355.43" y="448" text-anchor="middle" font-size="11" fill="#3A3A3A">15</text>
+<text x="489.71" y="448" text-anchor="middle" font-size="11" fill="#3A3A3A">20</text>
+<text x="624" y="448" text-anchor="middle" font-size="11" fill="#3A3A3A">25</text>
+<text x="52" y="423.47" text-anchor="end" font-size="11" fill="#3A3A3A">0 ft</text>
+<text x="52" y="359.99" text-anchor="end" font-size="11" fill="#3A3A3A">20 ft</text>
+<text x="52" y="296.51" text-anchor="end" font-size="11" fill="#3A3A3A">40 ft</text>
+<text x="52" y="233.02" text-anchor="end" font-size="11" fill="#3A3A3A">60 ft</text>
+<text x="52" y="169.54" text-anchor="end" font-size="11" fill="#3A3A3A">80 ft</text>
+<text x="52" y="106.06" text-anchor="end" font-size="11" fill="#3A3A3A">100 ft</text>
+<text x="52" y="42.58" text-anchor="end" font-size="11" fill="#3A3A3A">120 ft</text>
+<text x="342" y="470" text-anchor="middle" font-size="13" fill="#3A3A3A">Speed (mph)</text>
+<text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">Stopping distance</text>
+</svg>

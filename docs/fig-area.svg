@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
+<rect x="60" y="20" width="564" height="412" fill="#FFFFFF"/>
+<line x1="142.61" y1="20" x2="142.61" y2="432" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="256.55" y1="20" x2="256.55" y2="432" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="370.48" y1="20" x2="370.48" y2="432" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="484.42" y1="20" x2="484.42" y2="432" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="598.36" y1="20" x2="598.36" y2="432" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="60" y1="413.27" x2="624" y2="413.27" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="60" y1="269.22" x2="624" y2="269.22" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="60" y1="125.16" x2="624" y2="125.16" stroke="#E4E4E8" stroke-width="1"/>
+<clipPath id="panel1"><rect x="60" y="20" width="564" height="412"/></clipPath>
+<g clip-path="url(#panel1)">
+<polygon points="85.64,355.65 142.61,298.03 199.58,326.84 256.55,240.41 313.52,182.78 370.48,211.59 427.45,153.97 484.42,182.78 541.39,96.35 598.36,38.73 598.36,413.27 541.39,413.27 484.42,413.27 427.45,413.27 370.48,413.27 313.52,413.27 256.55,413.27 199.58,413.27 142.61,413.27 85.64,413.27" fill="#4A6DB5" fill-opacity="0.5"/>
+</g>
+<text x="142.61" y="448" text-anchor="middle" font-size="11" fill="#3A3A3A">2</text>
+<text x="256.55" y="448" text-anchor="middle" font-size="11" fill="#3A3A3A">4</text>
+<text x="370.48" y="448" text-anchor="middle" font-size="11" fill="#3A3A3A">6</text>
+<text x="484.42" y="448" text-anchor="middle" font-size="11" fill="#3A3A3A">8</text>
+<text x="598.36" y="448" text-anchor="middle" font-size="11" fill="#3A3A3A">10</text>
+<text x="52" y="417.12" text-anchor="end" font-size="11" fill="#3A3A3A">0</text>
+<text x="52" y="273.07" text-anchor="end" font-size="11" fill="#3A3A3A">5</text>
+<text x="52" y="129.01" text-anchor="end" font-size="11" fill="#3A3A3A">10</text>
+<text x="342" y="470" text-anchor="middle" font-size="13" fill="#3A3A3A">t</text>
+<text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">v</text>
+</svg>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide - ggplot3</title>
+<style>
+/* The site is deliberately light-only: the figures are rendered with light
+   themes at build time, and a dark page around a light plot reads badly. */
+:root {
+  --ink: #16181D; --muted: #5C6270; --line: #E3E5EA; --bg: #FFFFFF;
+  --soft: #F9FAFB; --accent: #1A6E55; --accent-soft: #E7F4EF;
+  --code-bg: #F5F6F8;
+}
+html { background: #FFFFFF; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
+        Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+header {
+  border-bottom: 1px solid var(--line); position: sticky; top: 0;
+  background: var(--bg); z-index: 5;
+}
+nav {
+  max-width: 1080px; margin: 0 auto; padding: 12px 24px;
+  display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
+}
+nav img { width: 34px; height: 39px; }
+nav a { color: var(--muted); text-decoration: none; font-size: 15px; }
+nav a:hover, nav a.on { color: var(--accent); }
+nav .brand { font-weight: 700; color: var(--ink); font-size: 17px; }
+main { max-width: 1080px; margin: 0 auto; padding: 36px 24px 80px; }
+h1 { font-size: 34px; line-height: 1.2; margin: 0 0 10px; letter-spacing: -0.5px; }
+h2 { font-size: 23px; margin: 44px 0 14px; letter-spacing: -0.2px; }
+h3 { font-size: 17px; margin: 26px 0 8px; }
+p.lead { font-size: 19px; color: var(--muted); margin: 0 0 24px; max-width: 62ch; }
+p { max-width: 72ch; }
+code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px;
+       font-size: 0.9em; }
+pre {
+  background: var(--code-bg); padding: 14px 16px; border-radius: 8px;
+  overflow-x: auto; font-size: 13.5px; line-height: 1.55;
+  border: 1px solid var(--line);
+}
+pre code { background: none; padding: 0; font-size: inherit; }
+.hero { display: flex; gap: 34px; align-items: center; flex-wrap: wrap; }
+.hero img { width: 168px; }
+.hero div { flex: 1 1 380px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px; margin: 20px 0; }
+.card { border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px;
+        background: var(--soft); }
+.card h3 { margin: 0 0 6px; font-size: 15.5px; }
+.card p { margin: 0; font-size: 14px; color: var(--muted); }
+.fig { border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+       margin: 18px 0 28px; background: var(--bg); }
+.fig img { display: block; width: 100%; height: auto; }
+.fig figcaption { padding: 12px 16px; border-top: 1px solid var(--line);
+                  font-size: 14px; color: var(--muted); }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        gap: 20px; }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px;
+        display: block; overflow-x: auto; }
+th, td { text-align: left; padding: 7px 12px; border-bottom: 1px solid var(--line);
+         vertical-align: top; }
+th { color: var(--muted); font-weight: 600; font-size: 13px;
+     text-transform: uppercase; letter-spacing: 0.4px; }
+td code { white-space: nowrap; }
+.tag { display: inline-block; background: var(--accent-soft); color: var(--accent);
+       border-radius: 20px; padding: 2px 11px; font-size: 12.5px;
+       font-weight: 600; }
+footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 14px;
+         padding: 22px 24px; text-align: center; }
+.note { border-left: 3px solid var(--accent); background: var(--accent-soft);
+        padding: 10px 16px; border-radius: 0 8px 8px 0; margin: 16px 0;
+        font-size: 15px; }
+.note p { margin: 0; max-width: none; }
+.toc { background: var(--soft); border: 1px solid var(--line);
+       border-radius: 10px; padding: 14px 20px; margin: 22px 0 34px; }
+.toc ol { margin: 8px 0 0; padding-left: 22px; columns: 2; }
+.toc li { margin: 3px 0; font-size: 14.5px; break-inside: avoid; }
+.toc a { color: var(--ink); text-decoration: none; }
+.toc a:hover { color: var(--accent); }
+.toc strong { font-size: 13px; text-transform: uppercase;
+              letter-spacing: 0.4px; color: var(--muted); }
+.secnav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 26px; }
+.secnav a { font-size: 13.5px; padding: 4px 12px; border-radius: 20px;
+            background: var(--soft); border: 1px solid var(--line);
+            color: var(--muted); text-decoration: none; }
+.secnav a:hover { color: var(--accent); border-color: var(--accent); }
+.item { border-top: 1px solid var(--line); padding-top: 26px; margin-top: 34px; }
+.item:first-of-type { border-top: 0; }
+.item h3 { margin-top: 0; font-size: 19px; }
+.aes { font-size: 14px; color: var(--muted); margin: 6px 0 12px; }
+.aes code { font-size: 12.5px; }
+h2 { scroll-margin-top: 70px; }
+h3 { scroll-margin-top: 70px; }
+</style>
+</head>
+<body>
+<header><nav><img src="logo.svg" alt="ggplot3"><span class="brand">ggplot3</span><a href="index.html">Overview</a><a href="guide.html" class="on">Guide</a><a href="gallery.html">Gallery</a><a href="reference.html">Reference</a><a href="themes.html">Themes</a><a href="credits.html">Credits</a></nav></header>
+<main>
+<h1>Guide</h1><p class="lead">The grammar end to end: building a plot, controlling the axes, styling it, adding interactivity, and getting the numbers back out.</p><div class="toc"><strong>On this page</strong><ol><li><a href="#grammar">The grammar</a></li><li><a href="#layers">Layers, geoms and stats</a></li><li><a href="#aesthetics">Aesthetics and grouping</a></li><li><a href="#scales">Scales and axes</a></li><li><a href="#positions">Position adjustments</a></li><li><a href="#facets">Facets</a></li><li><a href="#coords">Coordinate systems</a></li><li><a href="#labels">Titles and labels</a></li><li><a href="#themes">Themes</a></li><li><a href="#legends">Legends</a></li><li><a href="#interactivity">Interactivity</a></li><li><a href="#animation">Animation</a></li><li><a href="#data">Getting the data back</a></li><li><a href="#output">Output and sizing</a></li><li><a href="#extending">Extending ggplot3</a></li><li><a href="#troubleshooting">Troubleshooting</a></li></ol></div><h2 id="grammar">The grammar</h2><p>A plot is <code>data</code>, an aesthetic <code>mapping</code>, and one or more <code>layers</code>. Scales, coordinates, facets and a theme are all optional — sensible defaults are chosen from the data.</p><pre><code>ggplot3(cars, aes(speed, dist)) +
+  geom_point()</code></pre><p><code>aes()</code> captures unevaluated expressions, so you refer to columns by name. The first two unnamed arguments are <code>x</code> and <code>y</code>. Adding a component with <code>+</code> returns a <em>new</em> plot — plots are immutable values, so a partial specification can be reused as a template.</p><pre><code>base &lt;- ggplot3(iris, aes(Sepal.Length, Sepal.Width))
+base + geom_point()                    # scatter
+base + geom_point() + geom_smooth()    # scatter with a trend
+# `base` itself is unchanged.</code></pre><div class="note"><p>Because <code>+</code> never mutates, you can build a plot conditionally: <code>p &lt;- p + if (annotate) geom_text() else NULL</code>. Adding <code>NULL</code> is a no-op.</p></div><h2 id="layers">Layers, geoms and stats</h2><p>Every layer pairs a <strong>geom</strong> (how values are drawn) with a <strong>stat</strong> (how raw data becomes those values). <code>geom_point()</code> uses <code>stat_identity()</code>; <code>geom_histogram()</code> bins first; <code>geom_boxplot()</code> computes Tukey’s five numbers. Layers draw in the order added, so put context underneath and detail on top.</p><pre><code>ggplot3(iris, aes(Species, Sepal.Length, color = Species)) +
+  geom_violin(alpha = 0.25) +   # distribution, underneath
+  geom_boxplot() +              # summary
+  geom_jitter(alpha = 0.4)      # raw observations, on top</code></pre><figure class="fig"><img src="guide-layers.svg" alt="layers"></figure><p>A layer can override the plot’s data and mapping, which is how you annotate one plot with a second dataset:</p><pre><code>means &lt;- aggregate(Sepal.Length ~ Species, iris, mean)
+
+ggplot3(iris, aes(Species, Sepal.Length)) +
+  geom_jitter(alpha = 0.3) +
+  geom_point(aes(Species, Sepal.Length), data = means,
+             color = "#C1462F", size = 6)</code></pre><h2 id="aesthetics">Aesthetics and grouping</h2><p>Supported aesthetics are <code>x</code>, <code>y</code>, <code>color</code> (<code>colour</code> also works), <code>size</code>, <code>group</code>, <code>label</code>, <code>xend</code>/<code>yend</code>, <code>ymin</code>/<code>ymax</code>, and the specialised <code>time</code>/<code>status</code> and <code>truth</code>/<code>score</code> pairs used by the survival and classifier geoms.</p><p>There is a difference between <em>mapping</em> and <em>setting</em>:</p><pre><code>geom_point(aes(color = Species))   # mapped: colour varies by data
+geom_point(color = "steelblue")    # set: one literal colour
+
+# A constant inside aes() that names a real colour is honoured
+# literally rather than treated as a one-level category:
+geom_point(aes(color = "blue"))    # blue points, no legend</code></pre><p>Grouping decides what counts as one line, one polygon, one box. An explicit <code>group</code> wins; otherwise a discrete <code>color</code> mapping does the grouping; otherwise everything is one group. Map <code>group</code> when you want separate lines <em>without</em> separate colours:</p><pre><code>aes(week, score, group = subject)              # many grey lines
+aes(week, score, group = subject, color = arm) # coloured by arm</code></pre><h2 id="scales">Scales and axes</h2><p>Scales decide how data values become positions and colours. A positional scale is chosen automatically — continuous for numbers, discrete for character, factor or logical — and you override it to control the title, limits, tick positions, tick labels, padding, or transform.</p><pre><code>ggplot3(cars, aes(speed, dist)) +
+  geom_point() +
+  scale_x_continuous(
+    name = "Speed (mph)",
+    breaks = c(5, 10, 15, 20, 25),
+    expand = 0                      # no padding: axis hugs the data
+  ) +
+  scale_y_continuous(
+    name = "Stopping distance",
+    labels = function(v) paste0(v, " ft")
+  )</code></pre><figure class="fig"><img src="guide-scales.svg" alt="scales"></figure><p>Transforms live on the scale, so the whole pipeline — expansion, tick placement, mark positions — happens in transformed space while labels stay in the original units.</p><pre><code>scale_x_log10()   scale_y_log10()      # decade ticks
+scale_x_sqrt()    scale_y_sqrt()
+scale_x_reverse() scale_y_reverse()    # e.g. rank axes</code></pre><p>Discrete axes take explicit level orders, which is how you sort bars by size rather than alphabetically:</p><pre><code>d &lt;- d[order(-d$value), ]
+ggplot3(d, aes(name, value)) + geom_col() +
+  scale_x_discrete(limits = d$name)</code></pre><div class="note"><p><code>limits</code> sets the <em>domain</em>, not a crop: data outside the limits still goes through the stats and is clipped when drawn, so a mean or a fit is unaffected by the window you choose.</p></div><h2 id="positions">Position adjustments</h2><p>Bars and columns take a <code>position</code>:</p><pre><code>geom_col(position = "stack")     # default: totals
+geom_col(position = "dodge")     # side by side: compare groups
+geom_col(position = "fill")      # proportions within each x
+geom_col(position = "identity")  # overplotted from a zero baseline</code></pre><figure class="fig"><img src="guide-positions.svg" alt="positions"></figure><p>Adjustments are applied in data space, before the axis is trained, so a stacked chart’s axis covers the stack totals rather than the tallest single bar.</p><h2 id="facets">Facets</h2><p><code>facet_wrap()</code> splits the data and draws one panel per subset. Panels share axes by default, which is what makes them comparable; use <code>scales = "free"</code> when each panel’s own range matters more than cross-panel comparison.</p><pre><code>facet_wrap(Species)                    # shared axes
+facet_wrap(Species, ncol = 2)          # force the grid shape
+facet_wrap(Species, scales = "free")   # per-panel axes
+facet_wrap(c(am, cyl))                 # two variables
+facet_grid(am, cyl)                    # rows by columns</code></pre><figure class="fig"><img src="guide-facets.svg" alt="facets"></figure><p>Inner panels drop redundant tick labels automatically. A layer whose data lacks the faceting variable — a reference line, say — is repeated unchanged in every panel.</p><h2 id="coords">Coordinate systems</h2><p><code>coord_flip()</code> swaps the axes, which is the usual fix for long category labels:</p><pre><code>ggplot3(d, aes(category, value)) + geom_col() + coord_flip()</code></pre><p><code>coord_polar()</code> bends the panel into a circle: the <code>theta</code> axis becomes the angle and the other becomes the radius. Any cartesian geom follows.</p><pre><code>coord_polar()                      # x -&gt; angle
+coord_polar(theta = "y")           # y -&gt; angle
+coord_polar(inner = 0.3)           # donut hole
+coord_polar(direction = -1)        # counter-clockwise</code></pre><figure class="fig"><img src="guide-polar.svg" alt="polar"></figure><h2 id="labels">Titles and labels</h2><p><code>labs()</code> sets the whole title block; each argument is optional and repeated calls merge, so you can build it up.</p><pre><code>labs(
+  title = "Stopping distance rises with speed",
+  subtitle = "1920s road tests, 50 observations",
+  caption = "Source: datasets::cars",
+  tag = "A",              # panel tag for multi-figure layouts
+  x = "Speed (mph)", y = "Distance (ft)",
+  color = "Vehicle class"  # legend title
+)
+
+ggtitle("Main", subtitle = "Sub")   # shorthands
+xlab("Speed"); ylab("Distance")</code></pre><figure class="fig"><img src="guide-theming.svg" alt="theming"></figure><p>Pass <code>y = NULL</code> to drop an axis title that the category labels already make obvious.</p><h2 id="themes">Themes</h2><p>Six presets ship with the package; <code>theme()</code> overrides individual settings on top of any of them.</p><pre><code>theme_ggplot3()   # default: tinted panel, white grid
+theme_minimal()   # no panel fill, light grid, no axis lines
+theme_classic()   # white panel, black axes, no grid, serif
+theme_modern()    # editorial: big title, horizontal rules only
+theme_dark()      # dark background and palette
+theme_void()      # no chrome at all
+
+theme(base = theme_minimal(), grid_major_x = FALSE,
+      legend_position = "bottom", plot_title_size = 20)</code></pre><p>See the <a href="themes.html">Themes page</a> for all 35 settings and their defaults.</p><h2 id="legends">Legends</h2><p>A legend appears automatically when <code>color</code> is mapped: a swatch key for discrete data, a gradient bar for continuous. Control it with the theme and with palette scales.</p><pre><code>theme(legend_position = "bottom")   # or "right" (default), "none"
+labs(color = "Species")             # legend title
+scale_color_manual(c("#2B6BE0", "#E05A2B", "#12A594"))
+scale_color_gradient(low = "#FFF3B0", high = "#9E2A2B")</code></pre><figure class="fig"><img src="guide-legend.svg" alt="legend"></figure><h2 id="interactivity">Interactivity</h2><p>Plots are static first. <code>+ interact()</code> switches the default render target to a self-contained HTML page — the same geometry, a different serializer.</p><pre><code>p &lt;- ggplot3(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
+  geom_point()
+
+render(p)                              # SVG
+render(p + interact())                 # tooltips + zoom + brush
+render(p + interact(tooltip = c("Species", "Petal.Length")))
+render(p + interact(zoom = FALSE, brush = FALSE))  # tooltip only
+
+render(p, file = "plot.svg")
+render(p + interact(), file = "plot.html")</code></pre><p>Hover shows the mapped values (or the columns you name), the wheel zooms about the cursor, dragging brushes a region, and double-click resets. In a faceted plot each panel zooms independently. The page is one file with no external assets, so it works from a <code>file://</code> URL and can be emailed as-is.</p><h2 id="animation">Animation</h2><p><code>animate()</code> reruns the pipeline once per level of a transition variable. Scales are trained on the full data first, so the axes hold still while frames play — the thing that makes an animation readable rather than dizzying.</p><pre><code>ggplot3(panel_data, aes(gdp, life_expectancy, color = continent)) +
+  geom_point(size = 4) +
+  scale_x_log10() +
+  animate(year, duration = 700, easing = "cubic-in-out")</code></pre><p>The interactive page gains a play/pause button and a frame scrubber. <code>render(p, target = "static")</code> still produces an SVG of all the data at once, so animation never blocks an export.</p><h2 id="data">Getting the data back</h2><p><code>plot_data()</code> returns exactly what the plot draws. For a scatter that is the input; for a histogram it is the bins actually drawn; for a box plot the quartiles and whisker ends.</p><pre><code>p &lt;- ggplot3(cars, aes(speed)) + geom_histogram(bins = 5)
+plot_data(p)
+#&gt;        x  y ymin ymax  xmin  xmax
+#&gt; 1  6.625  6    0    6  4.00  9.25
+#&gt; 2 11.875 17    0   17  9.25 14.50
+
+write_plot_data(p, "figure-2-data.csv")</code></pre><p>With several layers you get one table per layer; with facets, a <code>panel</code> column. <code>plot_data(p, layer = 2)</code> and <code>plot_data(p, panel = 1)</code> select; <code>plot_data(p, panel = "list")</code> returns one table per panel.</p><div class="note"><p>This is the honest record of a figure: it reflects every stat, position adjustment and facet split, and drops internal scratch columns — so what you publish beside the chart is what the chart shows.</p></div><h2 id="output">Output and sizing</h2><p>Size is set at construction or with <code>plot_size()</code>, and <code>render()</code> writes to a file or returns a string.</p><pre><code>ggplot3(d, aes(x, y), width = 900, height = 600)
+p + plot_size(900, 600)
+
+svg &lt;- render(p)                       # a character string
+render(p, file = "plot.svg")           # write SVG
+render(p + interact(), file = "plot.html")
+cat(render(p))                         # inspect the source</code></pre><p>Printing a plot at the console shows a summary and opens the image in the RStudio viewer (or your browser). Printing a rendered document shows a short summary rather than thousands of characters of markup.</p><h2 id="extending">Extending ggplot3</h2><p>A geom is an S7 subclass plus one <code>build_marks()</code> method returning drawing primitives in normalized panel coordinates. Because both renderers consume those primitives, a new geom needs no renderer changes at all.</p><pre><code>GeomCross &lt;- S7::new_class("GeomCross", parent = Geom,
+  constructor = function() {
+    S7::new_object(Geom(name = "cross",
+                        default_params = list(size = 5, alpha = 1)))
+  }
+)
+
+S7::method(build_marks, GeomCross) &lt;- function(geom, scaled) {
+  unlist(lapply(seq_along(scaled$x), function(i) {
+    r &lt;- scaled$size[[i]] / 400
+    list(
+      ggplot3:::mk_line(c(scaled$x[[i]] - r, scaled$x[[i]] + r),
+                        rep(scaled$y[[i]], 2), scaled$color[[i]]),
+      ggplot3:::mk_line(rep(scaled$x[[i]], 2),
+                        c(scaled$y[[i]] - r, scaled$y[[i]] + r),
+                        scaled$color[[i]])
+    )
+  }), recursive = FALSE)
+}
+
+geom_cross &lt;- function(mapping = NULL, data = NULL, ...) {
+  ggplot3:::layer_new(GeomCross(), stat_identity(), mapping, data,
+                      list(...))
+}</code></pre><p>The five primitives are <code>mk_circle()</code>, <code>mk_line()</code>, <code>mk_rect()</code>, <code>mk_polygon()</code> and <code>mk_text()</code>. A statistical transformation is a <code>Stat</code> subclass with a <code>compute_stat()</code> method. The same seam is what every built-in geom uses, so there is no private path a package geom can take that yours cannot.</p><h2 id="troubleshooting">Troubleshooting</h2><table><tbody><tr><td><code>evaluated to a function, not a data column</code></td><td>The name in <code>aes()</code> is not a column, and R found a function of that name instead — <code>class</code>, <code>dist</code> and <code>rank</code> are common traps. The error lists the columns that do exist.</td></tr><tr><td><code>requires the aesthetic(s)</code></td><td>A geom needs mappings you have not supplied, e.g. <code>geom_sankey()</code> needs <code>x</code>, <code>xend</code> and <code>y</code>.</td></tr><tr><td><code>a log10 scale requires strictly positive values</code></td><td>Zero or negative values cannot go on a log axis; filter them or use <code>scale_x_sqrt()</code>.</td></tr><tr><td><code>must be numeric for a continuous scale</code></td><td>A character column reached a scale you declared continuous; either let the scale be chosen automatically or use <code>scale_x_discrete()</code>.</td></tr><tr><td>Legend missing</td><td>Legends come from a <em>mapped</em> <code>color</code>. <code>geom_point(color = "red")</code> sets a constant and produces none; check <code>legend_position</code> is not <code>"none"</code>.</td></tr><tr><td>Console fills with markup</td><td>You are printing a rendered document from an older session. Restart R; <code>render()</code> output prints as a one-line summary.</td></tr></tbody></table>
+</main>
+<footer>ggplot3 — a next-generation Grammar of Graphics for R. Built on S7. <a href="credits.html">Credits</a>.</footer>
+</body>
+</html>
+

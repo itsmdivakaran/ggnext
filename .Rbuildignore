@@ -1,0 +1,14 @@
+^CRAN-SUBMISSION$
+^CRAN-SUBMISSION-GUIDE\.md$
+^README\.Rmd$
+^\.RData$
+^\.Rhistory$
+^\.Rproj\.user$
+^\.claude$
+^\.github$
+^\.preview$
+^_pkgdown\.yml$
+^cran-comments\.md$
+^docs$
+^ggplot3\.Rproj$
+^pkgdown$

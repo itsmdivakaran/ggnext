@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
+<rect x="60" y="20" width="564" height="412" fill="#FFFFFF"/>
+<line x1="85.64" y1="20" x2="85.64" y2="432" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="188.18" y1="20" x2="188.18" y2="432" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="290.73" y1="20" x2="290.73" y2="432" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="393.27" y1="20" x2="393.27" y2="432" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="495.82" y1="20" x2="495.82" y2="432" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="598.36" y1="20" x2="598.36" y2="432" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="60" y1="404.33" x2="624" y2="404.33" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="60" y1="328.54" x2="624" y2="328.54" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="60" y1="252.76" x2="624" y2="252.76" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="60" y1="176.98" x2="624" y2="176.98" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="60" y1="101.19" x2="624" y2="101.19" stroke="#E4E4E8" stroke-width="1"/>
+<line x1="60" y1="25.41" x2="624" y2="25.41" stroke="#E4E4E8" stroke-width="1"/>
+<clipPath id="panel1"><rect x="60" y="20" width="564" height="412"/></clipPath>
+<g clip-path="url(#panel1)">
+<polyline points="85.64,285.17 188.18,413.27 290.73,360.11 393.27,316.98 495.82,312.05 598.36,280.68" fill="none" stroke="#7A8598" stroke-width="1" stroke-opacity="0.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="85.64,339.99 188.18,349.02 290.73,306.45 393.27,183.5 495.82,236.53 598.36,98.92" fill="none" stroke="#7A8598" stroke-width="1" stroke-opacity="0.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="85.64,255.12 188.18,313.81 290.73,212.02 393.27,246.65 495.82,278.24 598.36,221.26" fill="none" stroke="#7A8598" stroke-width="1" stroke-opacity="0.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="85.64,343.92 188.18,268.45 290.73,244.89 393.27,220.69 495.82,163.07 598.36,255.25" fill="none" stroke="#7A8598" stroke-width="1" stroke-opacity="0.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="85.64,270.66 188.18,289.85 290.73,233.71 393.27,210.7 495.82,251.99 598.36,189.53" fill="none" stroke="#7A8598" stroke-width="1" stroke-opacity="0.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="85.64,352.98 188.18,250.39 290.73,247.73 393.27,226.01 495.82,211.25 598.36,187.38" fill="none" stroke="#7A8598" stroke-width="1" stroke-opacity="0.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="85.64,252.87 188.18,318.17 290.73,244.07 393.27,192.97 495.82,121.57 598.36,178.46" fill="none" stroke="#7A8598" stroke-width="1" stroke-opacity="0.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="85.64,296.05 188.18,312.4 290.73,240.23 393.27,210.39 495.82,100.41 598.36,104.63" fill="none" stroke="#7A8598" stroke-width="1" stroke-opacity="0.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="85.64,263.35 188.18,195.27 290.73,219.24 393.27,177.33 495.82,129.97 598.36,38.73" fill="none" stroke="#7A8598" stroke-width="1" stroke-opacity="0.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="85.64,219.85 188.18,200.57 290.73,263.42 393.27,147.35 495.82,123.96 598.36,142.11" fill="none" stroke="#7A8598" stroke-width="1" stroke-opacity="0.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="85.64,288 188.18,291.12 290.73,257.19 393.27,213.26 495.82,192.9 598.36,169.69" fill="none" stroke="#16324F" stroke-width="3" stroke-opacity="1" stroke-linejoin="round" stroke-linecap="round"/>
+</g>
+<text x="85.64" y="448" text-anchor="middle" font-size="11" fill="#3A3A3A">0</text>
+<text x="188.18" y="448" text-anchor="middle" font-size="11" fill="#3A3A3A">1</text>
+<text x="290.73" y="448" text-anchor="middle" font-size="11" fill="#3A3A3A">2</text>
+<text x="393.27" y="448" text-anchor="middle" font-size="11" fill="#3A3A3A">3</text>
+<text x="495.82" y="448" text-anchor="middle" font-size="11" fill="#3A3A3A">4</text>
+<text x="598.36" y="448" text-anchor="middle" font-size="11" fill="#3A3A3A">5</text>
+<text x="52" y="408.18" text-anchor="end" font-size="11" fill="#3A3A3A">50</text>
+<text x="52" y="332.39" text-anchor="end" font-size="11" fill="#3A3A3A">55</text>
+<text x="52" y="256.61" text-anchor="end" font-size="11" fill="#3A3A3A">60</text>
+<text x="52" y="180.83" text-anchor="end" font-size="11" fill="#3A3A3A">65</text>
+<text x="52" y="105.04" text-anchor="end" font-size="11" fill="#3A3A3A">70</text>
+<text x="52" y="29.26" text-anchor="end" font-size="11" fill="#3A3A3A">75</text>
+<text x="342" y="470" text-anchor="middle" font-size="13" fill="#3A3A3A">week</text>
+<text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">score</text>
+</svg>

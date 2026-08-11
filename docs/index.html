@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ggplot3 - Grammar of Graphics for R</title>
+<style>
+/* The site is deliberately light-only: the figures are rendered with light
+   themes at build time, and a dark page around a light plot reads badly. */
+:root {
+  --ink: #16181D; --muted: #5C6270; --line: #E3E5EA; --bg: #FFFFFF;
+  --soft: #F9FAFB; --accent: #1A6E55; --accent-soft: #E7F4EF;
+  --code-bg: #F5F6F8;
+}
+html { background: #FFFFFF; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
+        Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+header {
+  border-bottom: 1px solid var(--line); position: sticky; top: 0;
+  background: var(--bg); z-index: 5;
+}
+nav {
+  max-width: 1080px; margin: 0 auto; padding: 12px 24px;
+  display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
+}
+nav img { width: 34px; height: 39px; }
+nav a { color: var(--muted); text-decoration: none; font-size: 15px; }
+nav a:hover, nav a.on { color: var(--accent); }
+nav .brand { font-weight: 700; color: var(--ink); font-size: 17px; }
+main { max-width: 1080px; margin: 0 auto; padding: 36px 24px 80px; }
+h1 { font-size: 34px; line-height: 1.2; margin: 0 0 10px; letter-spacing: -0.5px; }
+h2 { font-size: 23px; margin: 44px 0 14px; letter-spacing: -0.2px; }
+h3 { font-size: 17px; margin: 26px 0 8px; }
+p.lead { font-size: 19px; color: var(--muted); margin: 0 0 24px; max-width: 62ch; }
+p { max-width: 72ch; }
+code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px;
+       font-size: 0.9em; }
+pre {
+  background: var(--code-bg); padding: 14px 16px; border-radius: 8px;
+  overflow-x: auto; font-size: 13.5px; line-height: 1.55;
+  border: 1px solid var(--line);
+}
+pre code { background: none; padding: 0; font-size: inherit; }
+.hero { display: flex; gap: 34px; align-items: center; flex-wrap: wrap; }
+.hero img { width: 168px; }
+.hero div { flex: 1 1 380px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px; margin: 20px 0; }
+.card { border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px;
+        background: var(--soft); }
+.card h3 { margin: 0 0 6px; font-size: 15.5px; }
+.card p { margin: 0; font-size: 14px; color: var(--muted); }
+.fig { border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+       margin: 18px 0 28px; background: var(--bg); }
+.fig img { display: block; width: 100%; height: auto; }
+.fig figcaption { padding: 12px 16px; border-top: 1px solid var(--line);
+                  font-size: 14px; color: var(--muted); }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        gap: 20px; }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px;
+        display: block; overflow-x: auto; }
+th, td { text-align: left; padding: 7px 12px; border-bottom: 1px solid var(--line);
+         vertical-align: top; }
+th { color: var(--muted); font-weight: 600; font-size: 13px;
+     text-transform: uppercase; letter-spacing: 0.4px; }
+td code { white-space: nowrap; }
+.tag { display: inline-block; background: var(--accent-soft); color: var(--accent);
+       border-radius: 20px; padding: 2px 11px; font-size: 12.5px;
+       font-weight: 600; }
+footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 14px;
+         padding: 22px 24px; text-align: center; }
+.note { border-left: 3px solid var(--accent); background: var(--accent-soft);
+        padding: 10px 16px; border-radius: 0 8px 8px 0; margin: 16px 0;
+        font-size: 15px; }
+.note p { margin: 0; max-width: none; }
+.toc { background: var(--soft); border: 1px solid var(--line);
+       border-radius: 10px; padding: 14px 20px; margin: 22px 0 34px; }
+.toc ol { margin: 8px 0 0; padding-left: 22px; columns: 2; }
+.toc li { margin: 3px 0; font-size: 14.5px; break-inside: avoid; }
+.toc a { color: var(--ink); text-decoration: none; }
+.toc a:hover { color: var(--accent); }
+.toc strong { font-size: 13px; text-transform: uppercase;
+              letter-spacing: 0.4px; color: var(--muted); }
+.secnav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 26px; }
+.secnav a { font-size: 13.5px; padding: 4px 12px; border-radius: 20px;
+            background: var(--soft); border: 1px solid var(--line);
+            color: var(--muted); text-decoration: none; }
+.secnav a:hover { color: var(--accent); border-color: var(--accent); }
+.item { border-top: 1px solid var(--line); padding-top: 26px; margin-top: 34px; }
+.item:first-of-type { border-top: 0; }
+.item h3 { margin-top: 0; font-size: 19px; }
+.aes { font-size: 14px; color: var(--muted); margin: 6px 0 12px; }
+.aes code { font-size: 12.5px; }
+h2 { scroll-margin-top: 70px; }
+h3 { scroll-margin-top: 70px; }
+</style>
+</head>
+<body>
+<header><nav><img src="logo.svg" alt="ggplot3"><span class="brand">ggplot3</span><a href="index.html" class="on">Overview</a><a href="guide.html">Guide</a><a href="gallery.html">Gallery</a><a href="reference.html">Reference</a><a href="themes.html">Themes</a><a href="credits.html">Credits</a></nav></header>
+<main>
+<div class="hero"><img src="logo.svg" alt="ggplot3 hex logo"><div><h1>ggplot3</h1><p class="lead">Data visualisations, reimagined, using a next-generation Grammar of Graphics — the familiar grammar, extended with native interactivity, animation, exact data export, and a far larger geom catalog.</p><span class="tag">S7 &middot; SVG &middot; canvas &middot; 59 geoms</span></div></div><h2>Install</h2><pre><code># install.packages("remotes")
+remotes::install_github("maheshdivakaran/ggplot3")</code></pre><h2>Quick start</h2><pre><code>library(ggplot3)
+
+p &lt;- ggplot3(cars, aes(speed, dist)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm") +
+  labs(title = "Stopping distance rises with speed",
+       x = "Speed (mph)", y = "Distance (ft)") +
+  theme_minimal()
+
+p                                  # static SVG, shown in the viewer
+render(p, file = "plot.svg")       # save it
+render(p + interact(), file = "plot.html")   # interactive version
+plot_data(p)                       # exactly the values drawn</code></pre><figure class="fig"><img src="fig-smooth.svg" alt="scatter with trend"></figure><h2>What you get</h2><div class="grid"><div class="card"><h3>The grammar you already know</h3><p>data + aes() + geoms + stats + scales + coords + facets + theme, composed with +. The vocabulary and the muscle memory carry straight over.</p></div><div class="card"><h3>One object, two renderers</h3><p>The same plot renders to a standalone SVG or a self-contained interactive HTML page, from one computed-geometry buffer - so the targets cannot disagree.</p></div><div class="card"><h3>Static first, interactive on request</h3><p>render(p) gives you an image. Adding + interact() opts into tooltips, scroll-zoom, and brush-to-zoom; + animate() adds a frame scrubber.</p></div><div class="card"><h3>A much larger catalog</h3><p>59 geoms in the box: essentials through Sankey, treemap, network, radar, SHAP, ROC, Kaplan-Meier, forest, and CONSORT - no extension hunting.</p></div><div class="card"><h3>Exact data export</h3><p>plot_data(p) returns precisely the values drawn - post-stat, post-position, post-facet - so you can publish the numbers beside the figure.</p></div><div class="card"><h3>Themes and deep customization</h3><p>Six presets plus 35 theme settings, custom palettes, titles, axis breaks, labels, transforms, and limits.</p></div></div><h2>The grammar</h2><p>Every plot is <code>data + aes() + layers + scales + coord + facet + theme</code>, composed with <code>+</code>. Plots are immutable values: adding a component returns a new plot, so partial specifications can be shared and forked freely.</p><pre><code>ggplot3(mpg_like, aes(displ, hwy, color = class)) +
+  geom_point(size = 3) +
+  facet_wrap(class) +
+  scale_y_continuous(name = "Highway MPG", breaks = c(20, 30, 40)) +
+  coord_cartesian() +
+  interact(tooltip = c("model", "hwy"), brush = TRUE) +
+  theme_modern()</code></pre><p>See the <a href="guide.html">Guide</a> for a walkthrough, or the <a href="gallery.html">Gallery</a> for 58 worked examples.</p><h2>Interactivity</h2><p>Interactivity is an additive grammar verb, not a separate package or a post-hoc conversion. <code>+ interact()</code> switches the default render target to a self-contained HTML page - vanilla JavaScript, no CDN - driven by the same geometry buffer the SVG writer consumes.</p><pre><code>render(p)                                  # static SVG (default)
+render(p + interact())                     # tooltips + zoom + brush
+render(p + interact(tooltip = c("model"))) # tooltip from data columns
+render(p + animate(year))                  # frame scrubber</code></pre><h2>Credits</h2><p>ggplot3 takes its vocabulary from Leland Wilkinson’s <em>The Grammar of Graphics</em> and from Hadley Wickham’s <strong>ggplot2</strong>, whose API design this package deliberately preserves. The extended catalog follows conventions established by the wider R visualisation community — ggridges, ggalluvial, ggraph, treemapify, ggradar, ggstream, ggupset, circlize, GGally, ggbump, ggiraph, gganimate, survminer, DALEX and others. See the <a href="credits.html">credits page</a> for the full list and the algorithm references.</p><p>The implementation is independent: it is written on <a href="reference.html">S7</a> from first principles, and no code is derived from those packages.</p>
+</main>
+<footer>ggplot3 — a next-generation Grammar of Graphics for R. Built on S7. <a href="credits.html">Credits</a>.</footer>
+</body>
+</html>
+

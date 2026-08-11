@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Credits - ggplot3</title>
+<style>
+/* The site is deliberately light-only: the figures are rendered with light
+   themes at build time, and a dark page around a light plot reads badly. */
+:root {
+  --ink: #16181D; --muted: #5C6270; --line: #E3E5EA; --bg: #FFFFFF;
+  --soft: #F9FAFB; --accent: #1A6E55; --accent-soft: #E7F4EF;
+  --code-bg: #F5F6F8;
+}
+html { background: #FFFFFF; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
+        Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+header {
+  border-bottom: 1px solid var(--line); position: sticky; top: 0;
+  background: var(--bg); z-index: 5;
+}
+nav {
+  max-width: 1080px; margin: 0 auto; padding: 12px 24px;
+  display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
+}
+nav img { width: 34px; height: 39px; }
+nav a { color: var(--muted); text-decoration: none; font-size: 15px; }
+nav a:hover, nav a.on { color: var(--accent); }
+nav .brand { font-weight: 700; color: var(--ink); font-size: 17px; }
+main { max-width: 1080px; margin: 0 auto; padding: 36px 24px 80px; }
+h1 { font-size: 34px; line-height: 1.2; margin: 0 0 10px; letter-spacing: -0.5px; }
+h2 { font-size: 23px; margin: 44px 0 14px; letter-spacing: -0.2px; }
+h3 { font-size: 17px; margin: 26px 0 8px; }
+p.lead { font-size: 19px; color: var(--muted); margin: 0 0 24px; max-width: 62ch; }
+p { max-width: 72ch; }
+code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px;
+       font-size: 0.9em; }
+pre {
+  background: var(--code-bg); padding: 14px 16px; border-radius: 8px;
+  overflow-x: auto; font-size: 13.5px; line-height: 1.55;
+  border: 1px solid var(--line);
+}
+pre code { background: none; padding: 0; font-size: inherit; }
+.hero { display: flex; gap: 34px; align-items: center; flex-wrap: wrap; }
+.hero img { width: 168px; }
+.hero div { flex: 1 1 380px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px; margin: 20px 0; }
+.card { border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px;
+        background: var(--soft); }
+.card h3 { margin: 0 0 6px; font-size: 15.5px; }
+.card p { margin: 0; font-size: 14px; color: var(--muted); }
+.fig { border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+       margin: 18px 0 28px; background: var(--bg); }
+.fig img { display: block; width: 100%; height: auto; }
+.fig figcaption { padding: 12px 16px; border-top: 1px solid var(--line);
+                  font-size: 14px; color: var(--muted); }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        gap: 20px; }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px;
+        display: block; overflow-x: auto; }
+th, td { text-align: left; padding: 7px 12px; border-bottom: 1px solid var(--line);
+         vertical-align: top; }
+th { color: var(--muted); font-weight: 600; font-size: 13px;
+     text-transform: uppercase; letter-spacing: 0.4px; }
+td code { white-space: nowrap; }
+.tag { display: inline-block; background: var(--accent-soft); color: var(--accent);
+       border-radius: 20px; padding: 2px 11px; font-size: 12.5px;
+       font-weight: 600; }
+footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 14px;
+         padding: 22px 24px; text-align: center; }
+.note { border-left: 3px solid var(--accent); background: var(--accent-soft);
+        padding: 10px 16px; border-radius: 0 8px 8px 0; margin: 16px 0;
+        font-size: 15px; }
+.note p { margin: 0; max-width: none; }
+.toc { background: var(--soft); border: 1px solid var(--line);
+       border-radius: 10px; padding: 14px 20px; margin: 22px 0 34px; }
+.toc ol { margin: 8px 0 0; padding-left: 22px; columns: 2; }
+.toc li { margin: 3px 0; font-size: 14.5px; break-inside: avoid; }
+.toc a { color: var(--ink); text-decoration: none; }
+.toc a:hover { color: var(--accent); }
+.toc strong { font-size: 13px; text-transform: uppercase;
+              letter-spacing: 0.4px; color: var(--muted); }
+.secnav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 26px; }
+.secnav a { font-size: 13.5px; padding: 4px 12px; border-radius: 20px;
+            background: var(--soft); border: 1px solid var(--line);
+            color: var(--muted); text-decoration: none; }
+.secnav a:hover { color: var(--accent); border-color: var(--accent); }
+.item { border-top: 1px solid var(--line); padding-top: 26px; margin-top: 34px; }
+.item:first-of-type { border-top: 0; }
+.item h3 { margin-top: 0; font-size: 19px; }
+.aes { font-size: 14px; color: var(--muted); margin: 6px 0 12px; }
+.aes code { font-size: 12.5px; }
+h2 { scroll-margin-top: 70px; }
+h3 { scroll-margin-top: 70px; }
+</style>
+</head>
+<body>
+<header><nav><img src="logo.svg" alt="ggplot3"><span class="brand">ggplot3</span><a href="index.html">Overview</a><a href="guide.html">Guide</a><a href="gallery.html">Gallery</a><a href="reference.html">Reference</a><a href="themes.html">Themes</a><a href="credits.html" class="on">Credits</a></nav></header>
+<main>
+<h1>Credits</h1><p class="lead">ggplot3 is an independent implementation, but it stands on a great deal of prior art and takes its vocabulary directly from it.</p><h2>The grammar</h2><p>The grammar comes from Leland Wilkinson’s <em>The Grammar of Graphics</em> (Springer, 2005) and, above all, from Hadley Wickham’s <a href="https://ggplot2.tidyverse.org">ggplot2</a>. The API design — <code>aes()</code>, <code>geom_*()</code>, <code>stat_*()</code>, <code>scale_*()</code>, <code>coord_*()</code>, <code>facet_*()</code>, <code>theme()</code>, and composition with <code>+</code> — is preserved deliberately, so that anyone who knows ggplot2 already knows most of this package.</p><h2>Prior art by area</h2><p>The extended catalog follows conventions established by these packages. They are credited as design references, not as code ancestry.</p><table><thead><tr><th>Area</th><th>Reference</th></tr></thead><tbody><tr><td>Ridgeline / joyplots</td><td><a href="https://wilkelab.org/ggridges/">ggridges</a></td></tr><tr><td>Alluvial and Sankey flows</td><td><a href="https://corybrunson.github.io/ggalluvial/">ggalluvial, ggsankey</a></td></tr><tr><td>Network grammar</td><td><a href="https://ggraph.data-imaginist.com">ggraph, igraph</a></td></tr><tr><td>Treemaps</td><td><a href="https://wilkox.org/treemapify/">treemapify</a></td></tr><tr><td>Radar / spider charts</td><td><a href="https://github.com/ricardo-bion/ggradar">ggradar</a></td></tr><tr><td>Streamgraphs</td><td><a href="https://github.com/davidsjoberg/ggstream">ggstream</a></td></tr><tr><td>Set intersections</td><td><a href="https://github.com/const-ae/ggupset">ggupset, UpSetR</a></td></tr><tr><td>Chord diagrams</td><td><a href="https://jokergoo.github.io/circlize_book/">circlize</a></td></tr><tr><td>Parallel coordinates</td><td><a href="https://ggobi.github.io/ggally/">GGally</a></td></tr><tr><td>Bump charts</td><td><a href="https://github.com/davidsjoberg/ggbump">ggbump</a></td></tr><tr><td>Label and extra geoms</td><td><a href="https://ggforce.data-imaginist.com">ggforce, ggrepel, ggalt</a></td></tr><tr><td>Interactivity model</td><td><a href="https://davidgohel.github.io/ggiraph/">ggiraph, plotly</a></td></tr><tr><td>Animation grammar</td><td><a href="https://gganimate.com">gganimate</a></td></tr><tr><td>Plot composition</td><td><a href="https://patchwork.data-imaginist.com">patchwork, cowplot</a></td></tr><tr><td>Survival and clinical figures</td><td><a href="https://rpkgs.datanovia.com/survminer/">survminer, survival, cmprsk, swimplot, consort</a></td></tr><tr><td>Model explanation plots</td><td><a href="https://modeloriented.github.io/DALEX/">DALEX, shapviz, iml, yardstick</a></td></tr><tr><td>Colour theory</td><td><a href="https://jfly.uni-koeln.de/color/">Okabe &amp; Ito palette; scales, viridis</a></td></tr></tbody></table><h2>Algorithms</h2><p>The layout and statistical algorithms are implemented from their published descriptions.</p><table><thead><tr><th>Used for</th><th>Source</th></tr></thead><tbody><tr><td>Tick placement</td><td>Paul Heckbert, “Nice Numbers for Graph Labels”, Graphics Gems (1990)</td></tr><tr><td>Treemap layout</td><td>Bruls, Huizing &amp; van Wijk, “Squarified Treemaps” (2000)</td></tr><tr><td>Force-directed graphs</td><td>Fruchterman &amp; Reingold, “Graph Drawing by Force-Directed Placement” (1991)</td></tr><tr><td>Streamgraph baselines</td><td>Byron &amp; Wattenberg, “Stacked Graphs — Geometry &amp; Aesthetics” (2008)</td></tr><tr><td>Survival estimation</td><td>Kaplan &amp; Meier (1958); Aalen (1978), Johansen (1978) for competing risks</td></tr><tr><td>Box plot rule</td><td>Tukey, Exploratory Data Analysis (1977)</td></tr><tr><td>Method agreement</td><td>Bland &amp; Altman, “Statistical methods for assessing agreement” (1986)</td></tr><tr><td>Convex hulls</td><td>Jarvis march (gift wrapping), 1973</td></tr><tr><td>Contrast ratios</td><td>WCAG 2.x relative luminance</td></tr></tbody></table><h2>Implementation</h2><p>ggplot3 is built on <a href="https://rconsortium.github.io/S7/">S7</a>, the R Consortium’s object system, which is the package’s only hard dependency. The rendering, scale, colour and layout code is written from scratch rather than wrapping the packages above; no code is copied from any of them.</p><div class="note"><p>If your work depends on one of the packages listed here, please cite it directly — they remain the reference implementations in their areas.</p></div>
+</main>
+<footer>ggplot3 — a next-generation Grammar of Graphics for R. Built on S7. <a href="credits.html">Credits</a>.</footer>
+</body>
+</html>
+
