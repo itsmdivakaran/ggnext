@@ -4,7 +4,8 @@
 .Ruserdata
 .Rproj.user
 .Renviron
-.Rprofile
+# NOT .Rprofile — renv writes it to activate the project and it must be
+# committed, or renv will not bootstrap for anyone who clones the repo.
 
 # Build and check output
 *.Rcheck/

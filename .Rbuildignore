@@ -1,5 +1,6 @@
 ^renv$
 ^renv\.lock$
+^\.Rprofile$
 ^CRAN-SUBMISSION$
 ^CRAN-SUBMISSION-GUIDE\.md$
 ^README\.Rmd$
