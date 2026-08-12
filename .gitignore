@@ -8,3 +8,7 @@ inst/doc
 .httr-oauth
 .DS_Store
 .quarto
+
+# R build / check output
+*.Rcheck/
+*.tar.gz
