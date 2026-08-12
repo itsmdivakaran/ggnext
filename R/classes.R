@@ -23,10 +23,15 @@
 #' aesthetic values and returns (possibly new) values for the geom to draw.
 #'
 #' @param name Human-readable stat name.
+#' @param provides Aesthetics this stat computes itself. A geom's required
+#'   aesthetics are validated against the user's mapping *plus* these, so
+#'   e.g. `geom_point(stat = stat_bin())` is accepted even though the user
+#'   maps only `x` - the stat supplies `y`.
 #' @return An S7 object of class `Stat`, the base class for statistical transformations.
 #' @export
 Stat <- new_class("Stat", properties = list(
-  name = class_character
+  name = class_character,
+  provides = new_property(class_character, default = character())
 ))
 
 #' StatIdentity: pass data through unchanged

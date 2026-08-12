@@ -47,10 +47,11 @@ method(compute_stat, StatRidgeline) <- function(stat, values) {
   colors <- character()
   for (s in sort(unique(slots))) {
     idx <- which(slots == s)
+    xs <- check_density_group(values$x[idx], "geom_ridgeline", as.character(s))
     d <- if (is.null(stat@bw)) {
-      stats::density(values$x[idx], n = 128)
+      stats::density(xs, n = 128)
     } else {
-      stats::density(values$x[idx], bw = stat@bw, n = 128)
+      stats::density(xs, bw = stat@bw, n = 128)
     }
     # Normalize each ridge to unit height, then scale by the row spacing.
     h <- d$y / max(d$y) * stat@scale
@@ -91,7 +92,7 @@ method(compute_stat, StatRadar) <- function(stat, values) {
 #' StatTreemap: squarified rectangle layout
 #' @noRd
 StatTreemap <- new_class("StatTreemap", parent = Stat,
-  constructor = function() new_object(Stat(name = "treemap"))
+  constructor = function() new_object(Stat(name = "treemap", provides = c("x", "y")))
 )
 
 method(compute_stat, StatTreemap) <- function(stat, values) {
@@ -192,7 +193,7 @@ worst_ratio <- function(row, short, remaining, w, h) {
 StatNetwork <- new_class("StatNetwork", parent = Stat,
   properties = list(iterations = class_numeric, seed = class_numeric),
   constructor = function(iterations = 200, seed = 1) {
-    new_object(Stat(name = "network"), iterations = iterations, seed = seed)
+    new_object(Stat(name = "network", provides = c("x", "y")), iterations = iterations, seed = seed)
   }
 )
 
@@ -305,7 +306,7 @@ method(compute_stat, StatNetwork) <- function(stat, values) {
 #' StatSankey: node stacking and ribbon paths
 #' @noRd
 StatSankey <- new_class("StatSankey", parent = Stat,
-  constructor = function() new_object(Stat(name = "sankey"))
+  constructor = function() new_object(Stat(name = "sankey", provides = c("x", "y")))
 )
 
 method(compute_stat, StatSankey) <- function(stat, values) {
@@ -456,7 +457,7 @@ sigmoid_between <- function(x0, x1, y0, y1, n = 40) {
 #' StatChord: circular arc allocation and ribbon curves
 #' @noRd
 StatChord <- new_class("StatChord", parent = Stat,
-  constructor = function() new_object(Stat(name = "chord"))
+  constructor = function() new_object(Stat(name = "chord", provides = c("x", "y")))
 )
 
 method(compute_stat, StatChord) <- function(stat, values) {
@@ -569,7 +570,7 @@ method(compute_stat, StatParallel) <- function(stat, values) {
 #' StatFunnel: centered bar widths proportional to value
 #' @noRd
 StatFunnel <- new_class("StatFunnel", parent = Stat,
-  constructor = function() new_object(Stat(name = "funnel"))
+  constructor = function() new_object(Stat(name = "funnel", provides = c("x", "y")))
 )
 
 method(compute_stat, StatFunnel) <- function(stat, values) {
@@ -632,7 +633,7 @@ method(compute_stat, StatStream) <- function(stat, values) {
 #' StatUpset: intersection sizes and a membership matrix
 #' @noRd
 StatUpset <- new_class("StatUpset", parent = Stat,
-  constructor = function() new_object(Stat(name = "upset"))
+  constructor = function() new_object(Stat(name = "upset", provides = c("x", "y")))
 )
 
 method(compute_stat, StatUpset) <- function(stat, values) {

@@ -26,8 +26,9 @@
 #'   pass `FALSE` for a quick rebuild of the rest.
 #' @return The output directory, invisibly.
 #' @examples
+#' # cookbook = FALSE keeps this quick; the cookbook page knits ~100 plots.
 #' out <- file.path(tempdir(), "ggplot3-site")
-#' build_site(out, quiet = TRUE)
+#' build_site(out, quiet = TRUE, cookbook = FALSE)
 #' list.files(out)
 #' @export
 build_site <- function(dir = "docs", quiet = FALSE,

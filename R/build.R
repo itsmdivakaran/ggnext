@@ -38,6 +38,11 @@ PANEL_SPAN_GEOMS <- c(
   "treemap", "network", "sankey", "chord", "upset", "funnel", "consort"
 )
 
+# Geoms that span the panel from their own parameters rather than from
+# data. Their placeholder rows must not widen the axis domain - a
+# reference line should never change the scales it is drawn against.
+NON_TRAINING_GEOMS <- "abline"
+
 # Rows whose position cannot be drawn. Numeric positions must be finite
 # (NA, NaN, Inf all fail); a categorical position must simply be present.
 # Interval columns such as ymin/ymax are deliberately NOT checked: geoms
@@ -149,11 +154,18 @@ stage_values <- function(plot) {
     }
     values <- if (is.null(mapping)) list() else eval_aes(mapping, data)
 
-    missing_aes <- setdiff(layer@geom@required_aes, names(values))
+    # Required aesthetics are what the *user* must map. A stat may compute
+    # some of them (stat_bin() supplies `y`), so those count as present.
+    missing_aes <- setdiff(
+      layer@geom@required_aes,
+      c(names(values), layer@stat@provides)
+    )
     if (length(missing_aes) > 0) {
       stop(
         "geom_", layer@geom@name, "() requires the aesthetic(s): ",
-        paste(missing_aes, collapse = ", "), "."
+        paste(missing_aes, collapse = ", "),
+        ". Map them in aes(), or use a stat that computes them.",
+        call. = FALSE
       )
     }
 
@@ -428,7 +440,13 @@ train_scales <- function(scale_types, layers) {
     sc <- scale_types[[aes_name]]
     if (!S7_inherits(sc, ScaleContinuous)) next
     cols <- if (aes_name == "x") X_POS_COLS else Y_POS_COLS
-    pooled <- unlist(lapply(layers, function(lv) {
+    trainable <- Filter(
+      function(lv) !(lv$layer@geom@name %in% NON_TRAINING_GEOMS), layers
+    )
+    # If every layer is a reference line there is nothing else to train on,
+    # so fall back to all of them rather than failing.
+    if (length(trainable) == 0) trainable <- layers
+    pooled <- unlist(lapply(trainable, function(lv) {
       unlist(lv$values[intersect(cols, names(lv$values))])
     }))
     if (is.null(pooled) || length(pooled) == 0) {
@@ -469,7 +487,19 @@ build_axes <- function(scales, layers, plot, labels) {
       tick_labels <- if (is.function(scale@labels)) {
         as.character(scale@labels(data_values))
       } else if (!is.null(scale@labels)) {
-        rep_len(as.character(scale@labels), length(tick_values))
+        if (length(scale@labels) != length(tick_values)) {
+          stop(
+            "`labels` has ", length(scale@labels), " value",
+            if (length(scale@labels) == 1) "" else "s",
+            " but there ", if (length(tick_values) == 1) "is " else "are ",
+            length(tick_values), " break",
+            if (length(tick_values) == 1) "" else "s",
+            " on the ", aes_name, " axis. Supply one label per break, or a ",
+            "function of the break values.",
+            call. = FALSE
+          )
+        }
+        as.character(scale@labels)
       } else {
         format_ticks(data_values)
       }
@@ -477,12 +507,23 @@ build_axes <- function(scales, layers, plot, labels) {
     # Axis title: labs() wins, then the scale's name, then the mapping.
     title <- labels_get(labels, aes_name) %||% scale@name %||%
       axis_title_default(layers, aes_name)
+    # Minor breaks sit midway between majors. They are computed here (not
+    # in the renderers) so both targets draw the same guides.
+    minor <- if (length(tick_values) > 1) {
+      mids <- (utils::head(tick_values, -1) + utils::tail(tick_values, -1)) / 2
+      mids <- mids[mids >= expanded[1] & mids <= expanded[2]]
+      as.list(normalize(mids, expanded))
+    } else {
+      list()
+    }
+
     list(
       domain = expanded,
       ticks = list(
         values = tick_values,
         norm = normalize(tick_values, expanded),
-        labels = as.list(as.character(tick_labels))
+        labels = as.list(as.character(tick_labels)),
+        minor = minor
       ),
       title = title
     )
@@ -560,10 +601,18 @@ gradient_endpoints <- function(plot, th) {
     return(cs@palette)
   }
   th <- th %||% plot@theme %||% theme_ggplot3()
-  if (nzchar(th@gradient_low) && nzchar(th@gradient_high)) {
-    return(col_to_hex(c(th@gradient_low, th@gradient_high)))
+  # Either endpoint may be set on its own; the other keeps its default.
+  low <- if (nzchar(th@gradient_low)) {
+    col_to_hex(th@gradient_low)
+  } else {
+    GGPLOT3_GRADIENT_LOW
   }
-  c(GGPLOT3_GRADIENT_LOW, GGPLOT3_GRADIENT_HIGH)
+  high <- if (nzchar(th@gradient_high)) {
+    col_to_hex(th@gradient_high)
+  } else {
+    GGPLOT3_GRADIENT_HIGH
+  }
+  c(low, high)
 }
 
 labels_get <- function(labels, field) {
@@ -620,6 +669,10 @@ build_layer_marks <- function(lv, scales, axes, plot, palette, th) {
   scaled$params <- utils::modifyList(defaults, layer@params)
   scaled$xspan <- axes$x$domain[2] - axes$x$domain[1]
   scaled$yspan <- axes$y$domain[2] - axes$y$domain[1]
+  # Full axis domains in data units, for geoms that must span the panel
+  # (geom_abline() evaluates its line at the panel's own x limits).
+  scaled$xdomain <- axes$x$domain
+  scaled$ydomain <- axes$y$domain
   scaled$theme <- th
 
   list(

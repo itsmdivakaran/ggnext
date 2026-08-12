@@ -4,10 +4,15 @@
 \alias{Stat}
 \title{Stat: statistical transformation applied to layer data}
 \usage{
-Stat(name = character(0))
+Stat(name = character(0), provides = character(0))
 }
 \arguments{
 \item{name}{Human-readable stat name.}
+
+\item{provides}{Aesthetics this stat computes itself. A geom's required
+aesthetics are validated against the user's mapping \emph{plus} these, so
+e.g. \code{geom_point(stat = stat_bin())} is accepted even though the user
+maps only \code{x} - the stat supplies \code{y}.}
 }
 \value{
 An S7 object of class \code{Stat}, the base class for statistical transformations.

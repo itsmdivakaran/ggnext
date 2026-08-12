@@ -398,6 +398,7 @@ method(build_marks, GeomText) <- function(geom, scaled) {
 #' @export
 geom_text <- function(mapping = NULL, data = NULL, color = NULL,
                       fontsize = NULL, alpha = NULL, anchor = NULL) {
+  anchor <- match.arg(anchor, c("middle", "start", "end"))
   Layer(
     geom = GeomText(), stat = stat_identity(), mapping = mapping, data = data,
     params = drop_null(list(color = color, fontsize = fontsize,
@@ -696,7 +697,9 @@ GeomSmooth <- new_class("GeomSmooth", parent = Geom,
   constructor = function() {
     new_object(Geom(
       name = "smooth",
-      default_params = list(color = "#4A6DB5", linewidth = 2, alpha = 1)
+      # `alpha` is the confidence band's opacity; the fitted line is drawn
+      # at full strength so it stays readable over the band.
+      default_params = list(color = "#4A6DB5", linewidth = 2, alpha = 0.2)
     ))
   }
 )
@@ -710,7 +713,7 @@ method(build_marks, GeomSmooth) <- function(geom, scaled) {
       list(mk_polygon(
         c(scaled$x[idx], rev(scaled$x[idx])),
         c(scaled$ymax[idx], rev(scaled$ymin[idx])),
-        fill = col, alpha = 0.2
+        fill = col, alpha = p$alpha %||% 0.2
       ))
     }
     c(band, list(

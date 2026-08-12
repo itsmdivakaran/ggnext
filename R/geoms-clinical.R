@@ -189,7 +189,9 @@ geom_swimmer <- function(mapping = NULL, data = NULL, bar_height = 0.6,
 geom_spider_response <- function(mapping = NULL, data = NULL,
                                  thresholds = TRUE, linewidth = NULL,
                                  points = TRUE) {
-  layer_new(GeomSpiderResponse(), StatIdentity(), mapping, data,
+  # StatIdentity never produced `ythresh`, so the documented threshold
+  # lines could never draw; StatSpiderResponse supplies them.
+  layer_new(GeomSpiderResponse(), StatSpiderResponse(), mapping, data,
             list(thresholds = thresholds, linewidth = linewidth,
                  points = points))
 }

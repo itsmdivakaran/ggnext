@@ -12,7 +12,8 @@ NULL
 # Columns that exist only to drive the internal pipeline and are never part
 # of what a reader would call "the data behind this plot".
 PLOT_DATA_INTERNAL <- c(
-  "xwidth", "params", "xspan", "yspan", "theme", "marks_precomputed",
+  "xwidth", "params", "xspan", "yspan", "xdomain", "ydomain",
+  "theme", "marks_precomputed",
   # Reference-line positions: chrome the geom draws, not plotted data.
   "xref", "yref", "yzero", "ythresh", "xec50", "theta_order"
 )

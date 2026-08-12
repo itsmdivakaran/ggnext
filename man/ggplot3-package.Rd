@@ -10,8 +10,9 @@ An implementation of the Grammar of Graphics described by Wilkinson (2005, ISBN:
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/maheshdivakaran/ggplot3}
-  \item Report bugs at \url{https://github.com/maheshdivakaran/ggplot3/issues}
+  \item \url{https://itsmdivakaran.github.io/ggplot3/}
+  \item \url{https://github.com/itsmdivakaran/ggplot3}
+  \item Report bugs at \url{https://github.com/itsmdivakaran/ggplot3/issues}
 }
 
 }

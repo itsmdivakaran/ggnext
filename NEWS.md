@@ -1,8 +1,51 @@
 # ggplot3 0.1.0
 
-The first feature-complete release of the core grammar. Everything below
-is built on the same computed-geometry buffer, so static and interactive
-output can never disagree.
+The first feature-complete release of the core grammar. Everything is built
+on the same computed-geometry buffer, so static and interactive output can
+never disagree.
+
+## Additional core geoms
+
+Nineteen further layers, closing most of the gap with the geoms an R user
+expects to find: `geom_rect()`, `geom_polygon()`, `geom_raster()`,
+`geom_abline()`, `geom_blank()`, `geom_label()`, `geom_linerange()`,
+`geom_crossbar()`, `geom_errorbarh()`, `geom_rug()`, `geom_curve()`,
+`geom_spoke()`, `geom_count()`, `geom_freqpoly()`, `geom_function()`,
+`geom_qq()`, `geom_qq_line()`, `geom_dotplot()` and `geom_quantile()`.
+
+Quantile regression is fitted by minimising the check loss directly, so no
+linear-programming dependency is needed. 2D contouring/binning and spatial
+layers remain unimplemented.
+
+## Correctness fixes
+
+* `coord_flip()` swapped the marks but not the axes, so every flipped plot
+  was mislabelled.
+* `geom_sankey()`, `geom_chord()`, `geom_network()`, `geom_upset()` and
+  `geom_consort()` ignored all of their styling arguments, because those
+  geoms build their marks inside the stat, which never saw the layer's
+  parameters.
+* Non-finite values (`NA`, `NaN`, `Inf`) reached the renderer and produced
+  invalid SVG such as `cx="NA"`. They are now dropped with a warning
+  reporting the row count, matching what the histogram path already did.
+  Interval columns keep their `NA`s, which `geom_forecast_band()` relies on.
+* `geom_smooth()` with too few observations wrote `NaN` coordinates; it now
+  refuses with a message naming the minimum for the chosen method.
+* Density-based geoms surfaced raw `stats::density()` errors; they now name
+  the geom and the offending group.
+* SVG attribute values were not escaped, so a quote in a theme font or
+  colour produced an unparseable document.
+* `stat_bin(bins = n)` dropped empty bins, so `n` was only honoured when
+  every bin was occupied.
+* A stat may now supply an aesthetic the geom requires, so
+  `geom_point(stat = stat_bin())` works.
+* `geom_spider_response(thresholds =)`, `geom_smooth(alpha =)` and
+  `theme(grid_color_minor =)` had no effect; gradient endpoints only
+  applied when both were set.
+* Invalid enum values were accepted silently, and a `labels` vector of the
+  wrong length was recycled instead of reported.
+* `to_json()` emitted a bare `Inf`, which is not valid JSON, and left C0
+  control characters unescaped.
 
 ## Grammar
 
@@ -83,11 +126,8 @@ incidence, and four-parameter log-logistic dose-response fitting.
   figure with ggplot3 itself so the gallery cannot drift from the code.
 * `ggplot3_logo()` draws the hex sticker with the package's own SVG writer.
 
-## Bug fixes
+## Other fixes
 
-* `stat_bin()` now produces exactly `bins` bins. It previously extended the
-  break sequence one bin past the maximum, putting the largest value in a
-  spurious extra bin.
 * `aes(color = "blue")` is honored as a literal color rather than being
   treated as a single-level category and assigned the first palette entry.
 * A mapped aesthetic that resolves to a function instead of a data column

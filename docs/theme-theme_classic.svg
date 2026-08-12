@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Times, 'Times New Roman', Georgia, serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Times, &apos;Times New Roman&apos;, Georgia, serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
-<text x="10" y="25" text-anchor="start" font-family="Times, 'Times New Roman', Georgia, serif" font-size="17" font-weight="normal" fill="#000000">theme_classic</text>
+<text x="10" y="25" text-anchor="start" font-family="Times, &apos;Times New Roman&apos;, Georgia, serif" font-size="17" font-weight="normal" fill="#000000">theme_classic</text>
 <text x="10" y="43" text-anchor="start" font-size="12" fill="#5A5A66">iris sepal dimensions</text>
 <rect x="60" y="65" width="475" height="367" fill="#FFFFFF"/>
 <clipPath id="panel1"><rect x="60" y="65" width="475" height="367"/></clipPath>

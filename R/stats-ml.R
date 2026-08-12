@@ -74,7 +74,7 @@ method(compute_stat, StatPDP) <- function(stat, values) {
 StatConfusion <- new_class("StatConfusion", parent = Stat,
   properties = list(normalize = class_character),
   constructor = function(normalize = "row") {
-    new_object(Stat(name = "confusion"), normalize = normalize)
+    new_object(Stat(name = "confusion", provides = c("x", "y")), normalize = normalize)
   }
 )
 
@@ -123,7 +123,7 @@ method(compute_stat, StatConfusion) <- function(stat, values) {
 StatCalibration <- new_class("StatCalibration", parent = Stat,
   properties = list(bins = class_numeric),
   constructor = function(bins = 10) {
-    new_object(Stat(name = "calibration"), bins = bins)
+    new_object(Stat(name = "calibration", provides = c("x", "y")), bins = bins)
   }
 )
 
@@ -149,7 +149,7 @@ method(compute_stat, StatCalibration) <- function(stat, values) {
 StatLiftGain <- new_class("StatLiftGain", parent = Stat,
   properties = list(type = class_character),
   constructor = function(type = "gain") {
-    new_object(Stat(name = "lift_gain"), type = type)
+    new_object(Stat(name = "lift_gain", provides = c("x", "y")), type = type)
   }
 )
 

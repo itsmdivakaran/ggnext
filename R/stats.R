@@ -54,6 +54,28 @@ with_labels <- function(values, ...) {
   values
 }
 
+# stats::density() needs at least two finite points. Its own error
+# ("need at least 2 points to select a bandwidth automatically") names
+# neither the geom nor the offending group, so check here and say which.
+check_density_group <- function(x, geom_name, group = NULL) {
+  x <- x[is.finite(x)]
+  if (length(x) < 2) {
+    stop(
+      geom_name, "(): ",
+      if (is.null(group) || identical(as.character(group), "all")) {
+        "the data has "
+      } else {
+        paste0("group `", as.character(group), "` has ")
+      },
+      length(x), " usable observation",
+      if (length(x) == 1) "" else "s",
+      "; a density estimate needs at least 2.",
+      call. = FALSE
+    )
+  }
+  x
+}
+
 # --- stat_count (bars) -------------------------------------------------------
 
 #' StatCount: one count per distinct x (bar charts)
@@ -63,7 +85,7 @@ with_labels <- function(values, ...) {
 StatCount <- new_class("StatCount", parent = Stat,
   properties = list(width = class_numeric),
   constructor = function(width = 0.8) {
-    new_object(Stat(name = "count"), width = width)
+    new_object(Stat(name = "count", provides = "y"), width = width)
   }
 )
 
@@ -116,7 +138,7 @@ method(compute_stat, StatCol) <- function(stat, values) {
 StatBin <- new_class("StatBin", parent = Stat,
   properties = list(bins = class_numeric, binwidth = class_any),
   constructor = function(bins = 30, binwidth = NULL) {
-    new_object(Stat(name = "bin"), bins = bins, binwidth = binwidth)
+    new_object(Stat(name = "bin", provides = "y"), bins = bins, binwidth = binwidth)
   }
 )
 
@@ -141,7 +163,12 @@ method(compute_stat, StatBin) <- function(stat, values) {
   out <- stat_by_group(values, function(sub) {
     bin_idx <- findInterval(sub$x, breaks, rightmost.closed = TRUE)
     tab <- tabulate(bin_idx, nbins = length(breaks) - 1)
-    keep <- which(tab > 0)
+    # Empty bins are kept: `bins = n` must yield n bins, and a gap in a
+    # histogram is information. Only groups (facets, colour splits) drop
+    # their empty bins, since a zero bar per group would just be clutter.
+    keep <- if (length(unique(values$group)) > 1) which(tab > 0) else {
+      seq_along(tab)
+    }
     list(
       x = breaks[keep] + bw / 2,
       y = as.numeric(tab[keep]),
@@ -170,13 +197,14 @@ stat_bin <- function(bins = 30, binwidth = NULL) {
 StatDensity <- new_class("StatDensity", parent = Stat,
   properties = list(n = class_numeric, adjust = class_numeric),
   constructor = function(n = 256, adjust = 1) {
-    new_object(Stat(name = "density"), n = n, adjust = adjust)
+    new_object(Stat(name = "density", provides = "y"), n = n, adjust = adjust)
   }
 )
 
 method(compute_stat, StatDensity) <- function(stat, values) {
   out <- stat_by_group(values, function(sub) {
-    d <- stats::density(sub$x, n = stat@n, adjust = stat@adjust)
+    xs <- check_density_group(sub$x, "geom_density", sub$group[[1]])
+    d <- stats::density(xs, n = stat@n, adjust = stat@adjust)
     # ymin = 0 keeps the baseline in the trained y domain so the filled
     # area under the curve always has somewhere to sit.
     list(x = d$x, y = d$y, ymin = rep(0, length(d$x)))
@@ -277,7 +305,8 @@ StatYdensity <- new_class("StatYdensity", parent = Stat,
 method(compute_stat, StatYdensity) <- function(stat, values) {
   values$group <- paste(values$group, values$x, sep = "\r")
   stat_by_group(values, function(sub) {
-    d <- stats::density(sub$y, n = stat@n)
+    ys <- check_density_group(sub$y, "geom_violin", sub$x[[1]])
+    d <- stats::density(ys, n = stat@n)
     half <- (d$y / max(d$y)) * (stat@width / 2)
     x0 <- sub$x[[1]]
     list(
@@ -320,7 +349,20 @@ StatSmooth <- new_class("StatSmooth", parent = Stat,
 )
 
 method(compute_stat, StatSmooth) <- function(stat, values) {
+  # A confidence band needs residual degrees of freedom; with n <= 2 the
+  # interval is undefined and qt() would write NaN coordinates into the SVG.
+  min_n <- if (stat@method == "lm") 3 else 5
   stat_by_group(values, function(sub) {
+    if (length(sub$x) < min_n) {
+      stop(
+        "geom_smooth(): ", length(sub$x), " observation",
+        if (length(sub$x) == 1) "" else "s",
+        " is too few for method = \"", stat@method,
+        "\"; it needs at least ", min_n,
+        if (stat@method == "loess") ". Try method = \"lm\"." else ".",
+        call. = FALSE
+      )
+    }
     df <- data.frame(x = sub$x, y = sub$y)
     grid <- data.frame(x = seq(min(df$x), max(df$x), length.out = stat@n))
     if (stat@method == "lm") {

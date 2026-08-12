@@ -39,6 +39,11 @@ this is covered by a regression test.
 **Interactive use.** Printing a plot opens a viewer only when
 `interactive()` is `TRUE`.
 
+**Spelling.** The words flagged by the incoming check are surnames from the
+cited algorithm references (Bruls, Huizing, van Wijk, Fruchterman, Reingold,
+Kaplan) and established technical terms (Sankey, SHAP, treemap, treemaps,
+squarified). All are spelled correctly.
+
 ## Downstream dependencies
 
 None — this is a new package.

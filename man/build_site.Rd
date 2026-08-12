@@ -25,7 +25,8 @@ Renders every gallery example with the package itself and writes a
 self-contained static site. No external site generator, no CDN assets.
 }
 \examples{
+# cookbook = FALSE keeps this quick; the cookbook page knits ~100 plots.
 out <- file.path(tempdir(), "ggplot3-site")
-build_site(out, quiet = TRUE)
+build_site(out, quiet = TRUE, cookbook = FALSE)
 list.files(out)
 }

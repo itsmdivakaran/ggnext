@@ -21,13 +21,26 @@ px <- function(x) {
 }
 
 # One SVG element as a string, from a tag name and attribute list.
+# Attribute values are escaped: a theme font stack or colour containing a
+# double quote would otherwise close the attribute early and produce an
+# unparseable document.
 svg_tag <- function(tag, attrs, content = NULL) {
-  attr_str <- paste0(names(attrs), "=\"", unlist(attrs), "\"", collapse = " ")
+  attr_str <- paste0(
+    names(attrs), "=\"", xml_escape_attr(unlist(attrs)), "\"",
+    collapse = " "
+  )
   if (is.null(content)) {
     paste0("<", tag, " ", attr_str, "/>")
   } else {
     paste0("<", tag, " ", attr_str, ">", xml_escape(content), "</", tag, ">")
   }
+}
+
+# Attribute values additionally need the quote characters escaped.
+xml_escape_attr <- function(s) {
+  s <- xml_escape(as.character(s))
+  s <- gsub("\"", "&quot;", s, fixed = TRUE)
+  gsub("'", "&apos;", s, fixed = TRUE)
 }
 
 xml_escape <- function(s) {
@@ -51,7 +64,8 @@ render_svg <- function(buffer) {
       "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"%d\" height=\"%d\" ",
       "viewBox=\"0 0 %d %d\" font-family=\"%s\">"
     ),
-    buffer$width, buffer$height, buffer$width, buffer$height, th$font
+    buffer$width, buffer$height, buffer$width, buffer$height,
+    xml_escape_attr(th$font)
   ))
   out <- c(out, svg_tag("rect", list(
     x = 0, y = 0, width = buffer$width, height = buffer$height,
@@ -180,6 +194,28 @@ svg_cartesian_grid <- function(panel, th) {
       )))
     }
   }
+  # Minor gridlines, under the majors, when the theme asks for them.
+  if (nzchar(th$grid_color_minor)) {
+    if (isTRUE(th$grid_major_x)) {
+      for (n in panel$x$ticks$minor) {
+        gx <- norm_to_px(n, p$x, p$w)
+        out <- c(out, svg_tag("line", list(
+          x1 = px(gx), y1 = px(p$y), x2 = px(gx), y2 = px(p$y + p$h),
+          stroke = th$grid_color_minor, `stroke-width` = 0.5
+        )))
+      }
+    }
+    if (isTRUE(th$grid_major_y)) {
+      for (n in panel$y$ticks$minor) {
+        gy <- norm_to_px(n, p$y, p$h, flip = TRUE)
+        out <- c(out, svg_tag("line", list(
+          x1 = px(p$x), y1 = px(gy), x2 = px(p$x + p$w), y2 = px(gy),
+          stroke = th$grid_color_minor, `stroke-width` = 0.5
+        )))
+      }
+    }
+  }
+
   if (nzchar(th$panel_border)) {
     out <- c(out, svg_tag("rect", list(
       x = px(p$x), y = px(p$y), width = px(p$w), height = px(p$h),
@@ -360,7 +396,7 @@ svg_legend <- function(buffer, th) {
         "x2=\"0\" y2=\"0\"><stop offset=\"0\" stop-color=\"%s\"/>",
         "<stop offset=\"1\" stop-color=\"%s\"/></linearGradient></defs>"
       ),
-      lg$low, lg$high
+      xml_escape_attr(lg$low), xml_escape_attr(lg$high)
     ))
     out <- c(out, svg_tag("rect", list(
       x = px(lx), y = px(ly + 10), width = 14, height = bar_h,

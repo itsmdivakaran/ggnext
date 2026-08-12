@@ -5,8 +5,8 @@
 # stat_km(); truth/score feed stat_roc().
 GGPLOT3_AESTHETICS <- c(
   "x", "y", "color", "size", "group", "label",
-  "ymin", "ymax", "xend", "yend",
-  "time", "status", "truth", "score"
+  "xmin", "xmax", "ymin", "ymax", "xend", "yend",
+  "time", "status", "truth", "score", "sample"
 )
 
 #' Construct aesthetic mappings

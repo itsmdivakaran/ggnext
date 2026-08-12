@@ -54,9 +54,16 @@ json_atom <- function(x) {
     return(if (x) "true" else "false")
   }
   if (is.numeric(x)) {
-    # 15 significant digits round-trips doubles closely enough for pixel math,
-    # while avoiding "0.30000000000000004"-style noise in the output.
-    return(format(x, digits = 15, trim = TRUE, scientific = FALSE))
+    # JSON has no Inf literal; null is the only honest representation.
+    if (!is.finite(x)) {
+      return("null")
+    }
+    # 15 significant digits round-trips doubles closely enough for pixel
+    # math, while avoiding "0.30000000000000004"-style noise. Very small
+    # magnitudes keep scientific notation rather than expanding to a
+    # 300-character literal.
+    fixed <- abs(x) == 0 || (abs(x) >= 1e-4 && abs(x) < 1e15)
+    return(format(x, digits = 15, trim = TRUE, scientific = !fixed))
   }
   json_escape(as.character(x))
 }
@@ -68,5 +75,11 @@ json_escape <- function(s) {
   s <- gsub("\n", "\\n", s, fixed = TRUE)
   s <- gsub("\r", "\\r", s, fixed = TRUE)
   s <- gsub("\t", "\\t", s, fixed = TRUE)
+  # Remaining C0 control characters must be \uXXXX escapes (RFC 8259).
+  if (grepl("[\001-\037]", s)) {
+    for (cc in unique(unlist(regmatches(s, gregexpr("[\001-\037]", s))))) {
+      s <- gsub(cc, sprintf("\\u%04x", utf8ToInt(cc)), s, fixed = TRUE)
+    }
+  }
   paste0("\"", s, "\"")
 }

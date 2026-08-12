@@ -285,6 +285,29 @@ function drawPanel(pi) {
   if (panel.polar) {
     drawPolarGrid(pi);
   } else if (theme.grid_color) {
+    // Minor gridlines first, so the majors draw over them.
+    if (theme.grid_color_minor) {
+      ctx.strokeStyle = theme.grid_color_minor;
+      ctx.lineWidth = 0.5;
+      if (theme.grid_major_x && panel.x.ticks.minor) {
+        panel.x.ticks.minor.forEach(function (n) {
+          var gx = toDeviceX(pi, n);
+          ctx.beginPath();
+          ctx.moveTo(gx, r.y);
+          ctx.lineTo(gx, r.y + r.h);
+          ctx.stroke();
+        });
+      }
+      if (theme.grid_major_y && panel.y.ticks.minor) {
+        panel.y.ticks.minor.forEach(function (n) {
+          var gy = toDeviceY(pi, n);
+          ctx.beginPath();
+          ctx.moveTo(r.x, gy);
+          ctx.lineTo(r.x + r.w, gy);
+          ctx.stroke();
+        });
+      }
+    }
     ctx.strokeStyle = theme.grid_color;
     ctx.lineWidth = 1;
     if (theme.grid_major_x) {

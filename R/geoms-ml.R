@@ -267,6 +267,7 @@ method(build_marks, GeomCalibration) <- function(geom, scaled) {
 #' @export
 geom_lift_gain <- function(mapping = NULL, data = NULL, type = "gain",
                            color = NULL, baseline = TRUE) {
+  type <- match.arg(type, c("gain", "lift"))
   layer_new(GeomLiftGain(), StatLiftGain(type = type), mapping, data,
             list(color = color, baseline = baseline, curve_type = type))
 }

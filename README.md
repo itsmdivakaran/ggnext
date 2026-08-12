@@ -72,16 +72,20 @@ plot_data(ggplot3(cars, aes(speed)) + geom_histogram(bins = 5))
 write_plot_data(p, "figure-1-data.csv")   # publish the numbers with the figure
 ```
 
-**One geom catalog, no extension hunting.** Violin, ridgeline, Sankey,
-treemap, network, radar, SHAP, ROC, Kaplan-Meier, forest, and CONSORT are
-all in the box, using the same `aes()` and the same `+`.
+**A broad catalog in one package.** 78 geoms: the everyday layers you would
+expect, plus violin, ridgeline, Sankey, treemap, network, radar, SHAP, ROC,
+Kaplan-Meier, forest and CONSORT — all using the same `aes()` and the
+same `+`.
+
+Not yet implemented: 2D density and contouring (`contour`, `density_2d`,
+`bin_2d`, `hex`) and spatial layers (`sf`, `map`).
 
 ## The geom catalog
 
 | Group | Geoms |
 |---|---|
-| **Essentials** | `point` `jitter` `line` `path` `step` `area` `ribbon` `segment` `hline` `vline` `text` `tile` |
-| **Statistical** | `bar` `col` `histogram` `density` `boxplot` `violin` `smooth` `errorbar` `pointrange` `dumbbell` `waterfall` |
+| **Essentials** | `point` `jitter` `count` `line` `path` `step` `area` `ribbon` `segment` `curve` `spoke` `hline` `vline` `abline` `blank` `text` `label` `rect` `polygon` `tile` `raster` `rug` |
+| **Statistical** | `bar` `col` `histogram` `freqpoly` `dotplot` `density` `boxplot` `violin` `smooth` `quantile` `qq` `qq_line` `function` `errorbar` `errorbarh` `linerange` `crossbar` `pointrange` `dumbbell` `waterfall` |
 | **Layout** | `radar` `ridgeline` `sankey`/`alluvial` `treemap` `network` `chord` `parallel` `bump` `funnel` `stream` `upset` |
 | **Machine learning** | `shap` `partial_dependence` `confusion_matrix` `calibration` `roc` `lift_gain` `residual` `learning_curve` `silhouette` `embedding` `decision_boundary` `forecast_band` |
 | **Clinical / biostatistics** | `km` `cuminc` `forest` `swimmer` `spaghetti` `spider_response` `waterfall_response` `bland_altman` `ae_heatmap` `dose_response` `shift` `consort` |
@@ -169,7 +173,7 @@ extension ecosystem and by packages outside it:
 | Animation grammar | [gganimate](https://gganimate.com) |
 | Plot composition | [patchwork](https://patchwork.data-imaginist.com), [cowplot](https://wilkelab.org/cowplot/) |
 | Survival and clinical figures | [survminer](https://rpkgs.datanovia.com/survminer/), [survival](https://cran.r-project.org/package=survival), [cmprsk](https://cran.r-project.org/package=cmprsk), [swimplot](https://cran.r-project.org/package=swimplot), [consort](https://cran.r-project.org/package=consort) |
-| Model explanation plots | [DALEX](https://modeloriented.github.io/DALEX/), [shapviz](https://github.com/ModelOriented/shapviz), [iml](https://christophm.github.io/iml/), [yardstick](https://yardstick.tidymodels.org) |
+| Model explanation plots | [DALEX](https://modeloriented.github.io/DALEX/), [shapviz](https://github.com/ModelOriented/shapviz), [iml](https://cran.r-project.org/package=iml), [yardstick](https://yardstick.tidymodels.org) |
 | Colour theory | [Okabe & Ito](https://jfly.uni-koeln.de/color/)'s colourblind-safe palette; [scales](https://scales.r-lib.org), [viridis](https://sjmgarnier.github.io/viridis/) |
 | Tick placement | Paul Heckbert, "Nice Numbers for Graph Labels", *Graphics Gems* (1990) |
 | Treemap layout | Bruls, Huizing & van Wijk, "Squarified Treemaps" (2000) |

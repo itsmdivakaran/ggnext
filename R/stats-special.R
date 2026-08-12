@@ -18,7 +18,7 @@ NULL
 #'
 #' @noRd
 StatKM <- new_class("StatKM", parent = Stat,
-  constructor = function() new_object(Stat(name = "km"))
+  constructor = function() new_object(Stat(name = "km", provides = c("x", "y")))
 )
 
 method(compute_stat, StatKM) <- function(stat, values) {
@@ -84,7 +84,7 @@ stat_km <- function() StatKM()
 #'
 #' @noRd
 StatROC <- new_class("StatROC", parent = Stat,
-  constructor = function() new_object(Stat(name = "roc"))
+  constructor = function() new_object(Stat(name = "roc", provides = c("x", "y")))
 )
 
 method(compute_stat, StatROC) <- function(stat, values) {

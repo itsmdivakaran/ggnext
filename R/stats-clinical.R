@@ -93,6 +93,21 @@ method(compute_stat, StatWaterfallResponse) <- function(stat, values) {
   with_labels(out, x = "subject (ordered)", y = "% change from baseline")
 }
 
+# --- Spider response ---------------------------------------------------------
+
+#' StatSpiderResponse: carry the RECIST reference levels
+#' @noRd
+StatSpiderResponse <- new_class("StatSpiderResponse", parent = Stat,
+  constructor = function() new_object(Stat(name = "spider_response"))
+)
+
+method(compute_stat, StatSpiderResponse) <- function(stat, values) {
+  # RECIST thresholds: +20% progression, -30% partial response. They join
+  # the y family so scale training keeps them inside the panel.
+  values$ythresh <- c(20, -30)
+  values
+}
+
 # --- Bland-Altman ------------------------------------------------------------
 
 #' StatBlandAltman: mean vs difference, plus bias and limits of agreement
@@ -124,7 +139,7 @@ method(compute_stat, StatBlandAltman) <- function(stat, values) {
 #' StatCuminc: Aalen-Johansen cumulative incidence with competing risks
 #' @noRd
 StatCuminc <- new_class("StatCuminc", parent = Stat,
-  constructor = function() new_object(Stat(name = "cuminc"))
+  constructor = function() new_object(Stat(name = "cuminc", provides = c("x", "y")))
 )
 
 method(compute_stat, StatCuminc) <- function(stat, values) {
@@ -301,7 +316,7 @@ method(compute_stat, StatDoseResponse) <- function(stat, values) {
 #' StatConsort: stack flow boxes and join them with arrows
 #' @noRd
 StatConsort <- new_class("StatConsort", parent = Stat,
-  constructor = function() new_object(Stat(name = "consort"))
+  constructor = function() new_object(Stat(name = "consort", provides = c("x", "y")))
 )
 
 method(compute_stat, StatConsort) <- function(stat, values) {
