@@ -1,14 +1,31 @@
-.Rproj.user
+# R session state
 .Rhistory
 .RData
 .Ruserdata
-*.Rout
-inst/doc
-.preview/
-.httr-oauth
-.DS_Store
-.quarto
+.Rproj.user
+.Renviron
+.Rprofile
 
-# R build / check output
+# Build and check output
 *.Rcheck/
 *.tar.gz
+*.Rout
+*.tgz
+src/*.o
+src/*.so
+src/*.dll
+build/
+inst/doc
+
+# Editor, IDE and OS cruft
+.claude/
+.preview/
+.quarto
+.vscode/
+.idea/
+.DS_Store
+*~
+
+# Credentials — never commit
+.httr-oauth
+.secrets

@@ -1,14 +1,37 @@
+^renv$
+^renv\.lock$
 ^CRAN-SUBMISSION$
 ^CRAN-SUBMISSION-GUIDE\.md$
 ^README\.Rmd$
-^\.RData$
-^\.Rhistory$
-^\.Rproj\.user$
-^\.claude$
-^\.github$
-^\.preview$
-^_pkgdown\.yml$
 ^cran-comments\.md$
-^docs$
+
+# Build and check output. These are regenerated on demand and must never
+# ship inside the tarball; R CMD build does not exclude them for you.
+\.Rcheck$
+\.tar\.gz$
+^\.Rhistory$
+^\.RData$
+^\.Ruserdata$
+\.Rout$
+
+# Editor, IDE and OS cruft.
+^\.Rproj\.user$
 ^ggnext\.Rproj$
+^\.claude$
+^\.preview$
+^\.quarto$
+^\.vscode$
+^\.idea$
+\.DS_Store$
+
+# Version control and CI.
+^\.git$
+^\.gitignore$
+^\.gitattributes$
+^\.github$
+
+# Documentation site. build_site() writes docs/ for GitHub Pages; pkgdown/
+# holds the hex-logo assets. Neither belongs in the package tarball.
+^docs$
 ^pkgdown$
+^_pkgdown\.yml$
