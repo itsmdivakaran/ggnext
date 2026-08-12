@@ -146,6 +146,31 @@ test_that("build_site(cookbook = FALSE) skips the slow page", {
   expect_true(file.exists(file.path(dir, "index.html")))
 })
 
+test_that("build_site(gallery = FALSE) writes pages but no figures", {
+  dir <- tempfile("site")
+  on.exit(unlink(dir, recursive = TRUE))
+  build_site(dir, quiet = TRUE, gallery = FALSE, cookbook = FALSE)
+  expect_true(file.exists(file.path(dir, "index.html")))
+  expect_true(file.exists(file.path(dir, "gallery.html")))
+  # No figure was drawn, so no fig-*.svg should have been written.
+  expect_length(list.files(dir, pattern = "^fig-.*\\.svg$"), 0L)
+})
+
+test_that("build_site(gallery = FALSE) keeps figures an earlier build wrote", {
+  # A prose-only rebuild must not silently strip every image from the site.
+  dir <- tempfile("site")
+  on.exit(unlink(dir, recursive = TRUE))
+  build_site(dir, quiet = TRUE, cookbook = FALSE)
+  drawn <- list.files(dir, pattern = "^fig-.*\\.svg$")
+  expect_gt(length(drawn), 0L)
+
+  build_site(dir, quiet = TRUE, gallery = FALSE, cookbook = FALSE)
+  expect_setequal(list.files(dir, pattern = "^fig-.*\\.svg$"), drawn)
+  gal <- paste(readLines(file.path(dir, "gallery.html"), warn = FALSE),
+               collapse = "\n")
+  expect_match(gal, drawn[1], fixed = TRUE)
+})
+
 test_that("inline SVG is capped so wide plots cannot force page scroll", {
   # The cookbook embeds plots as raw <svg>, not <img>; without a cap a
   # 900px-wide plot makes the whole page scroll sideways.

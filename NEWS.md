@@ -47,6 +47,16 @@ layers remain unimplemented.
 * `to_json()` emitted a bare `Inf`, which is not valid JSON, and left C0
   control characters unescaped.
 
+## Performance
+
+* Building the reference page reparsed the entire Rd database once per
+  documented function, making the site build quadratic in the size of the
+  manual. The database is now parsed once and cached, taking a full site
+  build from 3.6s to 0.9s.
+* `build_site(gallery = FALSE)` rewrites the pages without redrawing the
+  figures, for quick iteration on prose. Figures an earlier build wrote are
+  kept rather than dropped.
+
 ## Grammar
 
 * `facet_wrap()` and `facet_grid()`, with `scales = "fixed"` (default),

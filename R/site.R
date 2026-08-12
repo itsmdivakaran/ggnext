@@ -19,19 +19,25 @@
 #'
 #' @param dir Output directory (created if needed).
 #' @param quiet Suppress progress messages.
+#' @param gallery Render the gallery figures. Every example is drawn with
+#'   ggnext itself at build time, which is the bulk of the build cost.
+#'   Pass `FALSE` to rewrite the pages without redrawing the figures —
+#'   useful when iterating on prose, and what makes the example below
+#'   quick. The pages still build; they simply reference whatever figures
+#'   are already in `dir`.
 #' @param cookbook Also build the Cookbook page by knitting the worked
 #'   reference shipped in `inst/examples/`. Needs the `knitr` and
 #'   `markdown` packages; the page is skipped with a message if either is
-#'   missing. It renders ~100 plots, so it is the slow part of the build —
-#'   pass `FALSE` for a quick rebuild of the rest.
+#'   missing. It renders ~100 plots, so it is the other slow part.
 #' @return The output directory, invisibly.
 #' @examples
-#' # cookbook = FALSE keeps this quick; the cookbook page knits ~100 plots.
+#' # The figures and the cookbook are the slow parts of a real build; this
+#' # writes the pages only. Use build_site("docs") for the full site.
 #' out <- file.path(tempdir(), "ggnext-site")
-#' build_site(out, quiet = TRUE, cookbook = FALSE)
+#' build_site(out, quiet = TRUE, gallery = FALSE, cookbook = FALSE)
 #' list.files(out)
 #' @export
-build_site <- function(dir = "docs", quiet = FALSE,
+build_site <- function(dir = "docs", quiet = FALSE, gallery = TRUE,
                        cookbook = TRUE) {
   dir.create(dir, showWarnings = FALSE, recursive = TRUE)
   say <- function(...) if (!quiet) message(...)
@@ -39,19 +45,30 @@ build_site <- function(dir = "docs", quiet = FALSE,
   say("Writing logo")
   ggnext_logo(file = file.path(dir, "logo.svg"))
 
-  say("Rendering gallery")
+  # The example list is cheap to build (it holds quoted code); drawing the
+  # figures from it is what costs, so only the loop is optional.
   examples <- gallery_examples()
   figs <- character(0)
-  for (nm in names(examples)) {
-    ex <- examples[[nm]]
-    svg <- tryCatch(
-      render(eval(ex$code), target = "static"),
-      error = function(e) NULL
-    )
-    if (is.null(svg)) next
-    fname <- paste0("fig-", nm, ".svg")
-    writeLines(svg, file.path(dir, fname), useBytes = TRUE)
-    figs[nm] <- fname
+  if (isTRUE(gallery)) {
+    say("Rendering gallery")
+    for (nm in names(examples)) {
+      ex <- examples[[nm]]
+      svg <- tryCatch(
+        render(eval(ex$code), target = "static"),
+        error = function(e) NULL
+      )
+      if (is.null(svg)) next
+      fname <- paste0("fig-", nm, ".svg")
+      writeLines(svg, file.path(dir, fname), useBytes = TRUE)
+      figs[nm] <- fname
+    }
+  } else {
+    # Keep references to figures a previous build already wrote, so a
+    # prose-only rebuild does not silently drop every image.
+    for (nm in names(examples)) {
+      fname <- paste0("fig-", nm, ".svg")
+      if (file.exists(file.path(dir, fname))) figs[nm] <- fname
+    }
   }
 
   say("Writing pages")
@@ -1868,18 +1885,35 @@ site_reference <- function(dir = "docs") {
 
 # One-line description for a function, read from its installed Rd file so
 # the site index and the R help can never disagree.
-fn_title <- function(fn) {
-  db <- tryCatch(tools::Rd_db("ggnext"), error = function(e) NULL)
-  if (is.null(db)) {
-    return("")
-  }
-  for (rd in db) {
-    tags <- vapply(rd, function(x) attr(x, "Rd_tag") %||% "", character(1))
-    aliases <- unlist(rd[tags == "\\alias"])
-    if (fn %in% trimws(aliases)) {
-      title <- paste(unlist(rd[tags == "\\title"]), collapse = "")
-      return(trimws(gsub("\\s+", " ", title)))
+# Alias -> title lookup over the installed Rd database.
+#
+# Built once and memoised: tools::Rd_db() parses all ~140 Rd files, and the
+# reference page asks for ~150 titles, so doing the lookup per function made
+# building that one page quadratic (it dominated the whole site build).
+# The cache lives for the session; a doc build that rewrites Rd files needs
+# a fresh session to see new titles, which is what R CMD check does anyway.
+rd_title_map <- local({
+  cache <- NULL
+  function() {
+    if (!is.null(cache)) {
+      return(cache)
     }
+    db <- tryCatch(tools::Rd_db("ggnext"), error = function(e) NULL)
+    map <- character(0)
+    for (rd in db) {
+      tags <- vapply(rd, function(x) attr(x, "Rd_tag") %||% "", character(1))
+      title <- trimws(gsub("\\s+", " ",
+                           paste(unlist(rd[tags == "\\title"]), collapse = "")))
+      for (a in trimws(unlist(rd[tags == "\\alias"]))) {
+        map[[a]] <- title
+      }
+    }
+    cache <<- map
+    map
   }
-  ""
+})
+
+fn_title <- function(fn) {
+  map <- rd_title_map()
+  if (fn %in% names(map)) unname(map[[fn]]) else ""
 }

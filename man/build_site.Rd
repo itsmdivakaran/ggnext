@@ -4,18 +4,24 @@
 \alias{build_site}
 \title{Build the ggnext documentation site}
 \usage{
-build_site(dir = "docs", quiet = FALSE, cookbook = TRUE)
+build_site(dir = "docs", quiet = FALSE, gallery = TRUE, cookbook = TRUE)
 }
 \arguments{
 \item{dir}{Output directory (created if needed).}
 
 \item{quiet}{Suppress progress messages.}
 
+\item{gallery}{Render the gallery figures. Every example is drawn with
+ggnext itself at build time, which is the bulk of the build cost.
+Pass \code{FALSE} to rewrite the pages without redrawing the figures —
+useful when iterating on prose, and what makes the example below
+quick. The pages still build; they simply reference whatever figures
+are already in \code{dir}.}
+
 \item{cookbook}{Also build the Cookbook page by knitting the worked
 reference shipped in \verb{inst/examples/}. Needs the \code{knitr} and
 \code{markdown} packages; the page is skipped with a message if either is
-missing. It renders ~100 plots, so it is the slow part of the build —
-pass \code{FALSE} for a quick rebuild of the rest.}
+missing. It renders ~100 plots, so it is the other slow part.}
 }
 \value{
 The output directory, invisibly.
@@ -25,8 +31,9 @@ Renders every gallery example with the package itself and writes a
 self-contained static site. No external site generator, no CDN assets.
 }
 \examples{
-# cookbook = FALSE keeps this quick; the cookbook page knits ~100 plots.
+# The figures and the cookbook are the slow parts of a real build; this
+# writes the pages only. Use build_site("docs") for the full site.
 out <- file.path(tempdir(), "ggnext-site")
-build_site(out, quiet = TRUE, cookbook = FALSE)
+build_site(out, quiet = TRUE, gallery = FALSE, cookbook = FALSE)
 list.files(out)
 }

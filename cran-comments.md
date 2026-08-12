@@ -7,11 +7,21 @@ This is a new submission: ggnext 0.1.0.
 ## Test environments
 
 * local macOS (darwin), R 4.5.2 — `R CMD check --as-cran`
-* (add win-builder devel/release and R-hub results before submitting)
+* win-builder, R-devel (2026-08-10 r90389 ucrt), Windows Server 2022 x64
 
 ## R CMD check results
 
-0 errors | 0 warnings | 0 notes
+0 errors | 0 warnings | 1 note
+
+The note is the standard "New submission", together with the possibly
+misspelled words addressed under Spelling below.
+
+An earlier win-builder run also flagged the `build_site()` example at 23s.
+That was a genuine inefficiency rather than a slow example: the helper
+building the reference page reparsed the whole Rd database once per
+function. It is now parsed once and cached, which took the full site build
+from 3.6s to 0.9s locally, and the example itself runs in well under a
+second.
 
 ## Notes for the reviewer
 
