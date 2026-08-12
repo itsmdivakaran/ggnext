@@ -2,7 +2,7 @@
 
 ## Submission
 
-This is a new submission: ggplot3 0.1.0.
+This is a new submission: ggnext 0.1.0.
 
 ## Test environments
 
@@ -15,19 +15,18 @@ This is a new submission: ggplot3 0.1.0.
 
 ## Notes for the reviewer
 
-**On the package name.** `ggplot3` is not affiliated with, endorsed by, or
-derived from `ggplot2`; it is an independent implementation of the Grammar
-of Graphics built on S7. The name signals the shared grammar lineage, and
-the DESCRIPTION, README and package documentation all state the
-relationship explicitly and credit `ggplot2` and the wider extension
-ecosystem as design references. If the CRAN team considers the name
-misleading, I am happy to rename the package before publication.
+**On the package name.** The `gg` prefix marks the shared Grammar of
+Graphics lineage. `ggnext` is an independent implementation built on S7,
+not a `ggplot2` extension and not affiliated with or endorsed by the
+`ggplot2` authors; it does not compose with `ggplot2` objects. The README
+and package documentation state this in their opening paragraphs and
+credit `ggplot2` and the wider extension ecosystem as design references.
 
 **Dependencies.** The only hard dependency is `S7`. `grDevices` and `utils`
 are base packages. `testthat` and `xml2` are used only in tests.
 
 **Writing to the file system.** No function writes anywhere by default.
-`render()`, `write_plot_data()`, `ggplot3_logo()` and `build_site()` write
+`render()`, `write_plot_data()`, `ggnext_logo()` and `build_site()` write
 only to a path the caller supplies, and every example writes to
 `tempdir()`.
 

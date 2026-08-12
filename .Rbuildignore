@@ -10,5 +10,5 @@
 ^_pkgdown\.yml$
 ^cran-comments\.md$
 ^docs$
-^ggplot3\.Rproj$
+^ggnext\.Rproj$
 ^pkgdown$

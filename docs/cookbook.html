@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cookbook - ggplot3</title>
+<title>Cookbook - ggnext</title>
 <style>
 /* The site is deliberately light-only: the figures are rendered with light
    themes at build time, and a dark page around a light plot reads badly. */
@@ -108,9 +108,9 @@ h3 { scroll-margin-top: 70px; }
 </style>
 </head>
 <body>
-<header><nav><img src="logo.svg" alt="ggplot3"><span class="brand">ggplot3</span><a href="index.html">Overview</a><a href="guide.html">Guide</a><a href="gallery.html">Gallery</a><a href="cookbook.html" class="on">Cookbook</a><a href="reference.html">Reference</a><a href="themes.html">Themes</a><a href="credits.html">Credits</a><a class="repo" href="https://github.com/itsmdivakaran/ggplot3">GitHub</a></nav></header>
+<header><nav><img src="logo.svg" alt="ggnext"><span class="brand">ggnext</span><a href="index.html">Overview</a><a href="guide.html">Guide</a><a href="gallery.html">Gallery</a><a href="cookbook.html" class="on">Cookbook</a><a href="reference.html">Reference</a><a href="themes.html">Themes</a><a href="credits.html">Credits</a><a class="repo" href="https://github.com/itsmdivakaran/ggnext">GitHub</a></nav></header>
 <main>
-<h1>Cookbook</h1><p class="lead">Every exported function and every option that changes the output, as worked examples. Each figure below was rendered by ggplot3 when this page was built, and several sections check the computed numbers against base R.</p><div class="note"><p>This page is generated from <code>inst/examples/ggplot3-full-reference.Rmd</code>, which ships with the package. Open it in RStudio to run any of it yourself: <code>system.file("examples", "ggplot3-full-reference.Rmd", package = "ggplot3")</code></p></div><div class="toc"><strong>Sections</strong><ol><li><a href="#1-the-grammar">1. The grammar</a></li><li><a href="#2-essential-geoms">2. Essential geoms</a></li><li><a href="#3-distributions">3. Distributions</a></li><li><a href="#4-scales-and-axes">4. Scales and axes</a></li><li><a href="#5-coordinates">5. Coordinates</a></li><li><a href="#6-facets">6. Facets</a></li><li><a href="#7-titles-labels-and-themes">7. Titles, labels and themes</a></li><li><a href="#8-layout-geoms">8. Layout geoms</a></li><li><a href="#9-machine-learning-geoms">9. Machine-learning geoms</a></li><li><a href="#10-clinical-geoms">10. Clinical geoms</a></li><li><a href="#11-interactivity-and-animation">11. Interactivity and animation</a></li><li><a href="#12-exact-data-export">12. Exact data export</a></li><li><a href="#13-rendering-and-the-logo">13. Rendering and the logo</a></li><li><a href="#14-extending-the-package">14. Extending the package</a></li><li><a href="#15-error-handling">15. Error handling</a></li><li><a href="#16-edge-cases">16. Edge cases</a></li><li><a href="#17-session-information">17. Session information</a></li></ol></div><div id="TOC">
+<h1>Cookbook</h1><p class="lead">Every exported function and every option that changes the output, as worked examples. Each figure below was rendered by ggnext when this page was built, and several sections check the computed numbers against base R.</p><div class="note"><p>This page is generated from <code>inst/examples/ggnext-full-reference.Rmd</code>, which ships with the package. Open it in RStudio to run any of it yourself: <code>system.file("examples", "ggnext-full-reference.Rmd", package = "ggnext")</code></p></div><div class="toc"><strong>Sections</strong><ol><li><a href="#1-the-grammar">1. The grammar</a></li><li><a href="#2-essential-geoms">2. Essential geoms</a></li><li><a href="#3-distributions">3. Distributions</a></li><li><a href="#4-scales-and-axes">4. Scales and axes</a></li><li><a href="#5-coordinates">5. Coordinates</a></li><li><a href="#6-facets">6. Facets</a></li><li><a href="#7-titles-labels-and-themes">7. Titles, labels and themes</a></li><li><a href="#8-layout-geoms">8. Layout geoms</a></li><li><a href="#9-machine-learning-geoms">9. Machine-learning geoms</a></li><li><a href="#10-clinical-geoms">10. Clinical geoms</a></li><li><a href="#11-interactivity-and-animation">11. Interactivity and animation</a></li><li><a href="#12-exact-data-export">12. Exact data export</a></li><li><a href="#13-rendering-and-the-logo">13. Rendering and the logo</a></li><li><a href="#14-extending-the-package">14. Extending the package</a></li><li><a href="#15-error-handling">15. Error handling</a></li><li><a href="#16-edge-cases">16. Edge cases</a></li><li><a href="#17-session-information">17. Session information</a></li></ol></div><div id="TOC">
 <ul>
 <li><a href="#chp:1-the-grammar">1. The grammar</a>
 <ul>
@@ -236,24 +236,24 @@ h3 { scroll-margin-top: 70px; }
 </ul>
 </div>
 
-<p>This document exercises <strong>every exported function</strong> of ggplot3 and <strong>every
+<p>This document exercises <strong>every exported function</strong> of ggnext and <strong>every
 option</strong> that changes what is drawn. It doubles as a regression check: if
 any layer, scale, coordinate system or theme setting breaks, this document
 fails to knit.</p>
-<p>Writing a plot object in a chunk renders it inline — ggplot3 registers a
+<p>Writing a plot object in a chunk renders it inline — ggnext registers a
 <code>knit_print()</code> method, so no <code>results='asis'</code> boilerplate is needed.</p>
-<pre><code class="language-r">packageVersion(&quot;ggplot3&quot;)
+<pre><code class="language-r">packageVersion(&quot;ggnext&quot;)
 </code></pre>
 <pre><code>#&gt; [1] '0.1.0'
 </code></pre>
-<pre><code class="language-r">length(getNamespaceExports(&quot;ggplot3&quot;))
+<pre><code class="language-r">length(getNamespaceExports(&quot;ggnext&quot;))
 </code></pre>
 <pre><code>#&gt; [1] 152
 </code></pre>
 <h1 id="1-the-grammar">1. The grammar</h1>
 <h2 id="1-1-minimal-plot">1.1 Minimal plot</h2>
 <p>A plot is data, an aesthetic mapping, and at least one layer.</p>
-<pre><code class="language-r">ggplot3(cars, aes(speed, dist)) + geom_point()
+<pre><code class="language-r">ggnext(cars, aes(speed, dist)) + geom_point()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -354,7 +354,7 @@ fails to knit.</p>
 </svg>
 <h2 id="1-2-plots-are-immutable-values">1.2 Plots are immutable values</h2>
 <p><code>+</code> returns a <em>new</em> plot, so a partial specification is a reusable template.</p>
-<pre><code class="language-r">base &lt;- ggplot3(iris, aes(Sepal.Length, Sepal.Width))
+<pre><code class="language-r">base &lt;- ggnext(iris, aes(Sepal.Length, Sepal.Width))
 length(base@layers)            # still empty
 </code></pre>
 <pre><code>#&gt; [1] 0
@@ -370,14 +370,14 @@ length(base@layers)            # still empty
 <h2 id="1-3-aes-mapping-vs-setting">1.3 <code>aes()</code> — mapping vs setting</h2>
 <pre><code class="language-r">aes(speed, dist, color = gear)
 </code></pre>
-<pre><code>#&gt; &lt;ggplot3 aesthetic mapping&gt;
+<pre><code>#&gt; &lt;ggnext aesthetic mapping&gt;
 #&gt;   x -&gt; speed
 #&gt;   y -&gt; dist
 #&gt;   color -&gt; gear
 </code></pre>
 <p>A constant inside <code>aes()</code> that names a real colour is honoured literally
 rather than being treated as a one-level category.</p>
-<pre><code class="language-r">ggplot3(cars, aes(speed, dist, color = &quot;steelblue&quot;)) + geom_point(size = 4)
+<pre><code class="language-r">ggnext(cars, aes(speed, dist, color = &quot;steelblue&quot;)) + geom_point(size = 4)
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -481,7 +481,7 @@ rather than being treated as a one-level category.</p>
 second dataset.</p>
 <pre><code class="language-r">means &lt;- aggregate(Sepal.Length ~ Species, iris, mean)
 
-ggplot3(iris, aes(Species, Sepal.Length)) +
+ggnext(iris, aes(Species, Sepal.Length)) +
   geom_jitter(alpha = 0.3) +
   geom_point(aes(Species, Sepal.Length), data = means,
              color = &quot;#C1462F&quot;, size = 7)
@@ -672,7 +672,7 @@ ggplot3(iris, aes(Species, Sepal.Length)) +
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">Sepal.Length</text>
 </svg>
 <h2 id="1-5-output-size">1.5 Output size</h2>
-<pre><code class="language-r">p_wide &lt;- ggplot3(cars, aes(speed, dist), width = 900, height = 260) +
+<pre><code class="language-r">p_wide &lt;- ggnext(cars, aes(speed, dist), width = 900, height = 260) +
   geom_point()
 p_wide
 </code></pre>
@@ -774,7 +774,7 @@ p_wide
 <text x="15" y="116" transform="rotate(-90 15 116)" text-anchor="middle" font-size="13" fill="#3A3A3A">dist</text>
 </svg>
 <p><code>plot_size()</code> does the same thing after the fact.</p>
-<pre><code class="language-r">b &lt;- ggplot3:::build_geometry(ggplot3(cars, aes(speed, dist)) +
+<pre><code class="language-r">b &lt;- ggnext:::build_geometry(ggnext(cars, aes(speed, dist)) +
                                 geom_point() + plot_size(800, 600))
 c(width = b$width, height = b$height)
 </code></pre>
@@ -783,7 +783,7 @@ c(width = b$width, height = b$height)
 </code></pre>
 <h1 id="2-essential-geoms">2. Essential geoms</h1>
 <h2 id="2-1-geom-point">2.1 geom_point</h2>
-<pre><code class="language-r">ggplot3(cars, aes(speed, dist)) + geom_point(color = &quot;#2B6BE0&quot;, size = 4,
+<pre><code class="language-r">ggnext(cars, aes(speed, dist)) + geom_point(color = &quot;#2B6BE0&quot;, size = 4,
                                              alpha = 0.7)
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -884,7 +884,7 @@ c(width = b$width, height = b$height)
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">dist</text>
 </svg>
 <p>Size and colour can be mapped instead of set:</p>
-<pre><code class="language-r">ggplot3(iris, aes(Sepal.Length, Sepal.Width,
+<pre><code class="language-r">ggnext(iris, aes(Sepal.Length, Sepal.Width,
                   color = Species, size = Petal.Length)) +
   geom_point(alpha = 0.75)
 </code></pre>
@@ -1087,7 +1087,7 @@ c(width = b$width, height = b$height)
 <text x="567" y="88" text-anchor="start" font-size="11" fill="#3A3A3A">virginica</text>
 </svg>
 <h2 id="2-2-geom-jitter">2.2 geom_jitter</h2>
-<pre><code class="language-r">ggplot3(iris, aes(Species, Sepal.Width, color = Species)) +
+<pre><code class="language-r">ggnext(iris, aes(Species, Sepal.Width, color = Species)) +
   geom_jitter(alpha = 0.7) +
   theme(legend_position = &quot;none&quot;)
 </code></pre>
@@ -1282,7 +1282,7 @@ c(width = b$width, height = b$height)
 <p>Jitter is seeded, so the same plot renders identically every time — and it
 restores the caller’s random stream:</p>
 <pre><code class="language-r">set.seed(42); before &lt;- .Random.seed
-invisible(render(ggplot3(iris, aes(Species, Sepal.Width)) + geom_jitter()))
+invisible(render(ggnext(iris, aes(Species, Sepal.Width)) + geom_jitter()))
 identical(.Random.seed, before)
 </code></pre>
 <pre><code>#&gt; [1] TRUE
@@ -1293,7 +1293,7 @@ identical(.Random.seed, before)
   v = c(cumsum(rnorm(12, 2)), cumsum(rnorm(12, 1))),
   g = rep(c(&quot;A&quot;, &quot;B&quot;), each = 12)
 )
-ggplot3(ts, aes(t, v, color = g)) + geom_line(linewidth = 2) + theme_minimal()
+ggnext(ts, aes(t, v, color = g)) + geom_line(linewidth = 2) + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -1334,7 +1334,7 @@ ggplot3(ts, aes(t, v, color = g)) + geom_line(linewidth = 2) + theme_minimal()
 <p><code>geom_path()</code> follows data order rather than x order; <code>geom_step()</code> holds
 each value until the next observation.</p>
 <pre><code class="language-r">steps &lt;- data.frame(t = 1:8, v = c(2, 2, 3, 3, 5, 4, 4, 6))
-ggplot3(steps, aes(t, v)) + geom_step(color = &quot;#12A594&quot;, linewidth = 2) +
+ggnext(steps, aes(t, v)) + geom_step(color = &quot;#12A594&quot;, linewidth = 2) +
   geom_point() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -1374,7 +1374,7 @@ ggplot3(steps, aes(t, v)) + geom_step(color = &quot;#12A594&quot;, linewidth = 2
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">v</text>
 </svg>
 <p>Dashed lines via <code>dash</code> (an SVG dash pattern):</p>
-<pre><code class="language-r">ggplot3(steps, aes(t, v)) + geom_line(dash = &quot;6,4&quot;) + theme_minimal()
+<pre><code class="language-r">ggnext(steps, aes(t, v)) + geom_line(dash = &quot;6,4&quot;) + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -1405,7 +1405,7 @@ ggplot3(steps, aes(t, v)) + geom_step(color = &quot;#12A594&quot;, linewidth = 2
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">v</text>
 </svg>
 <h2 id="2-4-geom-area-and-geom-ribbon">2.4 geom_area and geom_ribbon</h2>
-<pre><code class="language-r">ggplot3(data.frame(t = 1:10, v = c(2, 4, 3, 6, 8, 7, 9, 8, 11, 13)),
+<pre><code class="language-r">ggnext(data.frame(t = 1:10, v = c(2, 4, 3, 6, 8, 7, 9, 8, 11, 13)),
         aes(t, v)) +
   geom_area(alpha = 0.45) + theme_minimal()
 </code></pre>
@@ -1436,7 +1436,7 @@ ggplot3(steps, aes(t, v)) + geom_step(color = &quot;#12A594&quot;, linewidth = 2
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">v</text>
 </svg>
 <pre><code class="language-r">band &lt;- data.frame(t = 1:12, lo = (1:12) * 0.8, hi = (1:12) * 1.4)
-ggplot3(band, aes(t, ymin = lo, ymax = hi)) +
+ggnext(band, aes(t, ymin = lo, ymax = hi)) +
   geom_ribbon(alpha = 0.4) + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -1470,7 +1470,7 @@ ggplot3(band, aes(t, ymin = lo, ymax = hi)) +
 <h2 id="2-5-geom-segment-and-geom-dumbbell">2.5 geom_segment and geom_dumbbell</h2>
 <pre><code class="language-r">seg &lt;- data.frame(x = 1:4, y = c(2, 4, 3, 5),
                   xe = (1:4) + 0.7, ye = c(4, 6, 2, 7))
-ggplot3(seg, aes(x, y, xend = xe, yend = ye)) +
+ggnext(seg, aes(x, y, xend = xe, yend = ye)) +
   geom_segment(linewidth = 2) + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -1508,7 +1508,7 @@ ggplot3(seg, aes(x, y, xend = xe, yend = ye)) +
 </svg>
 <pre><code class="language-r">db &lt;- data.frame(g = c(&quot;North&quot;, &quot;South&quot;, &quot;East&quot;, &quot;West&quot;),
                  before = c(12, 18, 9, 14), after = c(19, 21, 15, 13))
-ggplot3(db, aes(before, xend = after, y = g)) +
+ggnext(db, aes(before, xend = after, y = g)) +
   geom_dumbbell() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -1549,7 +1549,7 @@ ggplot3(db, aes(before, xend = after, y = g)) +
 <h2 id="2-6-reference-lines">2.6 Reference lines</h2>
 <p><code>geom_hline()</code> and <code>geom_vline()</code> span the panel and ignore the plot’s
 <code>aes()</code>, so they never disturb the data mapping.</p>
-<pre><code class="language-r">ggplot3(cars, aes(speed, dist)) +
+<pre><code class="language-r">ggnext(cars, aes(speed, dist)) +
   geom_point(alpha = 0.6) +
   geom_hline(mean(cars$dist), dash = &quot;5,4&quot;, color = &quot;#C1462F&quot;) +
   geom_vline(mean(cars$speed), dash = &quot;5,4&quot;, color = &quot;#C1462F&quot;) +
@@ -1643,7 +1643,7 @@ ggplot3(db, aes(before, xend = after, y = g)) +
 <h2 id="2-7-geom-text">2.7 geom_text</h2>
 <pre><code class="language-r">lab &lt;- data.frame(x = c(1, 2, 3), y = c(3, 1, 2),
                   l = c(&quot;alpha&quot;, &quot;beta&quot;, &quot;gamma&quot;))
-ggplot3(lab, aes(x, y, label = l)) +
+ggnext(lab, aes(x, y, label = l)) +
   geom_point(size = 6, alpha = 0.25) + geom_text() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -1684,7 +1684,7 @@ ggplot3(lab, aes(x, y, label = l)) +
 <h2 id="2-8-geom-tile">2.8 geom_tile</h2>
 <pre><code class="language-r">grid &lt;- expand.grid(x = 1:10, y = 1:8)
 grid$z &lt;- as.vector(outer(1:10, 1:8, function(a, b) sin(a / 2) + cos(b / 2)))
-ggplot3(grid, aes(x, y, color = z)) + geom_tile() + theme_minimal()
+ggnext(grid, aes(x, y, color = z)) + geom_tile() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -1795,8 +1795,8 @@ ggplot3(grid, aes(x, y, color = z)) + geom_tile() + theme_minimal()
 <text x="294" y="470" text-anchor="middle" font-size="13" fill="#3A3A3A">x</text>
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">y</text>
 <text x="542" y="28" text-anchor="start" font-size="13" fill="#3A3A3A">z</text>
-<defs><linearGradient id="ggplot3-grad" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#1A2E59"/><stop offset="1" stop-color="#5FD0A5"/></linearGradient></defs>
-<rect x="542" y="38" width="14" height="120" fill="url(#ggplot3-grad)"/>
+<defs><linearGradient id="ggnext-grad" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#1A2E59"/><stop offset="1" stop-color="#5FD0A5"/></linearGradient></defs>
+<rect x="542" y="38" width="14" height="120" fill="url(#ggnext-grad)"/>
 <text x="562" y="161.85" text-anchor="start" font-size="11" fill="#3A3A3A">-1.96752261</text>
 <text x="562" y="131.85" text-anchor="start" font-size="11" fill="#3A3A3A">-1.00687257</text>
 <text x="562" y="101.85" text-anchor="start" font-size="11" fill="#3A3A3A">-0.04622253</text>
@@ -1807,7 +1807,7 @@ ggplot3(grid, aes(x, y, color = z)) + geom_tile() + theme_minimal()
 <h2 id="3-1-geom-bar-and-geom-col">3.1 geom_bar and geom_col</h2>
 <p><code>geom_bar()</code> counts rows; <code>geom_col()</code> takes the height from <code>y</code>.</p>
 <pre><code class="language-r">cnt &lt;- data.frame(g = c(&quot;a&quot;, &quot;a&quot;, &quot;a&quot;, &quot;b&quot;, &quot;b&quot;, &quot;c&quot;))
-ggplot3(cnt, aes(g)) + geom_bar() + theme_minimal()
+ggnext(cnt, aes(g)) + geom_bar() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -1837,7 +1837,7 @@ ggplot3(cnt, aes(g)) + geom_bar() + theme_minimal()
 </svg>
 <pre><code class="language-r">vals &lt;- data.frame(g = c(&quot;alpha&quot;, &quot;beta&quot;, &quot;gamma&quot;, &quot;delta&quot;),
                    v = c(12, 27, 19, 8))
-ggplot3(vals, aes(g, v, color = g)) + geom_col() +
+ggnext(vals, aes(g, v, color = g)) + geom_col() +
   theme(legend_position = &quot;none&quot;)
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -1889,7 +1889,7 @@ ggplot3(vals, aes(g, v, color = g)) + geom_col() +
 <pre><code class="language-r">grp &lt;- data.frame(g = rep(c(&quot;Q1&quot;, &quot;Q2&quot;, &quot;Q3&quot;), each = 3),
                   grp = rep(c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;), 3),
                   v = c(4, 6, 3, 7, 4, 5, 5, 8, 2))
-ggplot3(grp, aes(g, v, color = grp)) + geom_col(position = &quot;stack&quot;) +
+ggnext(grp, aes(g, v, color = grp)) + geom_col(position = &quot;stack&quot;) +
   labs(title = 'position = &quot;stack&quot; (default)') + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -1932,7 +1932,7 @@ ggplot3(grp, aes(g, v, color = grp)) + geom_col(position = &quot;stack&quot;) +
 <rect x="594" y="105" width="12" height="12" fill="#009E73"/>
 <text x="612" y="115" text-anchor="start" font-size="11" fill="#3A3A3A">c</text>
 </svg>
-<pre><code class="language-r">ggplot3(grp, aes(g, v, color = grp)) + geom_col(position = &quot;dodge&quot;) +
+<pre><code class="language-r">ggnext(grp, aes(g, v, color = grp)) + geom_col(position = &quot;dodge&quot;) +
   labs(title = 'position = &quot;dodge&quot;') + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -1977,7 +1977,7 @@ ggplot3(grp, aes(g, v, color = grp)) + geom_col(position = &quot;stack&quot;) +
 <rect x="594" y="105" width="12" height="12" fill="#009E73"/>
 <text x="612" y="115" text-anchor="start" font-size="11" fill="#3A3A3A">c</text>
 </svg>
-<pre><code class="language-r">ggplot3(grp, aes(g, v, color = grp)) + geom_col(position = &quot;fill&quot;) +
+<pre><code class="language-r">ggnext(grp, aes(g, v, color = grp)) + geom_col(position = &quot;fill&quot;) +
   labs(title = 'position = &quot;fill&quot; (proportions)') + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -2024,8 +2024,8 @@ ggplot3(grp, aes(g, v, color = grp)) + geom_col(position = &quot;stack&quot;) +
 </svg>
 <p>Stacked totals train the axis correctly — the domain covers the stack, not
 the tallest single bar:</p>
-<pre><code class="language-r">stacked &lt;- ggplot3:::build_geometry(
-  ggplot3(grp, aes(g, v, color = grp)) + geom_col(position = &quot;stack&quot;)
+<pre><code class="language-r">stacked &lt;- ggnext:::build_geometry(
+  ggnext(grp, aes(g, v, color = grp)) + geom_col(position = &quot;stack&quot;)
 )
 stacked$panels[[1]]$y$domain
 </code></pre>
@@ -2033,7 +2033,7 @@ stacked$panels[[1]]$y$domain
 </code></pre>
 <h2 id="3-3-geom-histogram">3.3 geom_histogram</h2>
 <p><code>bins = n</code> yields exactly <code>n</code> bins, and counts sum to the row count.</p>
-<pre><code class="language-r">ggplot3(cars, aes(speed)) + geom_histogram(bins = 8) + theme_minimal()
+<pre><code class="language-r">ggnext(cars, aes(speed)) + geom_histogram(bins = 8) + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -2068,7 +2068,7 @@ stacked$panels[[1]]$y$domain
 <text x="342" y="470" text-anchor="middle" font-size="13" fill="#3A3A3A">speed</text>
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">count</text>
 </svg>
-<pre><code class="language-r">h &lt;- plot_data(ggplot3(cars, aes(speed)) + geom_histogram(bins = 5))
+<pre><code class="language-r">h &lt;- plot_data(ggnext(cars, aes(speed)) + geom_histogram(bins = 5))
 h
 </code></pre>
 <pre><code>#&gt;      x  y ymin ymax xmin xmax
@@ -2084,7 +2084,7 @@ h
 #&gt;     5    50    50
 </code></pre>
 <p><code>binwidth</code> overrides <code>bins</code>:</p>
-<pre><code class="language-r">ggplot3(cars, aes(speed)) + geom_histogram(binwidth = 5) + theme_minimal()
+<pre><code class="language-r">ggnext(cars, aes(speed)) + geom_histogram(binwidth = 5) + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -2121,7 +2121,7 @@ h
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">count</text>
 </svg>
 <h2 id="3-4-geom-density">3.4 geom_density</h2>
-<pre><code class="language-r">ggplot3(iris, aes(Sepal.Length, color = Species)) +
+<pre><code class="language-r">ggnext(iris, aes(Sepal.Length, color = Species)) +
   geom_density(alpha = 0.45) + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -2170,7 +2170,7 @@ round(sum(dd$y) * diff(dd$x[1:2]), 3)
 <pre><code>#&gt; [1] 1
 </code></pre>
 <h2 id="3-5-geom-boxplot">3.5 geom_boxplot</h2>
-<pre><code class="language-r">ggplot3(iris, aes(Species, Sepal.Length, color = Species)) +
+<pre><code class="language-r">ggnext(iris, aes(Species, Sepal.Length, color = Species)) +
   geom_boxplot() + theme(legend_position = &quot;none&quot;)
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -2225,7 +2225,7 @@ round(sum(dd$y) * diff(dd$x[1:2]), 3)
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">Sepal.Length</text>
 </svg>
 <p>Quartiles match <code>stats::quantile()</code>:</p>
-<pre><code class="language-r">bx &lt;- plot_data(ggplot3(iris, aes(Species, Sepal.Length)) + geom_boxplot())
+<pre><code class="language-r">bx &lt;- plot_data(ggnext(iris, aes(Species, Sepal.Length)) + geom_boxplot())
 setosa &lt;- iris$Sepal.Length[iris$Species == &quot;setosa&quot;]
 c(computed = bx$middle[1], base_r = median(setosa))
 </code></pre>
@@ -2233,7 +2233,7 @@ c(computed = bx$middle[1], base_r = median(setosa))
 #&gt;        5        5
 </code></pre>
 <h2 id="3-6-geom-violin">3.6 geom_violin</h2>
-<pre><code class="language-r">ggplot3(iris, aes(Species, Sepal.Width, color = Species)) +
+<pre><code class="language-r">ggnext(iris, aes(Species, Sepal.Width, color = Species)) +
   geom_violin() + theme(legend_position = &quot;none&quot;)
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -2270,7 +2270,7 @@ c(computed = bx$middle[1], base_r = median(setosa))
 </svg>
 <h2 id="3-7-layered-distribution-view">3.7 Layered distribution view</h2>
 <p>Layers draw in the order added: shape underneath, summary, raw data on top.</p>
-<pre><code class="language-r">ggplot3(iris, aes(Species, Sepal.Length, color = Species)) +
+<pre><code class="language-r">ggnext(iris, aes(Species, Sepal.Length, color = Species)) +
   geom_violin(alpha = 0.25) +
   geom_boxplot() +
   geom_jitter(alpha = 0.4) +
@@ -2484,7 +2484,7 @@ c(computed = bx$middle[1], base_r = median(setosa))
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">Sepal.Length</text>
 </svg>
 <h2 id="3-8-geom-ridgeline">3.8 geom_ridgeline</h2>
-<pre><code class="language-r">ggplot3(iris, aes(Sepal.Length, Species)) +
+<pre><code class="language-r">ggnext(iris, aes(Sepal.Length, Species)) +
   geom_ridgeline() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -2518,7 +2518,7 @@ c(computed = bx$middle[1], base_r = median(setosa))
 <text x="342" y="470" text-anchor="middle" font-size="13" fill="#3A3A3A">Sepal.Length</text>
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">Species</text>
 </svg>
-<pre><code class="language-r">ggplot3(iris, aes(Sepal.Length, Species)) +
+<pre><code class="language-r">ggnext(iris, aes(Sepal.Length, Species)) +
   geom_ridgeline(scale = 3, alpha = 0.55) +
   labs(title = &quot;scale = 3 makes ridges overlap&quot;) + theme_minimal()
 </code></pre>
@@ -2555,7 +2555,7 @@ c(computed = bx$middle[1], base_r = median(setosa))
 <text x="15" y="239.5" transform="rotate(-90 15 239.5)" text-anchor="middle" font-size="13" fill="#3A3A3A">Species</text>
 </svg>
 <h2 id="3-9-geom-smooth">3.9 geom_smooth</h2>
-<pre><code class="language-r">ggplot3(cars, aes(speed, dist)) +
+<pre><code class="language-r">ggnext(cars, aes(speed, dist)) +
   geom_point(alpha = 0.6) + geom_smooth(method = &quot;lm&quot;) + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -2644,7 +2644,7 @@ max(abs(sm$y - unname(predict(fit, data.frame(speed = sm$x)))))
 </code></pre>
 <pre><code>#&gt; [1] 0
 </code></pre>
-<pre><code class="language-r">ggplot3(cars, aes(speed, dist)) +
+<pre><code class="language-r">ggnext(cars, aes(speed, dist)) +
   geom_point(alpha = 0.6) + geom_smooth(method = &quot;loess&quot;, se = FALSE) +
   theme_minimal()
 </code></pre>
@@ -2735,7 +2735,7 @@ max(abs(sm$y - unname(predict(fit, data.frame(speed = sm$x)))))
 <h2 id="3-10-error-bars-and-point-ranges">3.10 Error bars and point ranges</h2>
 <pre><code class="language-r">eb &lt;- data.frame(g = c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;), m = c(5, 7, 4, 8),
                  lo = c(4, 6.2, 3.1, 7.1), hi = c(6, 7.8, 4.9, 8.9))
-ggplot3(eb, aes(g, m, ymin = lo, ymax = hi)) +
+ggnext(eb, aes(g, m, ymin = lo, ymax = hi)) +
   geom_errorbar() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -2781,7 +2781,7 @@ ggplot3(eb, aes(g, m, ymin = lo, ymax = hi)) +
 <text x="342" y="470" text-anchor="middle" font-size="13" fill="#3A3A3A">g</text>
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">m</text>
 </svg>
-<pre><code class="language-r">ggplot3(eb, aes(g, m, ymin = lo, ymax = hi)) +
+<pre><code class="language-r">ggnext(eb, aes(g, m, ymin = lo, ymax = hi)) +
   geom_pointrange() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -2829,7 +2829,7 @@ ggplot3(eb, aes(g, m, ymin = lo, ymax = hi)) +
                 levels = c(&quot;Start&quot;, &quot;Sales&quot;, &quot;Costs&quot;, &quot;Tax&quot;, &quot;End&quot;)),
   v = c(100, 45, -30, -12, 0)
 )
-ggplot3(wf, aes(step, v)) + geom_waterfall() + theme_minimal()
+ggnext(wf, aes(step, v)) + geom_waterfall() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -2869,7 +2869,7 @@ ggplot3(wf, aes(step, v)) + geom_waterfall() + theme_minimal()
 </svg>
 <h1 id="4-scales-and-axes">4. Scales and axes</h1>
 <h2 id="4-1-axis-titles-breaks-labels-padding">4.1 Axis titles, breaks, labels, padding</h2>
-<pre><code class="language-r">ggplot3(cars, aes(speed, dist)) +
+<pre><code class="language-r">ggnext(cars, aes(speed, dist)) +
   geom_point() +
   scale_x_continuous(
     name = &quot;Speed (mph)&quot;,
@@ -2966,8 +2966,8 @@ ggplot3(wf, aes(step, v)) + geom_waterfall() + theme_minimal()
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">Stopping distance</text>
 </svg>
 <p><code>expand = 0</code> makes the domain exactly the data range:</p>
-<pre><code class="language-r">tight &lt;- ggplot3:::build_geometry(
-  ggplot3(cars, aes(speed, dist)) + geom_point() +
+<pre><code class="language-r">tight &lt;- ggnext:::build_geometry(
+  ggnext(cars, aes(speed, dist)) + geom_point() +
     scale_x_continuous(expand = 0)
 )
 rbind(domain = tight$panels[[1]]$x$domain, data = range(cars$speed))
@@ -2977,7 +2977,7 @@ rbind(domain = tight$panels[[1]]$x$domain, data = range(cars$speed))
 #&gt; data      4   25
 </code></pre>
 <h2 id="4-2-limits">4.2 Limits</h2>
-<pre><code class="language-r">ggplot3(cars, aes(speed, dist)) + geom_point() +
+<pre><code class="language-r">ggnext(cars, aes(speed, dist)) + geom_point() +
   xlim(0, 30) + ylim(0, 150) + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -3057,7 +3057,7 @@ rbind(domain = tight$panels[[1]]$x$domain, data = range(cars$speed))
 </svg>
 <p><code>lims()</code> sets both at once. Limits set the <em>domain</em>, not a crop — data
 outside still goes through the stats and is clipped when drawn.</p>
-<pre><code class="language-r">ggplot3(cars, aes(speed, dist)) + geom_point() +
+<pre><code class="language-r">ggnext(cars, aes(speed, dist)) + geom_point() +
   lims(x = c(10, 20)) +
   geom_smooth(method = &quot;lm&quot;) +
   labs(subtitle = &quot;the fit still uses all 50 rows&quot;) + theme_minimal()
@@ -3144,7 +3144,7 @@ outside still goes through the stats and is clipped when drawn.</p>
 </svg>
 <h2 id="4-3-transforms">4.3 Transforms</h2>
 <pre><code class="language-r">lg &lt;- data.frame(x = 10^(1:5), y = 1:5)
-ggplot3(lg, aes(x, y)) + geom_point(size = 5) + scale_x_log10() +
+ggnext(lg, aes(x, y)) + geom_point(size = 5) + scale_x_log10() +
   theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -3182,15 +3182,15 @@ ggplot3(lg, aes(x, y)) + geom_point(size = 5) + scale_x_log10() +
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">y</text>
 </svg>
 <p>Positions are the log of the data; labels stay in original units.</p>
-<pre><code class="language-r">lb &lt;- ggplot3:::build_geometry(
-  ggplot3(lg, aes(x, y)) + geom_point() + scale_x_log10()
+<pre><code class="language-r">lb &lt;- ggnext:::build_geometry(
+  ggnext(lg, aes(x, y)) + geom_point() + scale_x_log10()
 )
 unlist(lb$panels[[1]]$x$ticks$labels)
 </code></pre>
 <pre><code>#&gt; [1] &quot;10&quot;     &quot;100&quot;    &quot;1000&quot;   &quot;10000&quot;  &quot;100000&quot;
 </code></pre>
 <pre><code class="language-r">sq &lt;- data.frame(x = c(1, 4, 9, 16, 25), y = 1:5)
-ggplot3(sq, aes(x, y)) + geom_point(size = 5) + scale_x_sqrt() +
+ggnext(sq, aes(x, y)) + geom_point(size = 5) + scale_x_sqrt() +
   theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -3227,7 +3227,7 @@ ggplot3(sq, aes(x, y)) + geom_point(size = 5) + scale_x_sqrt() +
 <text x="342" y="470" text-anchor="middle" font-size="13" fill="#3A3A3A">x</text>
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">y</text>
 </svg>
-<pre><code class="language-r">ggplot3(sq, aes(x, y)) + geom_point(size = 5) + scale_y_reverse() +
+<pre><code class="language-r">ggnext(sq, aes(x, y)) + geom_point(size = 5) + scale_y_reverse() +
   labs(title = &quot;scale_y_reverse()&quot;) + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -3272,7 +3272,7 @@ ggplot3(sq, aes(x, y)) + geom_point(size = 5) + scale_x_sqrt() +
 <pre><code class="language-r">srt &lt;- data.frame(name = c(&quot;delta&quot;, &quot;alpha&quot;, &quot;gamma&quot;, &quot;beta&quot;),
                   value = c(8, 12, 19, 27))
 srt &lt;- srt[order(-srt$value), ]
-ggplot3(srt, aes(name, value)) + geom_col() +
+ggnext(srt, aes(name, value)) + geom_col() +
   scale_x_discrete(limits = srt$name) + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -3309,7 +3309,7 @@ ggplot3(srt, aes(name, value)) + geom_col() +
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">value</text>
 </svg>
 <h2 id="4-5-colour-scales">4.5 Colour scales</h2>
-<pre><code class="language-r">ggplot3(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
+<pre><code class="language-r">ggnext(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
   geom_point(size = 3) +
   scale_color_manual(c(&quot;#2B6BE0&quot;, &quot;#E05A2B&quot;, &quot;#12A594&quot;)) +
   theme_minimal()
@@ -3500,7 +3500,7 @@ ggplot3(srt, aes(name, value)) + geom_col() +
 <rect x="549" y="78" width="12" height="12" fill="#12A594"/>
 <text x="567" y="88" text-anchor="start" font-size="11" fill="#3A3A3A">virginica</text>
 </svg>
-<pre><code class="language-r">ggplot3(iris, aes(Sepal.Length, Sepal.Width, color = Petal.Length)) +
+<pre><code class="language-r">ggnext(iris, aes(Sepal.Length, Sepal.Width, color = Petal.Length)) +
   geom_point(size = 3) +
   scale_color_gradient(low = &quot;#FFF3B0&quot;, high = &quot;#9E2A2B&quot;) +
   labs(color = &quot;Petal length&quot;) + theme_minimal()
@@ -3684,8 +3684,8 @@ ggplot3(srt, aes(name, value)) + geom_col() +
 <text x="291" y="470" text-anchor="middle" font-size="13" fill="#3A3A3A">Sepal.Length</text>
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">Sepal.Width</text>
 <text x="536" y="28" text-anchor="start" font-size="13" fill="#3A3A3A">Petal length</text>
-<defs><linearGradient id="ggplot3-grad" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFF3B0"/><stop offset="1" stop-color="#9E2A2B"/></linearGradient></defs>
-<rect x="536" y="38" width="14" height="120" fill="url(#ggplot3-grad)"/>
+<defs><linearGradient id="ggnext-grad" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFF3B0"/><stop offset="1" stop-color="#9E2A2B"/></linearGradient></defs>
+<rect x="536" y="38" width="14" height="120" fill="url(#ggnext-grad)"/>
 <text x="556" y="161.85" text-anchor="start" font-size="11" fill="#3A3A3A">1</text>
 <text x="556" y="131.85" text-anchor="start" font-size="11" fill="#3A3A3A">2.475</text>
 <text x="556" y="101.85" text-anchor="start" font-size="11" fill="#3A3A3A">3.95</text>
@@ -3694,7 +3694,7 @@ ggplot3(srt, aes(name, value)) + geom_col() +
 </svg>
 <h1 id="5-coordinates">5. Coordinates</h1>
 <h2 id="5-1-coord-flip">5.1 coord_flip</h2>
-<pre><code class="language-r">ggplot3(vals, aes(g, v, color = g)) + geom_col() + coord_flip() +
+<pre><code class="language-r">ggnext(vals, aes(g, v, color = g)) + geom_col() + coord_flip() +
   theme(legend_position = &quot;none&quot;)
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -3745,7 +3745,7 @@ ggplot3(srt, aes(name, value)) + geom_col() +
 <h2 id="5-2-coord-polar">5.2 coord_polar</h2>
 <pre><code class="language-r">days &lt;- data.frame(d = c(&quot;Mon&quot;, &quot;Tue&quot;, &quot;Wed&quot;, &quot;Thu&quot;, &quot;Fri&quot;, &quot;Sat&quot;, &quot;Sun&quot;),
                    v = c(4, 7, 6, 9, 12, 15, 11))
-ggplot3(days, aes(d, v, color = d)) + geom_col() + coord_polar() +
+ggnext(days, aes(d, v, color = d)) + geom_col() + coord_polar() +
   theme(legend_position = &quot;none&quot;)
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -3787,7 +3787,7 @@ ggplot3(days, aes(d, v, color = d)) + geom_col() + coord_polar() +
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">v</text>
 </svg>
 <p>Donut hole, direction and start angle:</p>
-<pre><code class="language-r">ggplot3(days, aes(d, v, color = d)) + geom_col() +
+<pre><code class="language-r">ggnext(days, aes(d, v, color = d)) + geom_col() +
   coord_polar(inner = 0.35, direction = -1, start = pi / 4) +
   theme(legend_position = &quot;none&quot;)
 </code></pre>
@@ -3830,8 +3830,8 @@ ggplot3(days, aes(d, v, color = d)) + geom_col() + coord_polar() +
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">v</text>
 </svg>
 <p>Categories wrap evenly around the full turn:</p>
-<pre><code class="language-r">pol &lt;- ggplot3:::build_geometry(
-  ggplot3(days, aes(d, v)) + geom_col() + coord_polar()
+<pre><code class="language-r">pol &lt;- ggnext:::build_geometry(
+  ggnext(days, aes(d, v)) + geom_col() + coord_polar()
 )
 unlist(pol$panels[[1]]$polar$spokes)
 </code></pre>
@@ -3839,7 +3839,7 @@ unlist(pol$panels[[1]]$polar$spokes)
 </code></pre>
 <h1 id="6-facets">6. Facets</h1>
 <h2 id="6-1-facet-wrap">6.1 facet_wrap</h2>
-<pre><code class="language-r">ggplot3(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
+<pre><code class="language-r">ggnext(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
   geom_point() + facet_wrap(Species) +
   theme(legend_position = &quot;none&quot;)
 </code></pre>
@@ -4093,7 +4093,7 @@ unlist(pol$panels[[1]]$polar$spokes)
 <text x="15" y="237.5" transform="rotate(-90 15 237.5)" text-anchor="middle" font-size="13" fill="#3A3A3A">Sepal.Width</text>
 </svg>
 <h2 id="6-2-grid-shape-and-free-scales">6.2 Grid shape and free scales</h2>
-<pre><code class="language-r">ggplot3(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
+<pre><code class="language-r">ggnext(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
   geom_point() + facet_wrap(Species, ncol = 2, scales = &quot;free&quot;) +
   theme(legend_position = &quot;none&quot;)
 </code></pre>
@@ -4346,11 +4346,11 @@ unlist(pol$panels[[1]]$polar$spokes)
 <text x="15" y="237.5" transform="rotate(-90 15 237.5)" text-anchor="middle" font-size="13" fill="#3A3A3A">Sepal.Width</text>
 </svg>
 <p>Fixed scales share one domain; free scales train per panel.</p>
-<pre><code class="language-r">fixed &lt;- ggplot3:::build_geometry(
-  ggplot3(iris, aes(Sepal.Length, Sepal.Width)) + geom_point() +
+<pre><code class="language-r">fixed &lt;- ggnext:::build_geometry(
+  ggnext(iris, aes(Sepal.Length, Sepal.Width)) + geom_point() +
     facet_wrap(Species))
-free &lt;- ggplot3:::build_geometry(
-  ggplot3(iris, aes(Sepal.Length, Sepal.Width)) + geom_point() +
+free &lt;- ggnext:::build_geometry(
+  ggnext(iris, aes(Sepal.Length, Sepal.Width)) + geom_point() +
     facet_wrap(Species, scales = &quot;free&quot;))
 rbind(
   fixed_p1 = fixed$panels[[1]]$x$domain,
@@ -4367,7 +4367,7 @@ rbind(
 </code></pre>
 <h2 id="6-3-facet-grid">6.3 facet_grid</h2>
 <pre><code class="language-r">mt &lt;- transform(mtcars, cyl = factor(cyl), am = factor(am))
-ggplot3(mt, aes(disp, mpg)) + geom_point() + facet_grid(am, cyl) +
+ggnext(mt, aes(disp, mpg)) + geom_point() + facet_grid(am, cyl) +
   theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -4528,7 +4528,7 @@ ggplot3(mt, aes(disp, mpg)) + geom_point() + facet_grid(am, cyl) +
 <text x="15" y="237.5" transform="rotate(-90 15 237.5)" text-anchor="middle" font-size="13" fill="#3A3A3A">mpg</text>
 </svg>
 <h2 id="6-4-a-layer-without-the-faceting-variable-repeats-in-every-panel">6.4 A layer without the faceting variable repeats in every panel</h2>
-<pre><code class="language-r">ggplot3(iris, aes(Sepal.Length, Sepal.Width)) +
+<pre><code class="language-r">ggnext(iris, aes(Sepal.Length, Sepal.Width)) +
   geom_point(alpha = 0.6) +
   geom_hline(3, color = &quot;#C1462F&quot;, dash = &quot;4,3&quot;) +
   facet_wrap(Species) + theme_minimal()
@@ -4761,7 +4761,7 @@ ggplot3(mt, aes(disp, mpg)) + geom_point() + facet_grid(am, cyl) +
 </svg>
 <h1 id="7-titles-labels-and-themes">7. Titles, labels and themes</h1>
 <h2 id="7-1-the-title-block">7.1 The title block</h2>
-<pre><code class="language-r">ggplot3(cars, aes(speed, dist)) +
+<pre><code class="language-r">ggnext(cars, aes(speed, dist)) +
   geom_point() +
   labs(
     title    = &quot;Stopping distance rises with speed&quot;,
@@ -4861,9 +4861,9 @@ ggplot3(mt, aes(disp, mpg)) + geom_point() + facet_grid(am, cyl) +
 </svg>
 <p><code>labs()</code> merges across repeated calls; <code>ggtitle()</code>, <code>xlab()</code>, <code>ylab()</code> are
 shorthands.</p>
-<pre><code class="language-r">lab_plot &lt;- ggplot3(cars, aes(speed, dist)) + geom_point() +
+<pre><code class="language-r">lab_plot &lt;- ggnext(cars, aes(speed, dist)) + geom_point() +
   labs(title = &quot;first&quot;) + labs(subtitle = &quot;second&quot;) + xlab(&quot;X&quot;) + ylab(&quot;Y&quot;)
-b &lt;- ggplot3:::build_geometry(lab_plot)
+b &lt;- ggnext:::build_geometry(lab_plot)
 unlist(b$labels[c(&quot;title&quot;, &quot;subtitle&quot;)])
 </code></pre>
 <pre><code>#&gt;    title subtitle 
@@ -4871,14 +4871,14 @@ unlist(b$labels[c(&quot;title&quot;, &quot;subtitle&quot;)])
 </code></pre>
 <h2 id="7-2-the-six-presets">7.2 The six presets</h2>
 <pre><code class="language-r">theme_demo &lt;- function(th, nm) {
-  ggplot3(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
+  ggnext(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
     geom_point(alpha = 0.85) + labs(title = nm) + th
 }
-theme_demo(theme_ggplot3(), &quot;theme_ggplot3()&quot;)
+theme_demo(theme_ggnext(), &quot;theme_ggnext()&quot;)
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
-<text x="10" y="25" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="bold" fill="#1A1A22">theme_ggplot3()</text>
+<text x="10" y="25" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="bold" fill="#1A1A22">theme_ggnext()</text>
 <rect x="60" y="47" width="475" height="385" fill="#F4F4F6"/>
 <line x1="165.56" y1="47" x2="165.56" y2="432" stroke="#FFFFFF" stroke-width="1"/>
 <line x1="285.51" y1="47" x2="285.51" y2="432" stroke="#FFFFFF" stroke-width="1"/>
@@ -6015,7 +6015,7 @@ theme_demo(theme_ggplot3(), &quot;theme_ggplot3()&quot;)
 </svg>
 <h2 id="7-3-customising-a-theme">7.3 Customising a theme</h2>
 <p><code>base</code> picks the preset to start from; everything else applies over it.</p>
-<pre><code class="language-r">ggplot3(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
+<pre><code class="language-r">ggnext(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
   geom_point(size = 3) +
   labs(title = &quot;Custom theme&quot;) +
   theme(
@@ -6211,7 +6211,7 @@ theme_demo(theme_ggplot3(), &quot;theme_ggplot3()&quot;)
 <text x="383" y="462" text-anchor="start" font-size="11" fill="#3A3A3A">virginica</text>
 </svg>
 <h2 id="7-4-all-35-theme-settings">7.4 All 35 theme settings</h2>
-<pre><code class="language-r">defaults &lt;- ggplot3:::THEME_DEFAULTS
+<pre><code class="language-r">defaults &lt;- ggnext:::THEME_DEFAULTS
 data.frame(
   setting = names(defaults),
   default = vapply(defaults, function(v) {
@@ -6221,7 +6221,7 @@ data.frame(
 )
 </code></pre>
 <pre><code>#&gt;               setting                      default
-#&gt; 1                name                      ggplot3
+#&gt; 1                name                       ggnext
 #&gt; 2          background                      #FFFFFF
 #&gt; 3          panel_fill                      #F4F4F6
 #&gt; 4          grid_color                      #FFFFFF
@@ -6266,7 +6266,7 @@ data.frame(
   length(gregexpr(tag, svg, fixed = TRUE)[[1]]) *
     (!grepl(&quot;^\\s*$&quot;, svg)) * as.integer(grepl(tag, svg, fixed = TRUE))
 }
-p0 &lt;- ggplot3(cars, aes(speed, dist)) + geom_point()
+p0 &lt;- ggnext(cars, aes(speed, dist)) + geom_point()
 data.frame(
   setting = c(&quot;grid on (default)&quot;, &quot;grid_major_x = FALSE&quot;,
               &quot;grid_color = ''&quot;, &quot;axis_text_x = FALSE&quot;),
@@ -6285,7 +6285,7 @@ data.frame(
 #&gt; 4  axis_text_x = FALSE                   2
 </code></pre>
 <h2 id="7-5-legends">7.5 Legends</h2>
-<pre><code class="language-r">ggplot3(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
+<pre><code class="language-r">ggnext(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
   geom_point() + theme(legend_position = &quot;bottom&quot;)
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -6485,7 +6485,7 @@ data.frame(
 <rect x="365" y="453" width="12" height="12" fill="#009E73"/>
 <text x="383" y="462" text-anchor="start" font-size="11" fill="#3A3A3A">virginica</text>
 </svg>
-<pre><code class="language-r">ggplot3(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
+<pre><code class="language-r">ggnext(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
   geom_point() + theme(legend_position = &quot;none&quot;)
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -6686,7 +6686,7 @@ data.frame(
   value = c(8, 6, 7, 4, 9, 5, 9, 4, 8, 6),
   model = rep(c(&quot;A&quot;, &quot;B&quot;), each = 5)
 )
-ggplot3(radar, aes(axis, value, color = model)) +
+ggnext(radar, aes(axis, value, color = model)) +
   geom_radar() + coord_polar() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -6740,7 +6740,7 @@ ggplot3(radar, aes(axis, value, color = model)) +
 <h2 id="8-2-geom-treemap">8.2 geom_treemap</h2>
 <pre><code class="language-r">tm &lt;- data.frame(region = c(&quot;North&quot;, &quot;South&quot;, &quot;East&quot;, &quot;West&quot;, &quot;Central&quot;),
                  revenue = c(52, 38, 27, 19, 11))
-ggplot3(tm, aes(size = revenue, label = region, color = region)) +
+ggnext(tm, aes(size = revenue, label = region, color = region)) +
   geom_treemap() + theme(legend_position = &quot;none&quot;)
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -6766,7 +6766,7 @@ ggplot3(tm, aes(size = revenue, label = region, color = region)) +
   to   = c(&quot;Signed up&quot;, &quot;Left&quot;, &quot;Purchased&quot;, &quot;Churned&quot;),
   n    = c(400, 600, 150, 250)
 )
-ggplot3(flows, aes(x = from, xend = to, y = n)) + geom_sankey()
+ggnext(flows, aes(x = from, xend = to, y = n)) + geom_sankey()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -6792,7 +6792,7 @@ ggplot3(flows, aes(x = from, xend = to, y = n)) + geom_sankey()
 <h2 id="8-4-geom-network">8.4 geom_network</h2>
 <pre><code class="language-r">net &lt;- data.frame(from = c(&quot;A&quot;, &quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;B&quot;),
                   to   = c(&quot;B&quot;, &quot;C&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;A&quot;, &quot;E&quot;))
-ggplot3(net, aes(x = from, xend = to)) + geom_network()
+ggnext(net, aes(x = from, xend = to)) + geom_network()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -6821,7 +6821,7 @@ ggplot3(net, aes(x = from, xend = to)) + geom_network()
 <h2 id="8-5-geom-chord">8.5 geom_chord</h2>
 <pre><code class="language-r">ch &lt;- data.frame(from = c(&quot;A&quot;, &quot;A&quot;, &quot;B&quot;, &quot;C&quot;), to = c(&quot;B&quot;, &quot;C&quot;, &quot;C&quot;, &quot;A&quot;),
                  n = c(5, 3, 7, 2))
-ggplot3(ch, aes(x = from, xend = to, y = n)) + geom_chord()
+ggnext(ch, aes(x = from, xend = to, y = n)) + geom_chord()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -6846,7 +6846,7 @@ ggplot3(ch, aes(x = from, xend = to, y = n)) + geom_chord()
   v = c(2, 4, 6, 5, 3, 2, 4, 5, 1, 3, 5, 8, 6, 4, 3, 2, 5, 4, 3, 4, 6, 7, 5, 4),
   grp = rep(c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;), each = 8)
 )
-ggplot3(st, aes(t, v, color = grp)) + geom_stream() + theme_minimal()
+ggnext(st, aes(t, v, color = grp)) + geom_stream() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -6887,7 +6887,7 @@ ggplot3(st, aes(t, v, color = grp)) + geom_stream() + theme_minimal()
   rank = c(1, 2, 3, 3, 2, 2, 1, 1, 2, 1, 3, 3, 2, 1, 3, 4, 4, 4, 4, 4),
   team = rep(c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;), each = 5)
 )
-ggplot3(bump, aes(year, rank, color = team)) +
+ggnext(bump, aes(year, rank, color = team)) +
   geom_bump() + scale_y_reverse() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -6956,7 +6956,7 @@ ggplot3(bump, aes(year, rank, color = team)) +
                  levels = c(&quot;Visits&quot;, &quot;Signups&quot;, &quot;Trials&quot;, &quot;Paid&quot;)),
   n = c(10000, 3200, 1100, 420)
 )
-ggplot3(fn, aes(stage, n, color = stage)) + geom_funnel() +
+ggnext(fn, aes(stage, n, color = stage)) + geom_funnel() +
   theme(legend_position = &quot;none&quot;)
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -6982,7 +6982,7 @@ par_d &lt;- data.frame(
   val = c(sub$Sepal.Length, sub$Sepal.Width, sub$Petal.Length, sub$Petal.Width),
   sp  = rep(as.character(sub$Species), 4)
 )
-ggplot3(par_d, aes(var, val, group = id, color = sp)) +
+ggnext(par_d, aes(var, val, group = id, color = sp)) +
   geom_parallel() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -7030,7 +7030,7 @@ ggplot3(par_d, aes(var, val, group = id, color = sp)) +
 <h2 id="8-10-geom-upset">8.10 geom_upset</h2>
 <pre><code class="language-r">us &lt;- data.frame(sets = c(&quot;A&quot;, &quot;A&amp;B&quot;, &quot;B&quot;, &quot;A&amp;B&amp;C&quot;, &quot;C&quot;, &quot;A&amp;B&quot;,
                           &quot;A&quot;, &quot;B&amp;C&quot;, &quot;A&amp;C&quot;, &quot;A&amp;B&quot;))
-ggplot3(us, aes(label = sets)) + geom_upset()
+ggnext(us, aes(label = sets)) + geom_upset()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -7089,7 +7089,7 @@ ggplot3(us, aes(label = sets)) + geom_upset()
   shap    = c(rnorm(40, 0.3, 0.2), rnorm(40, -0.1, 0.3), rnorm(40, 0, 0.15)),
   value   = runif(120)
 )
-ggplot3(shap, aes(shap, feature, color = value)) +
+ggnext(shap, aes(shap, feature, color = value)) +
   geom_shap() + geom_vline(0, dash = &quot;3,3&quot;) +
   labs(x = &quot;SHAP value&quot;, y = NULL) + theme_minimal()
 </code></pre>
@@ -7237,8 +7237,8 @@ ggplot3(shap, aes(shap, feature, color = value)) +
 <text x="294" y="470" text-anchor="middle" font-size="13" fill="#3A3A3A">SHAP value</text>
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">feature</text>
 <text x="542" y="28" text-anchor="start" font-size="13" fill="#3A3A3A">value</text>
-<defs><linearGradient id="ggplot3-grad" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#1A2E59"/><stop offset="1" stop-color="#5FD0A5"/></linearGradient></defs>
-<rect x="542" y="38" width="14" height="120" fill="url(#ggplot3-grad)"/>
+<defs><linearGradient id="ggnext-grad" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#1A2E59"/><stop offset="1" stop-color="#5FD0A5"/></linearGradient></defs>
+<rect x="542" y="38" width="14" height="120" fill="url(#ggnext-grad)"/>
 <text x="562" y="161.85" text-anchor="start" font-size="11" fill="#3A3A3A">0.001272528</text>
 <text x="562" y="131.85" text-anchor="start" font-size="11" fill="#3A3A3A">0.247711965</text>
 <text x="562" y="101.85" text-anchor="start" font-size="11" fill="#3A3A3A">0.494151402</text>
@@ -7250,7 +7250,7 @@ ggplot3(shap, aes(shap, feature, color = value)) +
   x = rep(1:10, 8), id = rep(1:8, each = 10),
   pred = as.vector(sapply(1:8, function(i) (1:10) * 0.1 * i + rnorm(10, 0, .15)))
 )
-ggplot3(pdp, aes(x, pred, group = id)) +
+ggnext(pdp, aes(x, pred, group = id)) +
   geom_partial_dependence() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -7294,7 +7294,7 @@ ggplot3(pdp, aes(x, pred, group = id)) +
 <h2 id="9-3-geom-roc">9.3 geom_roc</h2>
 <pre><code class="language-r">sc &lt;- runif(300)
 roc_d &lt;- data.frame(score = sc, truth = rbinom(300, 1, sc))
-ggplot3(roc_d, aes(score = score, truth = truth)) +
+ggnext(roc_d, aes(score = score, truth = truth)) +
   geom_roc() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -7351,7 +7351,7 @@ data.frame(fpr = perfect$x, tpr = perfect$y)
 <h2 id="9-4-geom-calibration">9.4 geom_calibration</h2>
 <pre><code class="language-r">pr &lt;- runif(400)
 cal &lt;- data.frame(pred = pr, obs = rbinom(400, 1, pr^1.3))
-ggplot3(cal, aes(pred, obs)) + geom_calibration() + theme_minimal()
+ggnext(cal, aes(pred, obs)) + geom_calibration() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -7397,7 +7397,7 @@ ggplot3(cal, aes(pred, obs)) + geom_calibration() + theme_minimal()
 <h2 id="9-5-geom-lift-gain">9.5 geom_lift_gain</h2>
 <pre><code class="language-r">s2 &lt;- runif(250)
 lg_d &lt;- data.frame(score = s2, y = rbinom(250, 1, s2))
-ggplot3(lg_d, aes(score = score, truth = y)) +
+ggnext(lg_d, aes(score = score, truth = y)) +
   geom_lift_gain(type = &quot;gain&quot;) + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -7435,7 +7435,7 @@ ggplot3(lg_d, aes(score = score, truth = y)) +
 <text x="342" y="470" text-anchor="middle" font-size="13" fill="#3A3A3A">proportion targeted</text>
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">proportion of positives</text>
 </svg>
-<pre><code class="language-r">ggplot3(lg_d, aes(score = score, truth = y)) +
+<pre><code class="language-r">ggnext(lg_d, aes(score = score, truth = y)) +
   geom_lift_gain(type = &quot;lift&quot;) + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -7479,7 +7479,7 @@ ggplot3(lg_d, aes(score = score, truth = y)) +
   actual = c(rep(&quot;cat&quot;, 11), rep(&quot;dog&quot;, 3), rep(&quot;dog&quot;, 7),
              rep(&quot;cat&quot;, 2), rep(&quot;bird&quot;, 5), &quot;cat&quot;)
 )
-ggplot3(cm, aes(predicted, actual)) + geom_confusion_matrix() +
+ggnext(cm, aes(predicted, actual)) + geom_confusion_matrix() +
   theme(legend_position = &quot;none&quot;)
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -7526,7 +7526,7 @@ ggplot3(cm, aes(predicted, actual)) + geom_confusion_matrix() +
 <h2 id="9-7-geom-residual">9.7 geom_residual</h2>
 <pre><code class="language-r">m &lt;- lm(dist ~ speed, cars)
 res &lt;- data.frame(fitted = fitted(m), resid = resid(m))
-ggplot3(res, aes(fitted, resid)) + geom_residual() + theme_minimal()
+ggnext(res, aes(fitted, resid)) + geom_residual() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -7613,7 +7613,7 @@ ggplot3(res, aes(fitted, resid)) + geom_residual() + theme_minimal()
   score = c(.72, .80, .85, .88, .90, .66, .75, .81, .85, .88),
   split = rep(c(&quot;train&quot;, &quot;validation&quot;), each = 5)
 )
-ggplot3(lc, aes(n, score, color = split)) +
+ggnext(lc, aes(n, score, color = split)) +
   geom_learning_curve() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -7667,7 +7667,7 @@ ggplot3(lc, aes(n, score, color = split)) +
   cluster = rep(c(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;), each = 25),
   width = c(runif(25, .3, .9), runif(25, .1, .7), runif(25, -.1, .6))
 )
-ggplot3(sil, aes(width, cluster, color = cluster)) +
+ggnext(sil, aes(width, cluster, color = cluster)) +
   geom_silhouette() + theme(legend_position = &quot;none&quot;)
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -7784,7 +7784,7 @@ ggplot3(sil, aes(width, cluster, color = cluster)) +
 <pre><code class="language-r">emb &lt;- data.frame(d1 = c(rnorm(40), rnorm(40, 4)),
                   d2 = c(rnorm(40), rnorm(40, 3)),
                   cluster = rep(c(&quot;a&quot;, &quot;b&quot;), each = 40))
-ggplot3(emb, aes(d1, d2, color = cluster)) +
+ggnext(emb, aes(d1, d2, color = cluster)) +
   geom_embedding() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -7904,7 +7904,7 @@ ggplot3(emb, aes(d1, d2, color = cluster)) +
 <h2 id="9-11-geom-decision-boundary">9.11 geom_decision_boundary</h2>
 <pre><code class="language-r">gr &lt;- expand.grid(x = seq(0, 1, 0.04), y = seq(0, 1, 0.04))
 gr$cls &lt;- ifelse(gr$x + gr$y &gt; 1, &quot;a&quot;, &quot;b&quot;)
-ggplot3(gr, aes(x, y, color = cls)) +
+ggnext(gr, aes(x, y, color = cls)) +
   geom_decision_boundary() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -8628,7 +8628,7 @@ ggplot3(gr, aes(x, y, color = cls)) +
   hi = c(rep(NA, 7), 9.5, 11, 12.5, 14, 15.5),
   part = rep(c(&quot;actual&quot;, &quot;forecast&quot;), c(7, 5))
 )
-ggplot3(fc, aes(t, v, ymin = lo, ymax = hi, group = part)) +
+ggnext(fc, aes(t, v, ymin = lo, ymax = hi, group = part)) +
   geom_forecast_band() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -8668,7 +8668,7 @@ ggplot3(fc, aes(t, v, ymin = lo, ymax = hi, group = part)) +
   ev = rbinom(120, 1, 0.75),
   arm = rep(c(&quot;Treatment&quot;, &quot;Control&quot;), each = 60)
 )
-ggplot3(km_d, aes(time = t, status = ev, color = arm)) +
+ggnext(km_d, aes(time = t, status = ev, color = arm)) +
   geom_km() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -8758,7 +8758,7 @@ vapply(c(1, 2, 4),
 <h2 id="10-2-geom-cuminc">10.2 geom_cuminc</h2>
 <pre><code class="language-r">ci &lt;- data.frame(t = rexp(150, 0.1),
                  ev = sample(0:2, 150, replace = TRUE, prob = c(.4, .35, .25)))
-ggplot3(ci, aes(time = t, status = ev)) + geom_cuminc() + theme_minimal()
+ggnext(ci, aes(time = t, status = ev)) + geom_cuminc() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -8810,7 +8810,7 @@ ggplot3(ci, aes(time = t, status = ev)) + geom_cuminc() + theme_minimal()
   hi = c(1.03, 0.97, 1.16, 1.10, 0.93),
   weight = c(30, 22, 28, 20, 100)
 )
-ggplot3(fp, aes(hr, study, ymin = lo, ymax = hi, size = weight)) +
+ggnext(fp, aes(hr, study, ymin = lo, ymax = hi, size = weight)) +
   geom_forest() + labs(x = &quot;Hazard ratio (95% CI)&quot;, y = NULL) +
   theme_minimal()
 </code></pre>
@@ -8867,7 +8867,7 @@ ggplot3(fp, aes(hr, study, ymin = lo, ymax = hi, size = weight)) +
   response = c(&quot;PR&quot;, &quot;CR&quot;, &quot;CR&quot;, &quot;SD&quot;, &quot;PR&quot;, &quot;SD&quot;, &quot;CR&quot;, &quot;PD&quot;),
   ongoing = c(FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE)
 )
-ggplot3(sw, aes(months, subject, color = response, label = ongoing)) +
+ggnext(sw, aes(months, subject, color = response, label = ongoing)) +
   geom_swimmer() + labs(x = &quot;Months&quot;, y = NULL) + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -8932,7 +8932,7 @@ ggplot3(sw, aes(months, subject, color = response, label = ongoing)) +
           0, -5, -10, -8, -12, 0, -30, -45, -50, -48),
   subject = rep(c(&quot;S1&quot;, &quot;S2&quot;, &quot;S3&quot;, &quot;S4&quot;), each = 5)
 )
-ggplot3(sp, aes(month, pct, color = subject)) +
+ggnext(sp, aes(month, pct, color = subject)) +
   geom_spider_response() +
   labs(x = &quot;Month&quot;, y = &quot;% change from baseline&quot;) + theme_minimal()
 </code></pre>
@@ -9005,7 +9005,7 @@ ggplot3(sp, aes(month, pct, color = subject)) +
 <h2 id="10-6-geom-waterfall-response">10.6 geom_waterfall_response</h2>
 <pre><code class="language-r">wr &lt;- data.frame(subject = paste0(&quot;S&quot;, 1:24),
                  pct = sort(runif(24, -78, 48), decreasing = TRUE))
-ggplot3(wr, aes(subject, pct)) + geom_waterfall_response() +
+ggnext(wr, aes(subject, pct)) + geom_waterfall_response() +
   labs(y = &quot;% change from baseline&quot;, x = NULL) +
   theme(axis_text_x = FALSE)
 </code></pre>
@@ -9100,7 +9100,7 @@ ggplot3(wr, aes(subject, pct)) + geom_waterfall_response() +
   week = rep(0:5, 10), id = rep(1:10, each = 6),
   score = as.vector(sapply(1:10, function(i) 50 + i + (0:5) * 2 + rnorm(6, 0, 3)))
 )
-ggplot3(sg, aes(week, score, group = id)) + geom_spaghetti() + theme_minimal()
+ggnext(sg, aes(week, score, group = id)) + geom_spaghetti() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -9147,7 +9147,7 @@ ggplot3(sg, aes(week, score, group = id)) + geom_spaghetti() + theme_minimal()
 <h2 id="10-8-geom-bland-altman">10.8 geom_bland_altman</h2>
 <pre><code class="language-r">a &lt;- rnorm(80, 100, 12)
 ba &lt;- data.frame(method_a = a, method_b = a + rnorm(80, 2, 5))
-ggplot3(ba, aes(method_a, method_b)) + geom_bland_altman() + theme_minimal()
+ggnext(ba, aes(method_a, method_b)) + geom_bland_altman() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -9264,7 +9264,7 @@ ggplot3(ba, aes(method_a, method_b)) + geom_bland_altman() + theme_minimal()
   dose = rep(c(0.1, 1, 10, 100, 1000), each = 3),
   resp = c(5, 7, 6, 18, 22, 20, 52, 48, 55, 82, 79, 85, 95, 97, 93)
 )
-ggplot3(dr, aes(dose, resp)) + geom_dose_response() + scale_x_log10() +
+ggnext(dr, aes(dose, resp)) + geom_dose_response() + scale_x_log10() +
   theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -9317,7 +9317,7 @@ ggplot3(dr, aes(dose, resp)) + geom_dose_response() + scale_x_log10() +
 <pre><code class="language-r">ae &lt;- expand.grid(arm = c(&quot;Placebo&quot;, &quot;Low&quot;, &quot;High&quot;),
                   ae = c(&quot;Nausea&quot;, &quot;Fatigue&quot;, &quot;Headache&quot;, &quot;Rash&quot;))
 ae$pct &lt;- c(5, 12, 22, 8, 15, 26, 3, 6, 11, 2, 9, 17)
-ggplot3(ae, aes(arm, ae, size = pct)) + geom_ae_heatmap() +
+ggnext(ae, aes(arm, ae, size = pct)) + geom_ae_heatmap() +
   theme(legend_position = &quot;none&quot;)
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -9381,7 +9381,7 @@ ggplot3(ae, aes(arm, ae, size = pct)) + geom_ae_heatmap() +
   baseline = c(&quot;G0&quot;, &quot;G0&quot;, &quot;G1&quot;, &quot;G1&quot;, &quot;G2&quot;, &quot;G0&quot;, &quot;G1&quot;, &quot;G0&quot;),
   followup = c(&quot;G0&quot;, &quot;G1&quot;, &quot;G1&quot;, &quot;G2&quot;, &quot;G2&quot;, &quot;G0&quot;, &quot;G0&quot;, &quot;G1&quot;)
 )
-ggplot3(sh, aes(baseline, followup)) + geom_shift() +
+ggnext(sh, aes(baseline, followup)) + geom_shift() +
   theme(legend_position = &quot;none&quot;)
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -9431,7 +9431,7 @@ ggplot3(sh, aes(baseline, followup)) + geom_shift() +
             &quot;Received allocation&quot;, &quot;Completed follow-up&quot;, &quot;Analysed&quot;),
   n = c(420, 300, 291, 276, 271)
 )
-ggplot3(cs, aes(label = stage, size = n)) + geom_consort()
+ggnext(cs, aes(label = stage, size = n)) + geom_consort()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -9461,7 +9461,7 @@ ggplot3(cs, aes(label = stage, size = n)) + geom_consort()
 <h1 id="11-interactivity-and-animation">11. Interactivity and animation</h1>
 <p>Plots are static first. <code>render(p)</code> gives an SVG; <code>+ interact()</code> switches
 the default target to a self-contained HTML page.</p>
-<pre><code class="language-r">p_int &lt;- ggplot3(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
+<pre><code class="language-r">p_int &lt;- ggnext(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
   geom_point()
 
 nchar(render(p_int))                       # static SVG
@@ -9470,15 +9470,15 @@ nchar(render(p_int))                       # static SVG
 </code></pre>
 <pre><code class="language-r">nchar(render(p_int + interact()))          # interactive HTML
 </code></pre>
-<pre><code>#&gt; [1] 43849
+<pre><code>#&gt; [1] 43828
 </code></pre>
 <pre><code class="language-r">substr(render(p_int + interact()), 1, 15)
 </code></pre>
-<pre><code>#&gt; &lt;ggplot3 interactive render: 15 characters&gt;
+<pre><code>#&gt; &lt;ggnext interactive render: 15 characters&gt;
 #&gt; Use render(p, file = ...) to save it, or cat(x) to see the source.
 </code></pre>
 <p>Interaction flags travel in the buffer:</p>
-<pre><code class="language-r">opts &lt;- ggplot3:::build_geometry(
+<pre><code class="language-r">opts &lt;- ggnext:::build_geometry(
   p_int + interact(tooltip = c(&quot;Species&quot;), zoom = FALSE, brush = TRUE)
 )$interaction
 unlist(opts)
@@ -9510,9 +9510,9 @@ axes fixed across frames:</p>
   x = rep(1:5, 3), y = c(1:5, (1:5) * 2, (1:5) * 3),
   step = rep(c(1, 2, 3), each = 5)
 )
-p_anim &lt;- ggplot3(anim_d, aes(x, y)) + geom_point(size = 5) +
+p_anim &lt;- ggnext(anim_d, aes(x, y)) + geom_point(size = 5) +
   animate(step, duration = 600)
-ab &lt;- ggplot3:::build_animation(p_anim, ggplot3:::build_geometry(p_anim))
+ab &lt;- ggnext:::build_animation(p_anim, ggnext:::build_geometry(p_anim))
 c(frames = length(ab$animation$frames),
   labels = paste(unlist(ab$animation$labels), collapse = &quot;,&quot;),
   marks_in_frame_1 = length(ab$animation$frames[[1]][[1]][[1]]$marks))
@@ -9531,13 +9531,13 @@ c(frames = length(ab$animation$frames),
 
 </head>
 <body>
-<div id="ggplot3-wrap">
-  <canvas id="ggplot3-canvas"></canvas>
-  <div id="ggplot3-tooltip"></div>
-  <div id="ggplot3-player">
-    <button id="ggplot3-play" type="button">Play</button>
-    <input id="ggplot3-scrub" type="range" min="0" max="0" step="1" value="0">
-    <span id="ggplot3-frame-label"></span>
+<div id="ggnext-wrap">
+  <canvas id="ggnext-canvas"></canvas>
+  <div id="ggnext-tooltip"></div>
+  <div id="ggnext-player">
+    <button id="ggnext-play" type="button">Play</button>
+    <input id="ggnext-scrub" type="range" min="0" max="0" step="1" value="0">
+    <span id="ggnext-frame-label"></span>
   </div>
 </div>
 <script>
@@ -9547,9 +9547,9 @@ c(frames = length(ab$animation$frames),
 // radii, panel rectangles, axis domains, theme, and legend. No geometry is
 // recomputed here — only presentation (device pixels, the current zoom
 // window, tick relabeling while zoomed, and animation frame swapping).
-var spec = {"width":640,"height":480,"panels":[{"rect":{"x":60,"y":20,"w":564,"h":412},"x":{"domain":[0.8,5.2],"ticks":{"values":[1,2,3,4,5],"norm":[0.0454545454545454,0.272727272727273,0.5,0.727272727272727,0.954545454545454],"labels":["1","2","3","4","5"],"minor":[0.159090909090909,0.386363636363636,0.613636363636364,0.840909090909091]},"title":"x"},"y":{"domain":[0.3,15.7],"ticks":{"values":[5,10,15],"norm":[0.305194805194805,0.62987012987013,0.954545454545455],"labels":["5","10","15"],"minor":[0.467532467532468,0.792207792207792]},"title":"y"},"layers":[{"geom":"point","marks":[{"type":"circle","x":0.0454545454545454,"y":0.0454545454545455,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.272727272727273,"y":0.11038961038961,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.5,"y":0.175324675324675,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.727272727272727,"y":0.24025974025974,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.954545454545454,"y":0.305194805194805,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.0454545454545454,"y":0.11038961038961,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.272727272727273,"y":0.24025974025974,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.5,"y":0.37012987012987,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.727272727272727,"y":0.5,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.954545454545454,"y":0.62987012987013,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.0454545454545454,"y":0.175324675324675,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.272727272727273,"y":0.37012987012987,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.5,"y":0.564935064935065,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.727272727272727,"y":0.75974025974026,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.954545454545454,"y":0.954545454545455,"r":5,"fill":"#000000","alpha":1}],"tips":["x: 1\ny: 1","x: 2\ny: 2","x: 3\ny: 3","x: 4\ny: 4","x: 5\ny: 5","x: 1\ny: 2","x: 2\ny: 4","x: 3\ny: 6","x: 4\ny: 8","x: 5\ny: 10","x: 1\ny: 3","x: 2\ny: 6","x: 3\ny: 9","x: 4\ny: 12","x: 5\ny: 15"]}],"strip":null,"show_x_labels":true,"show_y_labels":true,"polar":null}],"labels":{"title":null,"subtitle":null,"caption":null,"tag":null},"legend":null,"legend_position":"none","interaction":{"tooltip":true,"zoom":true,"brush":true},"theme":{"name":"ggplot3","background":"#FFFFFF","panel_fill":"#F4F4F6","grid_color":"#FFFFFF","grid_color_minor":"","axis_color":"#3A3A3A","label_color":"#3A3A3A","title_color":"#1A1A22","subtitle_color":"#5A5A66","strip_fill":"#E4E4EA","strip_color":"#2A2A33","legend_text_color":"#3A3A3A","panel_border":"","font":"Helvetica, Arial, sans-serif","title_font":"Helvetica, Arial, sans-serif","tick_font_size":11,"title_font_size":13,"plot_title_size":17,"plot_subtitle_size":12,"caption_size":10,"strip_font_size":11,"legend_font_size":11,"title_face":"bold","tick_len":5,"grid_major_x":true,"grid_major_y":true,"axis_line_x":true,"axis_line_y":true,"ticks_x":true,"ticks_y":true,"axis_text_x":true,"axis_text_y":true,"axis_title_x":true,"axis_title_y":true,"legend_position":"right","point_palette":[],"gradient_low":"","gradient_high":""},"animation":{"var":"step","duration":600,"easing":"cubic-in-out","loop":true,"labels":["1","2","3"],"frames":[[[{"geom":"point","marks":[{"type":"circle","x":0.0454545454545454,"y":0.0454545454545455,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.272727272727273,"y":0.11038961038961,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.5,"y":0.175324675324675,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.727272727272727,"y":0.24025974025974,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.954545454545454,"y":0.305194805194805,"r":5,"fill":"#000000","alpha":1}],"tips":["x: 1\ny: 1","x: 2\ny: 2","x: 3\ny: 3","x: 4\ny: 4","x: 5\ny: 5"]}]],[[{"geom":"point","marks":[{"type":"circle","x":0.0454545454545454,"y":0.11038961038961,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.272727272727273,"y":0.24025974025974,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.5,"y":0.37012987012987,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.727272727272727,"y":0.5,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.954545454545454,"y":0.62987012987013,"r":5,"fill":"#000000","alpha":1}],"tips":["x: 1\ny: 2","x: 2\ny: 4","x: 3\ny: 6","x: 4\ny: 8","x: 5\ny: 10"]}]],[[{"geom":"point","marks":[{"type":"circle","x":0.0454545454545454,"y":0.175324675324675,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.272727272727273,"y":0.37012987012987,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.5,"y":0.564935064935065,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.727272727272727,"y":0.75974025974026,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.954545454545454,"y":0.954545454545455,"r":5,"fill":"#000000","alpha":1}],"tips":["x: 1\ny: 3","x: 2\ny: 6","x: 3\ny: 9","x: 4\ny: 12","x: 5\ny: 15"]}]]]}};
-<p>var canvas = document.getElementById(“ggplot3-canvas”);
-var tooltip = document.getElementById(“ggplot3-tooltip”);
+var spec = {"width":640,"height":480,"panels":[{"rect":{"x":60,"y":20,"w":564,"h":412},"x":{"domain":[0.8,5.2],"ticks":{"values":[1,2,3,4,5],"norm":[0.0454545454545454,0.272727272727273,0.5,0.727272727272727,0.954545454545454],"labels":["1","2","3","4","5"],"minor":[0.159090909090909,0.386363636363636,0.613636363636364,0.840909090909091]},"title":"x"},"y":{"domain":[0.3,15.7],"ticks":{"values":[5,10,15],"norm":[0.305194805194805,0.62987012987013,0.954545454545455],"labels":["5","10","15"],"minor":[0.467532467532468,0.792207792207792]},"title":"y"},"layers":[{"geom":"point","marks":[{"type":"circle","x":0.0454545454545454,"y":0.0454545454545455,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.272727272727273,"y":0.11038961038961,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.5,"y":0.175324675324675,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.727272727272727,"y":0.24025974025974,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.954545454545454,"y":0.305194805194805,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.0454545454545454,"y":0.11038961038961,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.272727272727273,"y":0.24025974025974,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.5,"y":0.37012987012987,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.727272727272727,"y":0.5,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.954545454545454,"y":0.62987012987013,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.0454545454545454,"y":0.175324675324675,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.272727272727273,"y":0.37012987012987,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.5,"y":0.564935064935065,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.727272727272727,"y":0.75974025974026,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.954545454545454,"y":0.954545454545455,"r":5,"fill":"#000000","alpha":1}],"tips":["x: 1\ny: 1","x: 2\ny: 2","x: 3\ny: 3","x: 4\ny: 4","x: 5\ny: 5","x: 1\ny: 2","x: 2\ny: 4","x: 3\ny: 6","x: 4\ny: 8","x: 5\ny: 10","x: 1\ny: 3","x: 2\ny: 6","x: 3\ny: 9","x: 4\ny: 12","x: 5\ny: 15"]}],"strip":null,"show_x_labels":true,"show_y_labels":true,"polar":null}],"labels":{"title":null,"subtitle":null,"caption":null,"tag":null},"legend":null,"legend_position":"none","interaction":{"tooltip":true,"zoom":true,"brush":true},"theme":{"name":"ggnext","background":"#FFFFFF","panel_fill":"#F4F4F6","grid_color":"#FFFFFF","grid_color_minor":"","axis_color":"#3A3A3A","label_color":"#3A3A3A","title_color":"#1A1A22","subtitle_color":"#5A5A66","strip_fill":"#E4E4EA","strip_color":"#2A2A33","legend_text_color":"#3A3A3A","panel_border":"","font":"Helvetica, Arial, sans-serif","title_font":"Helvetica, Arial, sans-serif","tick_font_size":11,"title_font_size":13,"plot_title_size":17,"plot_subtitle_size":12,"caption_size":10,"strip_font_size":11,"legend_font_size":11,"title_face":"bold","tick_len":5,"grid_major_x":true,"grid_major_y":true,"axis_line_x":true,"axis_line_y":true,"ticks_x":true,"ticks_y":true,"axis_text_x":true,"axis_text_y":true,"axis_title_x":true,"axis_title_y":true,"legend_position":"right","point_palette":[],"gradient_low":"","gradient_high":""},"animation":{"var":"step","duration":600,"easing":"cubic-in-out","loop":true,"labels":["1","2","3"],"frames":[[[{"geom":"point","marks":[{"type":"circle","x":0.0454545454545454,"y":0.0454545454545455,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.272727272727273,"y":0.11038961038961,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.5,"y":0.175324675324675,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.727272727272727,"y":0.24025974025974,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.954545454545454,"y":0.305194805194805,"r":5,"fill":"#000000","alpha":1}],"tips":["x: 1\ny: 1","x: 2\ny: 2","x: 3\ny: 3","x: 4\ny: 4","x: 5\ny: 5"]}]],[[{"geom":"point","marks":[{"type":"circle","x":0.0454545454545454,"y":0.11038961038961,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.272727272727273,"y":0.24025974025974,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.5,"y":0.37012987012987,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.727272727272727,"y":0.5,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.954545454545454,"y":0.62987012987013,"r":5,"fill":"#000000","alpha":1}],"tips":["x: 1\ny: 2","x: 2\ny: 4","x: 3\ny: 6","x: 4\ny: 8","x: 5\ny: 10"]}]],[[{"geom":"point","marks":[{"type":"circle","x":0.0454545454545454,"y":0.175324675324675,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.272727272727273,"y":0.37012987012987,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.5,"y":0.564935064935065,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.727272727272727,"y":0.75974025974026,"r":5,"fill":"#000000","alpha":1},{"type":"circle","x":0.954545454545454,"y":0.954545454545455,"r":5,"fill":"#000000","alpha":1}],"tips":["x: 1\ny: 3","x: 2\ny: 6","x: 3\ny: 9","x: 4\ny: 12","x: 5\ny: 15"]}]]]}};
+<p>var canvas = document.getElementById(“ggnext-canvas”);
+var tooltip = document.getElementById(“ggnext-tooltip”);
 var ctx = canvas.getContext(“2d”);
 var theme = spec.theme;</p>
 <p>// Render at devicePixelRatio for crisp output on high-DPI screens.
@@ -9987,10 +9987,10 @@ var fr = spec.animation.frames[frameIndex];
 return fr[pi] || [];
 }</p>
 <p>if (spec.animation) {
-var player = document.getElementById(“ggplot3-player”);
-var scrub = document.getElementById(“ggplot3-scrub”);
-var playBtn = document.getElementById(“ggplot3-play”);
-var frameLabel = document.getElementById(“ggplot3-frame-label”);
+var player = document.getElementById(“ggnext-player”);
+var scrub = document.getElementById(“ggnext-scrub”);
+var playBtn = document.getElementById(“ggnext-play”);
+var frameLabel = document.getElementById(“ggnext-frame-label”);
 player.style.display = “flex”;
 scrub.max = String(spec.animation.labels.length - 1);</p>
 <p>function showFrame(i) {
@@ -10146,7 +10146,7 @@ draw();
 <h1 id="12-exact-data-export">12. Exact data export</h1>
 <p><code>plot_data()</code> returns precisely the values drawn — post-stat,
 post-position, post-facet, in data units.</p>
-<pre><code class="language-r">head(plot_data(ggplot3(cars, aes(speed, dist)) + geom_point()))
+<pre><code class="language-r">head(plot_data(ggnext(cars, aes(speed, dist)) + geom_point()))
 </code></pre>
 <pre><code>#&gt;   x  y
 #&gt; 1 4  2
@@ -10157,7 +10157,7 @@ post-position, post-facet, in data units.</p>
 #&gt; 6 9 10
 </code></pre>
 <p>For a stat-backed layer it reflects what was computed, not the input:</p>
-<pre><code class="language-r">plot_data(ggplot3(iris, aes(Species, Sepal.Length)) + geom_boxplot())
+<pre><code class="language-r">plot_data(ggnext(iris, aes(Species, Sepal.Length)) + geom_boxplot())
 </code></pre>
 <pre><code>#&gt;   x   y lower middle upper ymin ymax    role  group
 #&gt; 1 1  NA 4.800    5.0   5.2  4.3  5.8     box all\r1
@@ -10166,7 +10166,7 @@ post-position, post-facet, in data units.</p>
 #&gt; 4 3 4.9    NA     NA    NA   NA   NA outlier all\r3
 </code></pre>
 <p>Facets add a panel column:</p>
-<pre><code class="language-r">fd &lt;- plot_data(ggplot3(iris, aes(Sepal.Length, Sepal.Width)) +
+<pre><code class="language-r">fd &lt;- plot_data(ggnext(iris, aes(Sepal.Length, Sepal.Width)) +
                   geom_point() + facet_wrap(Species))
 head(fd)
 </code></pre>
@@ -10185,7 +10185,7 @@ head(fd)
 #&gt;         50         50         50
 </code></pre>
 <p>Selecting layers and panels:</p>
-<pre><code class="language-r">multi &lt;- ggplot3(cars, aes(speed, dist)) + geom_point() + geom_smooth()
+<pre><code class="language-r">multi &lt;- ggnext(cars, aes(speed, dist)) + geom_point() + geom_smooth()
 length(plot_data(multi))                    # one table per layer
 </code></pre>
 <pre><code>#&gt; [1] 2
@@ -10200,7 +10200,7 @@ length(plot_data(multi))                    # one table per layer
 </code></pre>
 <p>Writing it out alongside the figure:</p>
 <pre><code class="language-r">csv &lt;- file.path(tempdir(), &quot;figure-data.csv&quot;)
-write_plot_data(ggplot3(cars, aes(speed, dist)) + geom_point(), csv)
+write_plot_data(ggnext(cars, aes(speed, dist)) + geom_point(), csv)
 head(read.csv(csv), 3)
 </code></pre>
 <pre><code>#&gt;   x  y
@@ -10209,7 +10209,7 @@ head(read.csv(csv), 3)
 #&gt; 3 7  4
 </code></pre>
 <h1 id="13-rendering-and-the-logo">13. Rendering and the logo</h1>
-<pre><code class="language-r">p &lt;- ggplot3(cars, aes(speed, dist)) + geom_point()
+<pre><code class="language-r">p &lt;- ggnext(cars, aes(speed, dist)) + geom_point()
 svg_file  &lt;- file.path(tempdir(), &quot;plot.svg&quot;)
 html_file &lt;- file.path(tempdir(), &quot;plot.html&quot;)
 render(p, file = svg_file)
@@ -10319,7 +10319,7 @@ file.exists(c(svg_file, html_file))
 <text x="15" y="226" transform="rotate(-90 15 226)" text-anchor="middle" font-size="13" fill="#3A3A3A">dist</text>
 </svg>
 <p>The hex sticker is drawn by the package’s own SVG writer:</p>
-<pre><code class="language-r">cat(ggplot3_logo(width = 260))
+<pre><code class="language-r">cat(ggnext_logo(width = 260))
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="260" height="300.22" viewBox="0 0 260 300.22" font-family="Helvetica, Arial, sans-serif">
 <clipPath id="hex"><polygon points="130,0 17.42,75.06 17.42,225.17 130,300.22 242.58,225.17 242.58,75.06"/></clipPath>
@@ -10356,13 +10356,13 @@ file.exists(c(svg_file, html_file))
 <circle cx="204.26" cy="99.02" r="4.94" fill="#5FD0A5" fill-opacity="0.92"/>
 <circle cx="211.33" cy="90.1" r="4.94" fill="#7AA2F7" fill-opacity="0.92"/>
 <circle cx="218.4" cy="90.69" r="4.94" fill="#F7C96B" fill-opacity="0.92"/>
-<text x="130" y="193.64" text-anchor="middle" font-size="42.9" font-weight="bold" fill="#FFFFFF" letter-spacing="-0.78">ggplot3</text>
+<text x="130" y="193.64" text-anchor="middle" font-size="42.9" font-weight="bold" fill="#FFFFFF" letter-spacing="-0.78">ggnext</text>
 <text x="130" y="213.76" text-anchor="middle" font-size="13" font-weight="600" fill="#5FD0A5" letter-spacing="1.3">NEXT-GENERATION</text>
 <text x="130" y="231.31" text-anchor="middle" font-size="13" font-weight="600" fill="#5FD0A5" letter-spacing="1.3">GRAMMAR OF GRAPHICS</text>
 </g>
 <polygon points="130,0 17.42,75.06 17.42,225.17 130,300.22 242.58,225.17 242.58,75.06" fill="none" stroke="#5FD0A5" stroke-width="5.72" stroke-linejoin="round"/>
 </svg>
-<pre><code class="language-r">cat(ggplot3_logo(width = 260, style = &quot;monogram&quot;))
+<pre><code class="language-r">cat(ggnext_logo(width = 260, style = &quot;monogram&quot;))
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="260" height="300.22" viewBox="0 0 260 300.22" font-family="Helvetica, Arial, sans-serif">
 <clipPath id="hex"><polygon points="130,0 17.42,75.06 17.42,225.17 130,300.22 242.58,225.17 242.58,75.06"/></clipPath>
@@ -10400,7 +10400,7 @@ file.exists(c(svg_file, html_file))
 <circle cx="211.33" cy="90.1" r="4.94" fill="#7AA2F7" fill-opacity="0.92"/>
 <circle cx="218.4" cy="90.69" r="4.94" fill="#F7C96B" fill-opacity="0.92"/>
 <text x="130" y="199.65" text-anchor="middle" font-size="104" font-weight="bold" fill="#FFFFFF" letter-spacing="-5.2">GG</text>
-<text x="130" y="223.67" text-anchor="middle" font-size="18.72" font-weight="bold" fill="#5FD0A5" letter-spacing="1.04">ggplot3</text>
+<text x="130" y="223.67" text-anchor="middle" font-size="18.72" font-weight="bold" fill="#5FD0A5" letter-spacing="1.04">ggnext</text>
 </g>
 <polygon points="130,0 17.42,75.06 17.42,225.17 130,300.22 242.58,225.17 242.58,75.06" fill="none" stroke="#5FD0A5" stroke-width="5.72" stroke-linejoin="round"/>
 </svg>
@@ -10420,9 +10420,9 @@ S7::method(build_marks, GeomCross) &lt;- function(geom, scaled) {
   unlist(lapply(seq_along(scaled$x), function(i) {
     r &lt;- scaled$size[[i]] / 400
     list(
-      ggplot3:::mk_line(c(scaled$x[[i]] - r, scaled$x[[i]] + r),
+      ggnext:::mk_line(c(scaled$x[[i]] - r, scaled$x[[i]] + r),
                         rep(scaled$y[[i]], 2), scaled$color[[i]], width = 2),
-      ggplot3:::mk_line(rep(scaled$x[[i]], 2),
+      ggnext:::mk_line(rep(scaled$x[[i]], 2),
                         c(scaled$y[[i]] - r, scaled$y[[i]] + r),
                         scaled$color[[i]], width = 2)
     )
@@ -10430,10 +10430,10 @@ S7::method(build_marks, GeomCross) &lt;- function(geom, scaled) {
 }
 
 geom_cross &lt;- function(mapping = NULL, data = NULL, ...) {
-  ggplot3:::layer_new(GeomCross(), stat_identity(), mapping, data, list(...))
+  ggnext:::layer_new(GeomCross(), stat_identity(), mapping, data, list(...))
 }
 
-ggplot3(cars, aes(speed, dist)) + geom_cross() + theme_minimal()
+ggnext(cars, aes(speed, dist)) + geom_cross() + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
 <rect x="0" y="0" width="640" height="480" fill="#FFFFFF"/>
@@ -10570,7 +10570,7 @@ ggplot3(cars, aes(speed, dist)) + geom_cross() + theme_minimal()
 </svg>
 <p>The custom geom works with every other part of the grammar — facets,
 scales, themes and the interactive target — without further work.</p>
-<pre><code class="language-r">ggplot3(iris, aes(Sepal.Length, Sepal.Width)) +
+<pre><code class="language-r">ggnext(iris, aes(Sepal.Length, Sepal.Width)) +
   geom_cross(size = 4) + facet_wrap(Species) + theme_minimal()
 </code></pre>
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" font-family="Helvetica, Arial, sans-serif">
@@ -10954,30 +10954,30 @@ scales, themes and the interactive target — without further work.</p>
 }
 </code></pre>
 <pre><code class="language-r"># A name that is not a column, where R finds a function of that name.
-show_error(render(ggplot3(mtcars, aes(disp, hp, color = class)) + geom_point()))
+show_error(render(ggnext(mtcars, aes(disp, hp, color = class)) + geom_point()))
 </code></pre>
 <pre><code>#&gt; [1] &quot;Aesthetic `color = class` evaluated to a function, not a data column. Is `class` a column in your data? (Columns present: mpg, cyl, disp, hp, drat, wt, qsec, vs, am, gear, carb)&quot;
 </code></pre>
 <pre><code class="language-r"># Missing required aesthetics.
-show_error(render(ggplot3(cars, aes(speed)) + geom_point()))
+show_error(render(ggnext(cars, aes(speed)) + geom_point()))
 </code></pre>
 <pre><code>#&gt; [1] &quot;geom_point() requires the aesthetic(s): y. Map them in aes(), or use a stat that computes them.&quot;
 </code></pre>
-<pre><code class="language-r">show_error(render(ggplot3(cars, aes(speed, dist)) + geom_sankey()))
+<pre><code class="language-r">show_error(render(ggnext(cars, aes(speed, dist)) + geom_sankey()))
 </code></pre>
 <pre><code>#&gt; [1] &quot;geom_sankey() requires the aesthetic(s): xend. Map them in aes(), or use a stat that computes them.&quot;
 </code></pre>
 <pre><code class="language-r"># No layers, no data.
-show_error(render(ggplot3(cars, aes(speed, dist))))
+show_error(render(ggnext(cars, aes(speed, dist))))
 </code></pre>
 <pre><code>#&gt; [1] &quot;Cannot render a plot with no layers; add e.g. geom_point().&quot;
 </code></pre>
-<pre><code class="language-r">show_error(render(ggplot3() + geom_point()))
+<pre><code class="language-r">show_error(render(ggnext() + geom_point()))
 </code></pre>
-<pre><code>#&gt; [1] &quot;Layer has no data: supply data to ggplot3() or to the layer.&quot;
+<pre><code>#&gt; [1] &quot;Layer has no data: supply data to ggnext() or to the layer.&quot;
 </code></pre>
 <pre><code class="language-r"># Impossible scales.
-show_error(render(ggplot3(data.frame(x = c(0, 1, 10), y = 1:3), aes(x, y)) +
+show_error(render(ggnext(data.frame(x = c(0, 1, 10), y = 1:3), aes(x, y)) +
                     geom_point() + scale_x_log10()))
 </code></pre>
 <pre><code>#&gt; [1] &quot;A log10 scale requires strictly positive values.&quot;
@@ -10995,12 +10995,12 @@ show_error(aes(x, y, shape = z))
 </code></pre>
 <pre><code>#&gt; [1] &quot;Unknown theme setting(s): not_a_setting. Available: background, panel_fill, grid_color, grid_color_minor, axis_color, label_color, title_color, subtitle_color, strip_fill, strip_color, legend_text_color, panel_border, font, title_font, tick_font_size, title_font_size, plot_title_size, plot_subtitle_size, caption_size, strip_font_size, legend_font_size, title_face, tick_len, grid_major_x, grid_major_y, axis_line_x, axis_line_y, ticks_x, ticks_y, axis_text_x, axis_text_y, axis_title_x, axis_title_y, legend_position, point_palette, gradient_low, gradient_high.&quot;
 </code></pre>
-<pre><code class="language-r">show_error(ggplot3(cars, aes(speed, dist)) + geom_point() + 42)
+<pre><code class="language-r">show_error(ggnext(cars, aes(speed, dist)) + geom_point() + 42)
 </code></pre>
-<pre><code>#&gt; [1] &quot;Cannot add an object of class &lt;numeric&gt; to a ggplot3 plot.&quot;
+<pre><code>#&gt; [1] &quot;Cannot add an object of class &lt;numeric&gt; to a ggnext plot.&quot;
 </code></pre>
 <pre><code class="language-r"># Faceting on a variable that does not exist.
-show_error(render(ggplot3(iris, aes(Sepal.Length, Sepal.Width)) +
+show_error(render(ggnext(iris, aes(Sepal.Length, Sepal.Width)) +
                     geom_point() + facet_wrap(NotAColumn)))
 </code></pre>
 <pre><code>#&gt; [1] &quot;Faceting variable(s) not found in the data: NotAColumn&quot;
@@ -11014,36 +11014,36 @@ show_error(render(ggplot3(iris, aes(Sepal.Length, Sepal.Width)) +
 
 do.call(rbind, list(
   edge(&quot;single row&quot;,
-       ggplot3(data.frame(x = 1, y = 1), aes(x, y)) + geom_point()),
+       ggnext(data.frame(x = 1, y = 1), aes(x, y)) + geom_point()),
   edge(&quot;two rows&quot;,
-       ggplot3(data.frame(x = 1:2, y = 1:2), aes(x, y)) + geom_point()),
+       ggnext(data.frame(x = 1:2, y = 1:2), aes(x, y)) + geom_point()),
   edge(&quot;zero variance in x&quot;,
-       ggplot3(data.frame(x = rep(5, 10), y = rnorm(10)), aes(x, y)) +
+       ggnext(data.frame(x = rep(5, 10), y = rnorm(10)), aes(x, y)) +
          geom_point()),
   edge(&quot;zero variance in both&quot;,
-       ggplot3(data.frame(x = rep(1, 5), y = rep(2, 5)), aes(x, y)) +
+       ggnext(data.frame(x = rep(1, 5), y = rep(2, 5)), aes(x, y)) +
          geom_point()),
   edge(&quot;NA in y&quot;,
-       ggplot3(data.frame(x = 1:5, y = c(1, NA, 3, NA, 5)), aes(x, y)) +
+       ggnext(data.frame(x = 1:5, y = c(1, NA, 3, NA, 5)), aes(x, y)) +
          geom_point()),
   edge(&quot;very large values&quot;,
-       ggplot3(data.frame(x = c(1e9, 2e9, 3e9), y = 1:3), aes(x, y)) +
+       ggnext(data.frame(x = c(1e9, 2e9, 3e9), y = 1:3), aes(x, y)) +
          geom_point()),
   edge(&quot;very small values&quot;,
-       ggplot3(data.frame(x = c(1e-9, 2e-9, 3e-9), y = 1:3), aes(x, y)) +
+       ggnext(data.frame(x = c(1e-9, 2e-9, 3e-9), y = 1:3), aes(x, y)) +
          geom_point()),
   edge(&quot;unicode in labels&quot;,
-       ggplot3(cars, aes(speed, dist)) + geom_point() +
+       ggnext(cars, aes(speed, dist)) + geom_point() +
          labs(title = &quot;éàü 中文 — dash&quot;)),
   edge(&quot;XML-special characters in labels&quot;,
-       ggplot3(cars, aes(speed, dist)) + geom_point() +
+       ggnext(cars, aes(speed, dist)) + geom_point() +
          labs(title = &quot;a &lt; b &amp; c &gt; d&quot;)),
   edge(&quot;single facet level&quot;,
-       ggplot3(iris[iris$Species == &quot;setosa&quot;, ],
+       ggnext(iris[iris$Species == &quot;setosa&quot;, ],
                aes(Sepal.Length, Sepal.Width)) +
          geom_point() + facet_wrap(Species)),
   edge(&quot;many categories (palette recycles)&quot;,
-       ggplot3(data.frame(g = letters[1:12], v = 1:12),
+       ggnext(data.frame(g = letters[1:12], v = 1:12),
                aes(g, v, color = g)) + geom_col())
 ))
 </code></pre>
@@ -11081,21 +11081,15 @@ do.call(rbind, list(
 #&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     
 #&gt; 
 #&gt; other attached packages:
-#&gt; [1] ggplot3_0.1.0  testthat_3.3.2
+#&gt; [1] ggnext_0.1.0
 #&gt; 
 #&gt; loaded via a namespace (and not attached):
-#&gt;  [1] vctrs_0.7.3       cli_3.6.6         knitr_1.51        rlang_1.2.0      
-#&gt;  [5] xfun_0.57         otel_0.2.0        purrr_1.2.2       pkgload_1.5.1    
-#&gt;  [9] S7_0.2.2          glue_1.8.1        markdown_2.0      rprojroot_2.1.1  
-#&gt; [13] pkgbuild_1.4.8    brio_1.1.5        evaluate_1.0.5    ellipsis_0.3.3   
-#&gt; [17] fastmap_1.2.0     lifecycle_1.0.5   memoise_2.0.1     compiler_4.5.2   
-#&gt; [21] fs_2.1.0          sessioninfo_1.2.3 rstudioapi_0.18.0 R6_2.6.1         
-#&gt; [25] usethis_3.2.1     magrittr_2.0.5    withr_3.0.2       tools_4.5.2      
-#&gt; [29] devtools_2.5.1    cachem_1.1.0      desc_1.4.3
+#&gt;  [1] compiler_4.5.2 cli_3.6.6      markdown_2.0   tools_4.5.2    otel_0.2.0    
+#&gt;  [6] knitr_1.51     S7_0.2.2       xfun_0.57      rlang_1.2.0    evaluate_1.0.5
 </code></pre>
 
 </main>
-<footer>ggplot3 — a next-generation Grammar of Graphics for R. Built on S7. <a href="https://itsmdivakaran.github.io/ggplot3/">Documentation</a> &middot; <a href="https://github.com/itsmdivakaran/ggplot3">Source</a> &middot; <a href="credits.html">Credits</a>.</footer>
+<footer>ggnext — a next-generation Grammar of Graphics for R. Built on S7. <a href="https://itsmdivakaran.github.io/ggnext/">Documentation</a> &middot; <a href="https://github.com/itsmdivakaran/ggnext">Source</a> &middot; <a href="credits.html">Credits</a>.</footer>
 </body>
 </html>
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Guide - ggplot3</title>
+<title>Guide - ggnext</title>
 <style>
 /* The site is deliberately light-only: the figures are rendered with light
    themes at build time, and a dark page around a light plot reads badly. */
@@ -108,18 +108,18 @@ h3 { scroll-margin-top: 70px; }
 </style>
 </head>
 <body>
-<header><nav><img src="logo.svg" alt="ggplot3"><span class="brand">ggplot3</span><a href="index.html">Overview</a><a href="guide.html" class="on">Guide</a><a href="gallery.html">Gallery</a><a href="cookbook.html">Cookbook</a><a href="reference.html">Reference</a><a href="themes.html">Themes</a><a href="credits.html">Credits</a><a class="repo" href="https://github.com/itsmdivakaran/ggplot3">GitHub</a></nav></header>
+<header><nav><img src="logo.svg" alt="ggnext"><span class="brand">ggnext</span><a href="index.html">Overview</a><a href="guide.html" class="on">Guide</a><a href="gallery.html">Gallery</a><a href="cookbook.html">Cookbook</a><a href="reference.html">Reference</a><a href="themes.html">Themes</a><a href="credits.html">Credits</a><a class="repo" href="https://github.com/itsmdivakaran/ggnext">GitHub</a></nav></header>
 <main>
-<h1>Guide</h1><p class="lead">The grammar end to end: building a plot, controlling the axes, styling it, adding interactivity, and getting the numbers back out.</p><div class="toc"><strong>On this page</strong><ol><li><a href="#grammar">The grammar</a></li><li><a href="#layers">Layers, geoms and stats</a></li><li><a href="#aesthetics">Aesthetics and grouping</a></li><li><a href="#scales">Scales and axes</a></li><li><a href="#positions">Position adjustments</a></li><li><a href="#facets">Facets</a></li><li><a href="#coords">Coordinate systems</a></li><li><a href="#labels">Titles and labels</a></li><li><a href="#themes">Themes</a></li><li><a href="#legends">Legends</a></li><li><a href="#interactivity">Interactivity</a></li><li><a href="#animation">Animation</a></li><li><a href="#data">Getting the data back</a></li><li><a href="#output">Output and sizing</a></li><li><a href="#extending">Extending ggplot3</a></li><li><a href="#troubleshooting">Troubleshooting</a></li></ol></div><h2 id="grammar">The grammar</h2><p>A plot is <code>data</code>, an aesthetic <code>mapping</code>, and one or more <code>layers</code>. Scales, coordinates, facets and a theme are all optional — sensible defaults are chosen from the data.</p><pre><code>ggplot3(cars, aes(speed, dist)) +
-  geom_point()</code></pre><p><code>aes()</code> captures unevaluated expressions, so you refer to columns by name. The first two unnamed arguments are <code>x</code> and <code>y</code>. Adding a component with <code>+</code> returns a <em>new</em> plot — plots are immutable values, so a partial specification can be reused as a template.</p><pre><code>base &lt;- ggplot3(iris, aes(Sepal.Length, Sepal.Width))
+<h1>Guide</h1><p class="lead">The grammar end to end: building a plot, controlling the axes, styling it, adding interactivity, and getting the numbers back out.</p><div class="toc"><strong>On this page</strong><ol><li><a href="#grammar">The grammar</a></li><li><a href="#layers">Layers, geoms and stats</a></li><li><a href="#aesthetics">Aesthetics and grouping</a></li><li><a href="#scales">Scales and axes</a></li><li><a href="#positions">Position adjustments</a></li><li><a href="#facets">Facets</a></li><li><a href="#coords">Coordinate systems</a></li><li><a href="#labels">Titles and labels</a></li><li><a href="#themes">Themes</a></li><li><a href="#legends">Legends</a></li><li><a href="#interactivity">Interactivity</a></li><li><a href="#animation">Animation</a></li><li><a href="#data">Getting the data back</a></li><li><a href="#output">Output and sizing</a></li><li><a href="#extending">Extending ggnext</a></li><li><a href="#troubleshooting">Troubleshooting</a></li></ol></div><h2 id="grammar">The grammar</h2><p>A plot is <code>data</code>, an aesthetic <code>mapping</code>, and one or more <code>layers</code>. Scales, coordinates, facets and a theme are all optional — sensible defaults are chosen from the data.</p><pre><code>ggnext(cars, aes(speed, dist)) +
+  geom_point()</code></pre><p><code>aes()</code> captures unevaluated expressions, so you refer to columns by name. The first two unnamed arguments are <code>x</code> and <code>y</code>. Adding a component with <code>+</code> returns a <em>new</em> plot — plots are immutable values, so a partial specification can be reused as a template.</p><pre><code>base &lt;- ggnext(iris, aes(Sepal.Length, Sepal.Width))
 base + geom_point()                    # scatter
 base + geom_point() + geom_smooth()    # scatter with a trend
-# `base` itself is unchanged.</code></pre><div class="note"><p>Because <code>+</code> never mutates, you can build a plot conditionally: <code>p &lt;- p + if (annotate) geom_text() else NULL</code>. Adding <code>NULL</code> is a no-op.</p></div><h2 id="layers">Layers, geoms and stats</h2><p>Every layer pairs a <strong>geom</strong> (how values are drawn) with a <strong>stat</strong> (how raw data becomes those values). <code>geom_point()</code> uses <code>stat_identity()</code>; <code>geom_histogram()</code> bins first; <code>geom_boxplot()</code> computes Tukey’s five numbers. Layers draw in the order added, so put context underneath and detail on top.</p><pre><code>ggplot3(iris, aes(Species, Sepal.Length, color = Species)) +
+# `base` itself is unchanged.</code></pre><div class="note"><p>Because <code>+</code> never mutates, you can build a plot conditionally: <code>p &lt;- p + if (annotate) geom_text() else NULL</code>. Adding <code>NULL</code> is a no-op.</p></div><h2 id="layers">Layers, geoms and stats</h2><p>Every layer pairs a <strong>geom</strong> (how values are drawn) with a <strong>stat</strong> (how raw data becomes those values). <code>geom_point()</code> uses <code>stat_identity()</code>; <code>geom_histogram()</code> bins first; <code>geom_boxplot()</code> computes Tukey’s five numbers. Layers draw in the order added, so put context underneath and detail on top.</p><pre><code>ggnext(iris, aes(Species, Sepal.Length, color = Species)) +
   geom_violin(alpha = 0.25) +   # distribution, underneath
   geom_boxplot() +              # summary
   geom_jitter(alpha = 0.4)      # raw observations, on top</code></pre><figure class="fig"><img src="guide-layers.svg" alt="layers"></figure><p>A layer can override the plot’s data and mapping, which is how you annotate one plot with a second dataset:</p><pre><code>means &lt;- aggregate(Sepal.Length ~ Species, iris, mean)
 
-ggplot3(iris, aes(Species, Sepal.Length)) +
+ggnext(iris, aes(Species, Sepal.Length)) +
   geom_jitter(alpha = 0.3) +
   geom_point(aes(Species, Sepal.Length), data = means,
              color = "#C1462F", size = 6)</code></pre><h2 id="aesthetics">Aesthetics and grouping</h2><p>Supported aesthetics are <code>x</code>, <code>y</code>, <code>color</code> (<code>colour</code> also works), <code>size</code>, <code>group</code>, <code>label</code>, <code>xend</code>/<code>yend</code>, <code>ymin</code>/<code>ymax</code>, and the specialised <code>time</code>/<code>status</code> and <code>truth</code>/<code>score</code> pairs used by the survival and classifier geoms.</p><p>There is a difference between <em>mapping</em> and <em>setting</em>:</p><pre><code>geom_point(aes(color = Species))   # mapped: colour varies by data
@@ -128,7 +128,7 @@ geom_point(color = "steelblue")    # set: one literal colour
 # A constant inside aes() that names a real colour is honoured
 # literally rather than treated as a one-level category:
 geom_point(aes(color = "blue"))    # blue points, no legend</code></pre><p>Grouping decides what counts as one line, one polygon, one box. An explicit <code>group</code> wins; otherwise a discrete <code>color</code> mapping does the grouping; otherwise everything is one group. Map <code>group</code> when you want separate lines <em>without</em> separate colours:</p><pre><code>aes(week, score, group = subject)              # many grey lines
-aes(week, score, group = subject, color = arm) # coloured by arm</code></pre><h2 id="scales">Scales and axes</h2><p>Scales decide how data values become positions and colours. A positional scale is chosen automatically — continuous for numbers, discrete for character, factor or logical — and you override it to control the title, limits, tick positions, tick labels, padding, or transform.</p><pre><code>ggplot3(cars, aes(speed, dist)) +
+aes(week, score, group = subject, color = arm) # coloured by arm</code></pre><h2 id="scales">Scales and axes</h2><p>Scales decide how data values become positions and colours. A positional scale is chosen automatically — continuous for numbers, discrete for character, factor or logical — and you override it to control the title, limits, tick positions, tick labels, padding, or transform.</p><pre><code>ggnext(cars, aes(speed, dist)) +
   geom_point() +
   scale_x_continuous(
     name = "Speed (mph)",
@@ -141,7 +141,7 @@ aes(week, score, group = subject, color = arm) # coloured by arm</code></pre><h2
   )</code></pre><figure class="fig"><img src="guide-scales.svg" alt="scales"></figure><p>Transforms live on the scale, so the whole pipeline — expansion, tick placement, mark positions — happens in transformed space while labels stay in the original units.</p><pre><code>scale_x_log10()   scale_y_log10()      # decade ticks
 scale_x_sqrt()    scale_y_sqrt()
 scale_x_reverse() scale_y_reverse()    # e.g. rank axes</code></pre><p>Discrete axes take explicit level orders, which is how you sort bars by size rather than alphabetically:</p><pre><code>d &lt;- d[order(-d$value), ]
-ggplot3(d, aes(name, value)) + geom_col() +
+ggnext(d, aes(name, value)) + geom_col() +
   scale_x_discrete(limits = d$name)</code></pre><div class="note"><p><code>limits</code> sets the <em>domain</em>, not a crop: data outside the limits still goes through the stats and is clipped when drawn, so a mean or a fit is unaffected by the window you choose.</p></div><h2 id="positions">Position adjustments</h2><p>Bars and columns take a <code>position</code>:</p><pre><code>geom_col(position = "stack")     # default: totals
 geom_col(position = "dodge")     # side by side: compare groups
 geom_col(position = "fill")      # proportions within each x
@@ -149,7 +149,7 @@ geom_col(position = "identity")  # overplotted from a zero baseline</code></pre>
 facet_wrap(Species, ncol = 2)          # force the grid shape
 facet_wrap(Species, scales = "free")   # per-panel axes
 facet_wrap(c(am, cyl))                 # two variables
-facet_grid(am, cyl)                    # rows by columns</code></pre><figure class="fig"><img src="guide-facets.svg" alt="facets"></figure><p>Inner panels drop redundant tick labels automatically. A layer whose data lacks the faceting variable — a reference line, say — is repeated unchanged in every panel.</p><h2 id="coords">Coordinate systems</h2><p><code>coord_flip()</code> swaps the axes, which is the usual fix for long category labels:</p><pre><code>ggplot3(d, aes(category, value)) + geom_col() + coord_flip()</code></pre><p><code>coord_polar()</code> bends the panel into a circle: the <code>theta</code> axis becomes the angle and the other becomes the radius. Any cartesian geom follows.</p><pre><code>coord_polar()                      # x -&gt; angle
+facet_grid(am, cyl)                    # rows by columns</code></pre><figure class="fig"><img src="guide-facets.svg" alt="facets"></figure><p>Inner panels drop redundant tick labels automatically. A layer whose data lacks the faceting variable — a reference line, say — is repeated unchanged in every panel.</p><h2 id="coords">Coordinate systems</h2><p><code>coord_flip()</code> swaps the axes, which is the usual fix for long category labels:</p><pre><code>ggnext(d, aes(category, value)) + geom_col() + coord_flip()</code></pre><p><code>coord_polar()</code> bends the panel into a circle: the <code>theta</code> axis becomes the angle and the other becomes the radius. Any cartesian geom follows.</p><pre><code>coord_polar()                      # x -&gt; angle
 coord_polar(theta = "y")           # y -&gt; angle
 coord_polar(inner = 0.3)           # donut hole
 coord_polar(direction = -1)        # counter-clockwise</code></pre><figure class="fig"><img src="guide-polar.svg" alt="polar"></figure><h2 id="labels">Titles and labels</h2><p><code>labs()</code> sets the whole title block; each argument is optional and repeated calls merge, so you can build it up.</p><pre><code>labs(
@@ -162,7 +162,7 @@ coord_polar(direction = -1)        # counter-clockwise</code></pre><figure class
 )
 
 ggtitle("Main", subtitle = "Sub")   # shorthands
-xlab("Speed"); ylab("Distance")</code></pre><figure class="fig"><img src="guide-theming.svg" alt="theming"></figure><p>Pass <code>y = NULL</code> to drop an axis title that the category labels already make obvious.</p><h2 id="themes">Themes</h2><p>Six presets ship with the package; <code>theme()</code> overrides individual settings on top of any of them.</p><pre><code>theme_ggplot3()   # default: tinted panel, white grid
+xlab("Speed"); ylab("Distance")</code></pre><figure class="fig"><img src="guide-theming.svg" alt="theming"></figure><p>Pass <code>y = NULL</code> to drop an axis title that the category labels already make obvious.</p><h2 id="themes">Themes</h2><p>Six presets ship with the package; <code>theme()</code> overrides individual settings on top of any of them.</p><pre><code>theme_ggnext()   # default: tinted panel, white grid
 theme_minimal()   # no panel fill, light grid, no axis lines
 theme_classic()   # white panel, black axes, no grid, serif
 theme_modern()    # editorial: big title, horizontal rules only
@@ -173,7 +173,7 @@ theme(base = theme_minimal(), grid_major_x = FALSE,
       legend_position = "bottom", plot_title_size = 20)</code></pre><p>See the <a href="themes.html">Themes page</a> for all 35 settings and their defaults.</p><h2 id="legends">Legends</h2><p>A legend appears automatically when <code>color</code> is mapped: a swatch key for discrete data, a gradient bar for continuous. Control it with the theme and with palette scales.</p><pre><code>theme(legend_position = "bottom")   # or "right" (default), "none"
 labs(color = "Species")             # legend title
 scale_color_manual(c("#2B6BE0", "#E05A2B", "#12A594"))
-scale_color_gradient(low = "#FFF3B0", high = "#9E2A2B")</code></pre><figure class="fig"><img src="guide-legend.svg" alt="legend"></figure><h2 id="interactivity">Interactivity</h2><p>Plots are static first. <code>+ interact()</code> switches the default render target to a self-contained HTML page — the same geometry, a different serializer.</p><pre><code>p &lt;- ggplot3(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
+scale_color_gradient(low = "#FFF3B0", high = "#9E2A2B")</code></pre><figure class="fig"><img src="guide-legend.svg" alt="legend"></figure><h2 id="interactivity">Interactivity</h2><p>Plots are static first. <code>+ interact()</code> switches the default render target to a self-contained HTML page — the same geometry, a different serializer.</p><pre><code>p &lt;- ggnext(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
   geom_point()
 
 render(p)                              # SVG
@@ -182,22 +182,22 @@ render(p + interact(tooltip = c("Species", "Petal.Length")))
 render(p + interact(zoom = FALSE, brush = FALSE))  # tooltip only
 
 render(p, file = "plot.svg")
-render(p + interact(), file = "plot.html")</code></pre><p>Hover shows the mapped values (or the columns you name), the wheel zooms about the cursor, dragging brushes a region, and double-click resets. In a faceted plot each panel zooms independently. The page is one file with no external assets, so it works from a <code>file://</code> URL and can be emailed as-is.</p><h2 id="animation">Animation</h2><p><code>animate()</code> reruns the pipeline once per level of a transition variable. Scales are trained on the full data first, so the axes hold still while frames play — the thing that makes an animation readable rather than dizzying.</p><pre><code>ggplot3(panel_data, aes(gdp, life_expectancy, color = continent)) +
+render(p + interact(), file = "plot.html")</code></pre><p>Hover shows the mapped values (or the columns you name), the wheel zooms about the cursor, dragging brushes a region, and double-click resets. In a faceted plot each panel zooms independently. The page is one file with no external assets, so it works from a <code>file://</code> URL and can be emailed as-is.</p><h2 id="animation">Animation</h2><p><code>animate()</code> reruns the pipeline once per level of a transition variable. Scales are trained on the full data first, so the axes hold still while frames play — the thing that makes an animation readable rather than dizzying.</p><pre><code>ggnext(panel_data, aes(gdp, life_expectancy, color = continent)) +
   geom_point(size = 4) +
   scale_x_log10() +
-  animate(year, duration = 700, easing = "cubic-in-out")</code></pre><p>The interactive page gains a play/pause button and a frame scrubber. <code>render(p, target = "static")</code> still produces an SVG of all the data at once, so animation never blocks an export.</p><h2 id="data">Getting the data back</h2><p><code>plot_data()</code> returns exactly what the plot draws. For a scatter that is the input; for a histogram it is the bins actually drawn; for a box plot the quartiles and whisker ends.</p><pre><code>p &lt;- ggplot3(cars, aes(speed)) + geom_histogram(bins = 5)
+  animate(year, duration = 700, easing = "cubic-in-out")</code></pre><p>The interactive page gains a play/pause button and a frame scrubber. <code>render(p, target = "static")</code> still produces an SVG of all the data at once, so animation never blocks an export.</p><h2 id="data">Getting the data back</h2><p><code>plot_data()</code> returns exactly what the plot draws. For a scatter that is the input; for a histogram it is the bins actually drawn; for a box plot the quartiles and whisker ends.</p><pre><code>p &lt;- ggnext(cars, aes(speed)) + geom_histogram(bins = 5)
 plot_data(p)
 #&gt;        x  y ymin ymax  xmin  xmax
 #&gt; 1  6.625  6    0    6  4.00  9.25
 #&gt; 2 11.875 17    0   17  9.25 14.50
 
-write_plot_data(p, "figure-2-data.csv")</code></pre><p>With several layers you get one table per layer; with facets, a <code>panel</code> column. <code>plot_data(p, layer = 2)</code> and <code>plot_data(p, panel = 1)</code> select; <code>plot_data(p, panel = "list")</code> returns one table per panel.</p><div class="note"><p>This is the honest record of a figure: it reflects every stat, position adjustment and facet split, and drops internal scratch columns — so what you publish beside the chart is what the chart shows.</p></div><h2 id="output">Output and sizing</h2><p>Size is set at construction or with <code>plot_size()</code>, and <code>render()</code> writes to a file or returns a string.</p><pre><code>ggplot3(d, aes(x, y), width = 900, height = 600)
+write_plot_data(p, "figure-2-data.csv")</code></pre><p>With several layers you get one table per layer; with facets, a <code>panel</code> column. <code>plot_data(p, layer = 2)</code> and <code>plot_data(p, panel = 1)</code> select; <code>plot_data(p, panel = "list")</code> returns one table per panel.</p><div class="note"><p>This is the honest record of a figure: it reflects every stat, position adjustment and facet split, and drops internal scratch columns — so what you publish beside the chart is what the chart shows.</p></div><h2 id="output">Output and sizing</h2><p>Size is set at construction or with <code>plot_size()</code>, and <code>render()</code> writes to a file or returns a string.</p><pre><code>ggnext(d, aes(x, y), width = 900, height = 600)
 p + plot_size(900, 600)
 
 svg &lt;- render(p)                       # a character string
 render(p, file = "plot.svg")           # write SVG
 render(p + interact(), file = "plot.html")
-cat(render(p))                         # inspect the source</code></pre><p>Printing a plot at the console shows a summary and opens the image in the RStudio viewer (or your browser). Printing a rendered document shows a short summary rather than thousands of characters of markup.</p><h2 id="extending">Extending ggplot3</h2><p>A geom is an S7 subclass plus one <code>build_marks()</code> method returning drawing primitives in normalized panel coordinates. Because both renderers consume those primitives, a new geom needs no renderer changes at all.</p><pre><code>GeomCross &lt;- S7::new_class("GeomCross", parent = Geom,
+cat(render(p))                         # inspect the source</code></pre><p>Printing a plot at the console shows a summary and opens the image in the RStudio viewer (or your browser). Printing a rendered document shows a short summary rather than thousands of characters of markup.</p><h2 id="extending">Extending ggnext</h2><p>A geom is an S7 subclass plus one <code>build_marks()</code> method returning drawing primitives in normalized panel coordinates. Because both renderers consume those primitives, a new geom needs no renderer changes at all.</p><pre><code>GeomCross &lt;- S7::new_class("GeomCross", parent = Geom,
   constructor = function() {
     S7::new_object(Geom(name = "cross",
                         default_params = list(size = 5, alpha = 1)))
@@ -208,9 +208,9 @@ S7::method(build_marks, GeomCross) &lt;- function(geom, scaled) {
   unlist(lapply(seq_along(scaled$x), function(i) {
     r &lt;- scaled$size[[i]] / 400
     list(
-      ggplot3:::mk_line(c(scaled$x[[i]] - r, scaled$x[[i]] + r),
+      ggnext:::mk_line(c(scaled$x[[i]] - r, scaled$x[[i]] + r),
                         rep(scaled$y[[i]], 2), scaled$color[[i]]),
-      ggplot3:::mk_line(rep(scaled$x[[i]], 2),
+      ggnext:::mk_line(rep(scaled$x[[i]], 2),
                         c(scaled$y[[i]] - r, scaled$y[[i]] + r),
                         scaled$color[[i]])
     )
@@ -218,11 +218,11 @@ S7::method(build_marks, GeomCross) &lt;- function(geom, scaled) {
 }
 
 geom_cross &lt;- function(mapping = NULL, data = NULL, ...) {
-  ggplot3:::layer_new(GeomCross(), stat_identity(), mapping, data,
+  ggnext:::layer_new(GeomCross(), stat_identity(), mapping, data,
                       list(...))
 }</code></pre><p>The five primitives are <code>mk_circle()</code>, <code>mk_line()</code>, <code>mk_rect()</code>, <code>mk_polygon()</code> and <code>mk_text()</code>. A statistical transformation is a <code>Stat</code> subclass with a <code>compute_stat()</code> method. The same seam is what every built-in geom uses, so there is no private path a package geom can take that yours cannot.</p><h2 id="troubleshooting">Troubleshooting</h2><table><tbody><tr><td><code>evaluated to a function, not a data column</code></td><td>The name in <code>aes()</code> is not a column, and R found a function of that name instead — <code>class</code>, <code>dist</code> and <code>rank</code> are common traps. The error lists the columns that do exist.</td></tr><tr><td><code>requires the aesthetic(s)</code></td><td>A geom needs mappings you have not supplied, e.g. <code>geom_sankey()</code> needs <code>x</code>, <code>xend</code> and <code>y</code>.</td></tr><tr><td><code>a log10 scale requires strictly positive values</code></td><td>Zero or negative values cannot go on a log axis; filter them or use <code>scale_x_sqrt()</code>.</td></tr><tr><td><code>must be numeric for a continuous scale</code></td><td>A character column reached a scale you declared continuous; either let the scale be chosen automatically or use <code>scale_x_discrete()</code>.</td></tr><tr><td>Legend missing</td><td>Legends come from a <em>mapped</em> <code>color</code>. <code>geom_point(color = "red")</code> sets a constant and produces none; check <code>legend_position</code> is not <code>"none"</code>.</td></tr><tr><td>Console fills with markup</td><td>You are printing a rendered document from an older session. Restart R; <code>render()</code> output prints as a one-line summary.</td></tr></tbody></table>
 </main>
-<footer>ggplot3 — a next-generation Grammar of Graphics for R. Built on S7. <a href="https://itsmdivakaran.github.io/ggplot3/">Documentation</a> &middot; <a href="https://github.com/itsmdivakaran/ggplot3">Source</a> &middot; <a href="credits.html">Credits</a>.</footer>
+<footer>ggnext — a next-generation Grammar of Graphics for R. Built on S7. <a href="https://itsmdivakaran.github.io/ggnext/">Documentation</a> &middot; <a href="https://github.com/itsmdivakaran/ggnext">Source</a> &middot; <a href="credits.html">Credits</a>.</footer>
 </body>
 </html>
 

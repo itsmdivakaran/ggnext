@@ -1,0 +1,83 @@
+* using log directory ‘/Users/maheshdivakaran/Documents/Claude/ggplot3/ggnext.Rcheck’
+* using R version 4.5.2 (2025-10-31)
+* using platform: aarch64-apple-darwin20
+* R was compiled by
+    Apple clang version 16.0.0 (clang-1600.0.26.6)
+    GNU Fortran (GCC) 14.2.0
+* running under: macOS 27.0
+* using session charset: UTF-8
+* using options ‘--no-manual --as-cran’
+* checking for file ‘ggnext/DESCRIPTION’ ... OK
+* this is package ‘ggnext’ version ‘0.1.0’
+* package encoding: UTF-8
+* checking CRAN incoming feasibility ... [3s/38s] NOTE
+Maintainer: ‘Mahesh Divakaran <itsmdivakaran@gmail.com>’
+
+New submission
+
+Found the following (possibly) invalid URLs:
+  URL: https://github.com/itsmdivakaran/ggnext
+    From: DESCRIPTION
+          man/ggnext-package.Rd
+          inst/CITATION
+    Status: 404
+    Message: Not Found
+  URL: https://github.com/itsmdivakaran/ggnext/issues
+    From: DESCRIPTION
+          man/ggnext-package.Rd
+    Status: 404
+    Message: Not Found
+  URL: https://itsmdivakaran.github.io/ggnext/
+    From: DESCRIPTION
+          man/ggnext-package.Rd
+    Status: 404
+    Message: Not Found
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... OK
+* checking for hidden files and directories ... OK
+* checking for portable file names ... OK
+* checking for sufficient/correct file permissions ... OK
+* checking whether package ‘ggnext’ can be installed ... OK
+* checking installed package size ... OK
+* checking package directory ... OK
+* checking for future file timestamps ... OK
+* checking DESCRIPTION meta-information ... OK
+* checking top-level files ... NOTE
+Files ‘README.md’ or ‘NEWS.md’ cannot be checked without ‘pandoc’ being installed.
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking code files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the package can be unloaded cleanly ... OK
+* checking whether the namespace can be loaded with stated dependencies ... OK
+* checking whether the namespace can be unloaded cleanly ... OK
+* checking whether startup messages can be suppressed ... OK
+* checking use of S3 registration ... OK
+* checking dependencies in R code ... OK
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... OK
+* checking Rd files ... OK
+* checking Rd metadata ... OK
+* checking Rd line widths ... OK
+* checking Rd cross-references ... OK
+* checking for missing documentation entries ... OK
+* checking for code/documentation mismatches ... OK
+* checking Rd \usage sections ... OK
+* checking Rd contents ... OK
+* checking for unstated dependencies in examples ... OK
+* checking examples ... OK
+* checking for unstated dependencies in ‘tests’ ... OK
+* checking tests ... [29s/29s] OK
+  Running ‘testthat.R’ [29s/29s]
+* checking for non-standard things in the check directory ... OK
+* checking for detritus in the temp directory ... OK
+* DONE
+Status: 2 NOTEs

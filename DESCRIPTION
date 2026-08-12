@@ -1,4 +1,4 @@
-Package: ggplot3
+Package: ggnext
 Title: A Next-Generation Grammar of Graphics
 Version: 0.1.0
 Authors@R: person("Mahesh", "Divakaran",
@@ -22,9 +22,9 @@ Description: An implementation of the Grammar of Graphics described by
     Fruchterman and Reingold (1991) <doi:10.1002/spe.4380211102> for
     force-directed graphs, and Kaplan and Meier (1958)
     <doi:10.1080/01621459.1958.10501452> for survival curves.
-URL: https://itsmdivakaran.github.io/ggplot3/,
-    https://github.com/itsmdivakaran/ggplot3
-BugReports: https://github.com/itsmdivakaran/ggplot3/issues
+URL: https://itsmdivakaran.github.io/ggnext/,
+    https://github.com/itsmdivakaran/ggnext
+BugReports: https://github.com/itsmdivakaran/ggnext/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -58,7 +58,7 @@ Collate:
     'geoms-ml.R'
     'stats-special.R'
     'geoms-special.R'
-    'ggplot3-package.R'
+    'ggnext-package.R'
     'json.R'
     'labels.R'
     'logo.R'

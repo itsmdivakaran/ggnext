@@ -1,4 +1,4 @@
-# Submitting ggplot3 to CRAN
+# Submitting ggnext to CRAN
 
 A step-by-step checklist. Steps 1-3 need network access, so run them
 yourself. Everything in step 0 is already done.
@@ -22,7 +22,7 @@ yourself. Everything in step 0 is already done.
 
 ## Step 1 — Decide on the package name
 
-**Read this before anything else.** `ggplot3` reads as an official
+**Read this before anything else.** `ggnext` reads as an official
 successor to `ggplot2`. CRAN policy says a package name must not mislead
 about origin or affiliation, and reviewers do question names implying a
 relationship that does not exist — even when the code is independent.
@@ -36,12 +36,12 @@ legible: `gramgraph`, `ggnext`, `vizgrammar`, `grammargraphics`.
 
 To rename, change: `DESCRIPTION` (Package, Title, URL, BugReports), the
 package-doc alias, `inst/CITATION`, `library()` calls in examples and
-README, the `ggplot3()` entry-point function name, and the logo wordmark.
+README, the `ggnext()` entry-point function name, and the logo wordmark.
 
 Also check the name is free:
 
 ```r
-available::available("ggplot3")
+available::available("ggnext")
 ```
 
 ---
@@ -95,10 +95,10 @@ usually bounces.
 devtools::build()
 ```
 
-This writes `../ggplot3_0.1.0.tar.gz`. Confirm it is what you expect:
+This writes `../ggnext_0.1.0.tar.gz`. Confirm it is what you expect:
 
 ```bash
-tar -tzf ../ggplot3_0.1.0.tar.gz | head -30
+tar -tzf ../ggnext_0.1.0.tar.gz | head -30
 ```
 
 The `docs/` site, `.preview/`, `pkgdown/` and `cran-comments.md` are
@@ -121,7 +121,7 @@ Or submit manually at <https://cran.r-project.org/submit.html>:
 
 1. Name: **Mahesh Divakaran**
 2. Email: the address in `DESCRIPTION` — **it must match exactly**
-3. Upload `ggplot3_0.1.0.tar.gz`
+3. Upload `ggnext_0.1.0.tar.gz`
 4. Paste the contents of `cran-comments.md` into the comments box
 
 ---

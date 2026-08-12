@@ -33,7 +33,7 @@
 <circle cx="408.51" cy="198.04" r="9.88" fill="#5FD0A5" fill-opacity="0.92"/>
 <circle cx="422.66" cy="180.2" r="9.88" fill="#7AA2F7" fill-opacity="0.92"/>
 <circle cx="436.8" cy="181.37" r="9.88" fill="#F7C96B" fill-opacity="0.92"/>
-<text x="260" y="387.29" text-anchor="middle" font-size="85.8" font-weight="bold" fill="#FFFFFF" letter-spacing="-1.56">ggplot3</text>
+<text x="260" y="387.29" text-anchor="middle" font-size="85.8" font-weight="bold" fill="#FFFFFF" letter-spacing="-1.56">ggnext</text>
 <text x="260" y="427.52" text-anchor="middle" font-size="26" font-weight="600" fill="#5FD0A5" letter-spacing="2.6">NEXT-GENERATION</text>
 <text x="260" y="462.62" text-anchor="middle" font-size="26" font-weight="600" fill="#5FD0A5" letter-spacing="2.6">GRAMMAR OF GRAPHICS</text>
 </g>
