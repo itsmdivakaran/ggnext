@@ -61,7 +61,7 @@ map_color_discrete <- function(x, palette = GGNEXT_DISCRETE_PALETTE) {
 #' Map a numeric vector to an interpolated gradient
 #'
 #' Linear interpolation channel-by-channel in sRGB between the two gradient
-#' endpoints. `t` is the position of each value in its own [min, max] range.
+#' endpoints. `t` is the position of each value in its own `[min, max]` range.
 #'
 #' @param x Numeric vector.
 #' @return Character vector of hex colors, one per observation.

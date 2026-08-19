@@ -19,7 +19,7 @@ layer index is inserted before the extension
 The file path(s) written, invisibly.
 }
 \description{
-Convenience wrapper around \code{\link[=plot_data]{plot_data()}} and \code{\link[utils:write.table]{utils::write.csv()}} for
+Convenience wrapper around \code{\link[=plot_data]{plot_data()}} and \code{\link[utils:write.csv]{utils::write.csv()}} for
 publishing the numbers behind a figure next to the figure itself.
 }
 \examples{

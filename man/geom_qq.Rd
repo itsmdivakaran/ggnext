@@ -27,7 +27,7 @@ geom_qq_line(
 \item{mapping, data}{Standard layer overrides. Map the values to \code{x}.}
 
 \item{distribution}{Quantile function of the reference distribution
-(default \link[stats:Normal]{stats::qnorm}).}
+(default \link[stats:qnorm]{stats::qnorm}).}
 
 \item{color, size, alpha}{Appearance.}
 

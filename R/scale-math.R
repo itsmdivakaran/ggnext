@@ -77,11 +77,11 @@ nice_ticks <- function(lo, hi, n = 5) {
   round(ticks, digits = max(0, -floor(log10(step))))
 }
 
-#' Linearly map values from a domain onto [0, 1]
+#' Linearly map values from a domain onto `[0, 1]`
 #'
 #' The single transform every continuous scale performs:
 #' `t = (x - domain_min) / (domain_max - domain_min)`.
-#' Values outside the domain map outside [0, 1]; clipping is a renderer
+#' Values outside the domain map outside `[0, 1]`; clipping is a renderer
 #' decision (the panel clip path / canvas clip region), not a scale decision.
 #'
 #' @param x Numeric vector.
