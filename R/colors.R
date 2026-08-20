@@ -105,3 +105,12 @@ lerp_hex <- function(from, to, t) {
     character(1)
   )
 }
+
+# Two-hop diverging interpolation, clamped to [-1, 1]: `low` at -1, `mid`
+# at 0, `high` at +1. Used for correlation matrices and other
+# signed-value heatmaps where 0 has to land on a visually neutral color,
+# not wherever the data's own midpoint happens to fall.
+diverging_hex <- function(x, low, mid, high) {
+  x <- pmin(pmax(x, -1), 1)
+  ifelse(x < 0, lerp_hex(mid, low, -x), lerp_hex(mid, high, x))
+}

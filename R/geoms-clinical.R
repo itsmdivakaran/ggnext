@@ -96,6 +96,41 @@ geom_forest <- function(mapping = NULL, data = NULL, ref = 1, color = NULL,
             list(color = color, linewidth = linewidth, ref = ref))
 }
 
+# --- Hazard ratio forest plot --------------------------------------------
+
+#' Hazard ratio forest plot (Cox proportional hazards)
+#'
+#' Fits a Cox proportional-hazards model from scratch (Newton-Raphson on
+#' the Breslow partial likelihood; see [stat_coxph()]) and plots the
+#' resulting hazard ratio and Wald 95% CI per group, down a category axis
+#' with a no-effect reference line at HR = 1 — [geom_forest()] paired with
+#' the Cox engine so the whole model-to-plot pipeline is one call.
+#'
+#' @param mapping,data Standard layer overrides. Map `time`, `status`
+#'   (1/TRUE = event, 0/FALSE = censored), and the treatment arm to
+#'   `group` (or `color`, which doubles as `group`).
+#' @param ref_level Reference level for the hazard ratio; `NULL` (default)
+#'   uses the first observed group.
+#' @param color Marker and whisker color.
+#' @param linewidth Whisker width.
+#' @return A [Layer] to add with `+`.
+#' @examples
+#' set.seed(1)
+#' d <- data.frame(
+#'   time = c(rexp(60, 0.08), rexp(60, 0.05)),
+#'   status = rbinom(120, 1, 0.8),
+#'   arm = rep(c("placebo", "treatment"), each = 60)
+#' )
+#' ggnext(d, aes(time = time, status = status, group = arm)) +
+#'   geom_hr(ref_level = "placebo") +
+#'   labs(title = "Hazard ratio (Cox model)", x = "Hazard ratio (95% CI)", y = NULL)
+#' @export
+geom_hr <- function(mapping = NULL, data = NULL, ref_level = NULL,
+                    color = NULL, linewidth = NULL) {
+  layer_new(GeomForest(), StatCoxph(ref_level = ref_level), mapping, data,
+            list(color = color, linewidth = linewidth, ref = 1))
+}
+
 # --- Swimmer plot ------------------------------------------------------------
 
 #' GeomSwimmer: per-subject event timeline bars
@@ -351,6 +386,189 @@ method(build_marks, GeomBlandAltman) <- function(geom, scaled) {
     mk_circle(scaled$x[[i]], scaled$y[[i]], scaled$params$size,
               scaled$color[[i]], alpha = scaled$params$alpha)
   }))
+}
+
+# --- Concordance (Lin's CCC) --------------------------------------------------
+
+#' Concordance / agreement plot
+#'
+#' Scatter of two methods' measurements against the identity line, with
+#' Lin's concordance correlation coefficient (CCC) annotated in the
+#' corner. Unlike [geom_bland_altman()] (difference vs. mean, for spotting
+#' systematic bias), this reads agreement directly off how close the
+#' cloud sits to y = x.
+#'
+#' @param mapping,data Standard layer overrides. Map the two methods'
+#'   measurements to `x` and `y`.
+#' @param color Point color.
+#' @param size Point radius.
+#' @param alpha Point opacity.
+#' @return A [Layer] to add with `+`.
+#' @examples
+#' set.seed(1)
+#' a <- rnorm(50, 10, 2)
+#' d <- data.frame(method1 = a, method2 = a * 0.95 + rnorm(50, 0, 0.5))
+#' ggnext(d, aes(method1, method2)) + geom_concordance()
+#' @export
+geom_concordance <- function(mapping = NULL, data = NULL, color = NULL,
+                             size = NULL, alpha = NULL) {
+  layer_new(GeomConcordance(), StatConcordance(), mapping, data,
+            list(color = color, size = size, alpha = alpha))
+}
+
+#' StatConcordance: Lin's concordance correlation coefficient
+#' @noRd
+StatConcordance <- new_class("StatConcordance", parent = Stat,
+  constructor = function() new_object(Stat(name = "concordance"))
+)
+
+method(compute_stat, StatConcordance) <- function(stat, values) {
+  x <- values$x
+  y <- values$y
+  mx <- mean(x, na.rm = TRUE)
+  my <- mean(y, na.rm = TRUE)
+  vx <- stats::var(x, na.rm = TRUE)
+  vy <- stats::var(y, na.rm = TRUE)
+  cxy <- stats::cov(x, y, use = "complete.obs")
+  ccc <- 2 * cxy / (vx + vy + (mx - my)^2)
+  values$ccc_label <- rep(sprintf("CCC = %.3f", ccc), length(x))
+  values
+}
+
+#' GeomConcordance: identity line, scatter, and a CCC annotation
+#' @noRd
+GeomConcordance <- new_class("GeomConcordance", parent = Geom,
+  constructor = function() {
+    new_object(Geom(
+      name = "concordance",
+      default_params = list(color = "#4A5568", size = 3, alpha = 0.75,
+                            label_size = 12)
+    ))
+  }
+)
+
+method(build_marks, GeomConcordance) <- function(geom, scaled) {
+  p <- scaled$params
+  # The identity line is evaluated at the panel's own (already trained and
+  # expanded) domain, the same trick geom_abline() uses, since x and y are
+  # independently-trained axes that need not share numeric range even
+  # though they are the same measurement.
+  xd <- scaled$xdomain
+  yd <- scaled$ydomain
+  marks <- list(mk_line(
+    c(0, 1), (xd - yd[1]) / (yd[2] - yd[1]),
+    stroke = "#9A9AA6", width = 1, dash = "4,3"
+  ))
+  marks <- c(marks, lapply(seq_along(scaled$x), function(i) {
+    mk_circle(scaled$x[[i]], scaled$y[[i]], p$size, scaled$color[[i]],
+              alpha = p$alpha)
+  }))
+  if (!is.null(scaled$ccc_label)) {
+    marks <- c(marks, list(mk_text(
+      0.05, 0.95, scaled$ccc_label[[1]], size = p$label_size,
+      color = "#16181D", anchor = "start"
+    )))
+  }
+  marks
+}
+
+# --- Covariate balance (SMD) --------------------------------------------------
+
+#' Baseline covariate balance (standardized mean difference) plot
+#'
+#' The standardized mean difference (Cohen's d) between two groups for
+#' each covariate, down a category axis with a reference line at
+#' SMD = 0 and a dashed line at the conventional 0.1 "acceptable
+#' imbalance" threshold — the standard baseline balance check for a
+#' randomized or propensity-matched comparison.
+#'
+#' @param data A data frame with one row per subject: a two-level `group`
+#'   column and one or more numeric covariate columns.
+#' @param group Name of the two-level grouping column (treatment arm).
+#' @param vars Character vector of covariate columns; default all numeric
+#'   columns other than `group`.
+#' @param threshold Dashed-line threshold in SMD units; `NULL` or `0`
+#'   omits it.
+#' @param color Marker and whisker color.
+#' @return A [Layer] to add with `+`.
+#' @examples
+#' set.seed(1)
+#' d <- data.frame(
+#'   arm = rep(c("treatment", "control"), each = 50),
+#'   age = c(rnorm(50, 55, 8), rnorm(50, 58, 9)),
+#'   bmi = c(rnorm(50, 27, 4), rnorm(50, 27.5, 4)),
+#'   sbp = c(rnorm(50, 130, 12), rnorm(50, 129, 11))
+#' )
+#' ggnext() +
+#'   geom_smd(d, group = "arm") +
+#'   labs(title = "Baseline balance", x = "Standardized mean difference", y = NULL)
+#' @export
+geom_smd <- function(data, group, vars = NULL, threshold = 0.1, color = NULL) {
+  if (!is.data.frame(data)) {
+    stop("geom_smd() needs a data.frame as `data`.", call. = FALSE)
+  }
+  if (!group %in% names(data)) {
+    stop("`group` (\"", group, "\") is not a column of `data`.", call. = FALSE)
+  }
+  g <- data[[group]]
+  levs <- if (is.factor(g)) levels(g) else sort(unique(as.character(g)))
+  if (length(levs) != 2) {
+    stop(
+      "geom_smd() needs exactly two groups in `", group, "`; found ",
+      length(levs), ".", call. = FALSE
+    )
+  }
+  nums <- vars %||% setdiff(
+    names(data)[vapply(data, is.numeric, logical(1))], group
+  )
+  if (length(nums) == 0) {
+    stop("geom_smd() needs at least one numeric covariate column.", call. = FALSE)
+  }
+  smd <- vapply(nums, function(v) {
+    x1 <- data[[v]][as.character(g) == levs[1]]
+    x2 <- data[[v]][as.character(g) == levs[2]]
+    pooled_sd <- sqrt((stats::var(x1, na.rm = TRUE) + stats::var(x2, na.rm = TRUE)) / 2)
+    if (!is.finite(pooled_sd) || pooled_sd == 0) {
+      return(NA_real_)
+    }
+    (mean(x1, na.rm = TRUE) - mean(x2, na.rm = TRUE)) / pooled_sd
+  }, numeric(1))
+  long <- data.frame(covariate = nums, smd = smd, stringsAsFactors = FALSE)
+  layer_new(
+    GeomSMD(), StatForest(ref = 0),
+    mapping = aes_internal(x = "smd", y = "covariate"),
+    data = long, inherit = FALSE,
+    params = list(color = color, ref = 0, threshold = threshold)
+  )
+}
+
+#' GeomSMD: forest-style dot plot with an imbalance threshold band
+#' @noRd
+GeomSMD <- new_class("GeomSMD", parent = Geom,
+  constructor = function() {
+    new_object(Geom(
+      name = "smd",
+      default_params = list(color = "#2A3F5F", size = 4, alpha = 1,
+                            linewidth = 1.5, threshold = 0.1),
+      required_aes = c("x", "y")
+    ))
+  }
+)
+
+method(build_marks, GeomSMD) <- function(geom, scaled) {
+  p <- scaled$params
+  marks <- list()
+  thr <- p$threshold
+  if (!is.null(thr) && is.finite(thr) && thr > 0) {
+    xd <- scaled$xdomain
+    for (t in c(-thr, thr)) {
+      xn <- (t - xd[1]) / (xd[2] - xd[1])
+      marks[[length(marks) + 1]] <- mk_line(
+        c(xn, xn), c(0, 1), stroke = "#C9A227", width = 1, dash = "4,3"
+      )
+    }
+  }
+  c(marks, build_marks(GeomForest(), scaled))
 }
 
 # --- Cumulative incidence ----------------------------------------------------

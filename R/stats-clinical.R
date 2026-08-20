@@ -40,6 +40,135 @@ method(compute_stat, StatForest) <- function(stat, values) {
   values
 }
 
+# --- Cox proportional hazards -------------------------------------------------
+
+# Newton-Raphson fit of a Cox proportional-hazards model with Breslow
+# handling of tied event times (the simplification that treats every event
+# at a tied time as contributing to one combined risk-set term, rather
+# than Efron's exact partial-likelihood correction — the standard
+# trade-off for keeping this dependency-free and correct for the common,
+# lightly-tied case).
+#
+# For each distinct event time t_j with risk set R_j (n_j subjects with
+# time >= t_j) and d_j events tied at t_j:
+#   score      U(beta) += sum_{i in D_j} x_i - d_j * S1_j / S0_j
+#   information I(beta) += d_j * (S2_j / S0_j - outer(S1_j / S0_j, S1_j / S0_j))
+# where S0_j = sum_{k in R_j} w_k, S1_j = sum_{k in R_j} w_k * x_k,
+# S2_j = sum_{k in R_j} w_k * x_k %*% t(x_k), and w_k = exp(x_k' beta).
+cox_newton_raphson <- function(time, event, X, max_iter = 50, tol = 1e-9) {
+  p <- ncol(X)
+  beta <- rep(0, p)
+  event_times <- sort(unique(time[event]))
+  info <- matrix(0, p, p)
+  for (iter in seq_len(max_iter)) {
+    U <- rep(0, p)
+    info <- matrix(0, p, p)
+    for (t in event_times) {
+      risk <- which(time >= t)
+      d_idx <- which(time == t & event)
+      d <- length(d_idx)
+      Xr <- X[risk, , drop = FALSE]
+      w <- exp(as.vector(Xr %*% beta))
+      S0 <- sum(w)
+      Xw <- Xr * w
+      S1 <- colSums(Xw)
+      S2 <- crossprod(Xw, Xr)
+      U <- U + colSums(X[d_idx, , drop = FALSE]) - d * S1 / S0
+      info <- info + d * (S2 / S0 - outer(S1, S1) / S0^2)
+    }
+    step <- tryCatch(solve(info, U), error = function(e) NULL)
+    if (is.null(step)) {
+      stop(
+        "stat_coxph(): the information matrix is singular (likely complete ",
+        "separation or a group with no events); the model did not converge.",
+        call. = FALSE
+      )
+    }
+    beta <- beta + step
+    if (max(abs(step)) < tol) break
+  }
+  list(beta = beta, info = info)
+}
+
+#' StatCoxph: hazard ratios from a from-scratch Cox regression
+#'
+#' Consumes `time`, `status` (1/TRUE = event, 0/FALSE = censored), and a
+#' categorical `group` (treatment arm); fits a Cox proportional-hazards
+#' model by Newton-Raphson maximisation of the (Breslow) partial
+#' likelihood and emits one row per non-reference level: `x` = hazard
+#' ratio, `xmin`/`xmax` = Wald 95% CI, `y` = level label. `y` is declared
+#' via `discrete_provides` (see [Stat]) since it is entirely computed
+#' here - the build would otherwise have no pre-stat `y` to detect a
+#' categorical axis from.
+#'
+#' @param ref_level Reference level for the hazard ratio; `NULL` uses the
+#'   first factor level (or first-observed value for a character/numeric
+#'   grouping variable).
+#' @noRd
+StatCoxph <- new_class("StatCoxph", parent = Stat,
+  properties = list(ref_level = class_any),
+  constructor = function(ref_level = NULL) {
+    new_object(
+      Stat(
+        name = "coxph", provides = c("x", "y", "xmin", "xmax"),
+        discrete_provides = "y"
+      ),
+      ref_level = ref_level
+    )
+  }
+)
+
+method(compute_stat, StatCoxph) <- function(stat, values) {
+  if (is.null(values$time) || is.null(values$status) || is.null(values$group)) {
+    stop(
+      "stat_coxph() requires aes(time = , status = , group = ) ",
+      "(or color =, which doubles as group).", call. = FALSE
+    )
+  }
+  time <- values$time
+  event <- as.logical(values$status)
+  arm <- as.character(values$group)
+
+  levs <- unique(arm) # first-appearance order
+  ref <- as.character(stat@ref_level %||% levs[1])
+  if (!ref %in% levs) {
+    stop(
+      "stat_coxph(): `ref_level` (\"", ref, "\") is not one of the ",
+      "observed groups: ", paste(levs, collapse = ", "), ".", call. = FALSE
+    )
+  }
+  other <- setdiff(levs, ref)
+  if (length(other) == 0) {
+    stop(
+      "stat_coxph() needs at least two groups (found only \"", ref, "\").",
+      call. = FALSE
+    )
+  }
+
+  X <- vapply(other, function(lv) as.numeric(arm == lv), numeric(length(arm)))
+  dim(X) <- c(length(arm), length(other))
+  fit <- cox_newton_raphson(time, event, X)
+  se <- sqrt(diag(solve(fit$info)))
+  z <- stats::qnorm(0.975)
+  hr <- exp(fit$beta)
+
+  out <- list(
+    x = hr,
+    xmin = exp(fit$beta - z * se),
+    xmax = exp(fit$beta + z * se),
+    y = other,
+    xref = rep(1, length(other)),
+    group = other
+  )
+  with_labels(out, x = paste0("hazard ratio vs ", ref))
+}
+
+#' Hazard ratios from a Cox proportional-hazards model
+#' @param ref_level Reference level; `NULL` uses the first observed value.
+#' @return A `StatCoxph` object, to pass as a layer's `stat`.
+#' @export
+stat_coxph <- function(ref_level = NULL) StatCoxph(ref_level = ref_level)
+
 # --- Swimmer -----------------------------------------------------------------
 
 #' StatSwimmer: bars from zero to each subject's duration

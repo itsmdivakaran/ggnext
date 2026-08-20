@@ -676,3 +676,174 @@ geom_function <- function(fn, xlim = c(0, 1), n = 101, color = NULL,
                             alpha = alpha))
   )
 }
+
+# --- correlation matrix -------------------------------------------------------
+
+#' Correlation matrix heatmap
+#'
+#' All pairwise Pearson correlations among the numeric columns of `data`,
+#' shaded on a diverging scale (negative to positive) and annotated with
+#' the coefficient. Takes the raw wide data frame directly rather than
+#' through `aes()`, since the stat needs the whole numeric block at once
+#' to compute pairwise correlations, not row-wise aesthetic vectors — the
+#' same pattern [geom_dendrogram()] uses.
+#'
+#' @param data A data frame; correlations are computed over its numeric
+#'   columns.
+#' @param vars Character vector of numeric columns to include; default all
+#'   numeric columns in `data`.
+#' @param label Annotate each cell with its correlation coefficient.
+#' @param label_size Annotation text size in px.
+#' @param low,mid,high Diverging fill colors for correlation -1, 0, +1.
+#' @return A [Layer] to add with `+`.
+#' @examples
+#' ggnext() +
+#'   geom_cor(mtcars, vars = c("mpg", "cyl", "disp", "hp", "wt")) +
+#'   labs(title = "Correlation matrix")
+#' @export
+geom_cor <- function(data, vars = NULL, label = TRUE, label_size = NULL,
+                     low = "#C1462F", mid = "#F2F0EA", high = "#12A594") {
+  if (!is.data.frame(data)) {
+    stop("geom_cor() needs a data.frame as `data`.", call. = FALSE)
+  }
+  nums <- vars %||% names(data)[vapply(data, is.numeric, logical(1))]
+  if (length(nums) < 2) {
+    stop("geom_cor() needs at least two numeric columns.", call. = FALSE)
+  }
+  m <- stats::cor(data[nums], use = "pairwise.complete.obs")
+  long <- expand.grid(Var1 = nums, Var2 = nums, KEEP.OUT.ATTRS = FALSE,
+                      stringsAsFactors = FALSE)
+  long$Var1 <- factor(long$Var1, levels = nums)
+  long$Var2 <- factor(long$Var2, levels = nums)
+  long$corr <- as.vector(m[cbind(
+    match(as.character(long$Var1), nums), match(as.character(long$Var2), nums)
+  )])
+  long$label <- sprintf("%.2f", long$corr)
+  long$fill <- diverging_hex(long$corr, low, mid, high)
+  layer_new(
+    GeomCor(), StatCor(),
+    mapping = aes_internal(x = "Var1", y = "Var2", label = "label", fill = "fill"),
+    data = long, inherit = FALSE,
+    params = list(label = label, label_size = label_size)
+  )
+}
+
+#' GeomCor: shaded correlation tiles with coefficient labels
+#' @noRd
+GeomCor <- new_class("GeomCor", parent = Geom,
+  constructor = function() {
+    new_object(Geom(
+      name = "cor",
+      default_params = list(alpha = 1, label = TRUE, label_size = 12),
+      required_aes = c("x", "y", "fill")
+    ))
+  }
+)
+
+method(build_marks, GeomCor) <- function(geom, scaled) {
+  p <- scaled$params
+  marks <- lapply(seq_along(scaled$x), function(i) {
+    mk_rect(
+      scaled$xmin[[i]], scaled$xmax[[i]], scaled$ymin[[i]], scaled$ymax[[i]],
+      fill = scaled$fill[[i]], alpha = p$alpha,
+      stroke = "#FFFFFF", stroke_width = 2
+    )
+  })
+  if (isTRUE(p$label) && !is.null(scaled$label)) {
+    marks <- c(marks, lapply(seq_along(scaled$x), function(i) {
+      mk_text(scaled$x[[i]], scaled$y[[i]], scaled$label[[i]],
+              size = p$label_size, color = contrast_text(scaled$fill[[i]]))
+    }))
+  }
+  marks
+}
+
+# --- missing-data pattern -------------------------------------------------
+
+#' Missing-data pattern plot
+#'
+#' A tile grid of which variables are observed vs. missing, one row per
+#' *distinct missingness pattern* (most frequent at the top, annotated
+#' with how many observations share it) rather than one row per
+#' observation — the standard compact view for spotting structured
+#' missingness (e.g. a block of variables always missing together).
+#'
+#' @param data A data frame to check for missing values.
+#' @param vars Character vector of columns to include; default all columns
+#'   in `data`.
+#' @param label Annotate missing cells.
+#' @param label_size Annotation text size in px.
+#' @param observed,missing Tile fill colors for observed vs. missing cells.
+#' @return A [Layer] to add with `+`.
+#' @examples
+#' d <- data.frame(
+#'   age = c(25, NA, 30, 40, NA, 33),
+#'   bmi = c(22, 24, NA, NA, 27, 23),
+#'   sbp = c(120, 118, 130, NA, 125, 121)
+#' )
+#' ggnext() + geom_missing_pattern(d) + labs(title = "Missing-data patterns")
+#' @export
+geom_missing_pattern <- function(data, vars = NULL, label = TRUE,
+                                 label_size = NULL, observed = "#D8DCE6",
+                                 missing = "#C1462F") {
+  if (!is.data.frame(data)) {
+    stop("geom_missing_pattern() needs a data.frame as `data`.", call. = FALSE)
+  }
+  cols <- vars %||% names(data)
+  miss <- as.data.frame(lapply(data[cols], function(v) is.na(v)))
+  key <- do.call(paste, c(miss, sep = "\r"))
+  freq <- table(key)
+  keys <- names(freq)[order(-as.numeric(freq))]
+  n_pat <- length(keys)
+  rows <- lapply(seq_len(n_pat), function(i) {
+    pat <- miss[key == keys[i], , drop = FALSE][1, ]
+    data.frame(
+      varname = factor(cols, levels = cols),
+      # Most-frequent pattern drawn at the top (slot 1 sits at the panel
+      # bottom on this package's upward-pointing y axis).
+      pattern = n_pat - i + 1,
+      missing = as.logical(unlist(pat)),
+      n = as.integer(freq[[keys[i]]]),
+      stringsAsFactors = FALSE
+    )
+  })
+  long <- do.call(rbind, rows)
+  long$fill <- ifelse(long$missing, missing, observed)
+  long$label <- ifelse(long$missing, "NA", "")
+  layer_new(
+    GeomMissingPattern(), StatMissingPattern(),
+    mapping = aes_internal(x = "varname", y = "pattern", fill = "fill", label = "label"),
+    data = long, inherit = FALSE,
+    params = list(label = label, label_size = label_size)
+  )
+}
+
+#' GeomMissingPattern: observed/missing tile grid
+#' @noRd
+GeomMissingPattern <- new_class("GeomMissingPattern", parent = Geom,
+  constructor = function() {
+    new_object(Geom(
+      name = "missing_pattern",
+      default_params = list(alpha = 1, label = TRUE, label_size = 11),
+      required_aes = c("x", "y", "fill")
+    ))
+  }
+)
+
+method(build_marks, GeomMissingPattern) <- function(geom, scaled) {
+  p <- scaled$params
+  marks <- lapply(seq_along(scaled$x), function(i) {
+    mk_rect(
+      scaled$xmin[[i]], scaled$xmax[[i]], scaled$ymin[[i]], scaled$ymax[[i]],
+      fill = scaled$fill[[i]], alpha = p$alpha,
+      stroke = "#FFFFFF", stroke_width = 2
+    )
+  })
+  if (isTRUE(p$label) && !is.null(scaled$label)) {
+    marks <- c(marks, lapply(seq_along(scaled$x), function(i) {
+      mk_text(scaled$x[[i]], scaled$y[[i]], scaled$label[[i]],
+              size = p$label_size, color = contrast_text(scaled$fill[[i]]))
+    }))
+  }
+  marks
+}

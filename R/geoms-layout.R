@@ -197,9 +197,63 @@ geom_sankey <- function(mapping = NULL, data = NULL, alpha = NULL,
             list(alpha = alpha, node_width = node_width, label = label))
 }
 
-#' @rdname geom_sankey
+#' GeomAlluvial: node bars plus flow ribbons, for ordered repeated-measures data
+#'
+#' Same rendering as `GeomSankey` (`build_marks()` just replays
+#' `marks_precomputed`); a separate class so `required_aes` matches the
+#' alluvial input shape (`x`/`y`/`group`, not `x`/`xend`/`y`) and so error
+#' messages name the right function.
+#'
+#' @noRd
+GeomAlluvial <- new_class("GeomAlluvial", parent = Geom,
+  constructor = function() {
+    new_object(Geom(
+      name = "alluvial",
+      default_params = list(alpha = 0.55, node_width = 0.04, label = TRUE),
+      required_aes = c("x", "y", "group")
+    ))
+  }
+)
+
+method(build_marks, GeomAlluvial) <- function(geom, scaled) {
+  scaled$marks_precomputed %||% list()
+}
+
+#' Alluvial diagram (ordered, repeated-measures categorical flow)
+#'
+#' Tracks the same subjects through an ordered sequence of stages (e.g.
+#' visit 1 category -> visit 2 category -> visit 3 category), unlike
+#' [geom_sankey()], which draws a general directed flow graph from an
+#' edge list. Internally it tallies every consecutive-stage transition
+#' and reuses `geom_sankey()`'s node-stacking and ribbon-path layout.
+#'
+#' @param mapping,data Standard layer overrides. Map the stage to `x`
+#'   (an ordered factor keeps its declared stage order), the category at
+#'   that stage to `y`, and the subject id to `group`.
+#' @param alpha Ribbon opacity.
+#' @param node_width Node bar width as a fraction of the panel.
+#' @param label Draw node labels.
+#' @return A [Layer] to add with `+`.
+#' @examples
+#' d <- data.frame(
+#'   subject = rep(1:8, each = 3),
+#'   visit = rep(c("Baseline", "Week 4", "Week 8"), 8),
+#'   response = c(
+#'     "SD", "SD", "PR", "SD", "PR", "PR", "SD", "SD", "SD",
+#'     "PR", "PR", "CR", "SD", "PR", "PR", "SD", "SD", "PD",
+#'     "PR", "CR", "CR", "SD", "PD", "PD"
+#'   )
+#' )
+#' d$visit <- factor(d$visit, levels = c("Baseline", "Week 4", "Week 8"))
+#' ggnext(d, aes(x = visit, y = response, group = subject)) +
+#'   geom_alluvial() +
+#'   theme_void()
 #' @export
-geom_alluvial <- geom_sankey
+geom_alluvial <- function(mapping = NULL, data = NULL, alpha = NULL,
+                          node_width = NULL, label = TRUE) {
+  layer_new(GeomAlluvial(), StatAlluvial(), mapping, data,
+            list(alpha = alpha, node_width = node_width, label = label))
+}
 
 # --- Treemap -----------------------------------------------------------------
 

@@ -4,7 +4,11 @@
 \alias{Stat}
 \title{Stat: statistical transformation applied to layer data}
 \usage{
-Stat(name = character(0), provides = character(0))
+Stat(
+  name = character(0),
+  provides = character(0),
+  discrete_provides = character(0)
+)
 }
 \arguments{
 \item{name}{Human-readable stat name.}
@@ -13,6 +17,17 @@ Stat(name = character(0), provides = character(0))
 aesthetics are validated against the user's mapping \emph{plus} these, so
 e.g. \code{geom_point(stat = stat_bin())} is accepted even though the user
 maps only \code{x} - the stat supplies \code{y}.}
+
+\item{discrete_provides}{Positional aesthetics (\code{"x"} and/or \code{"y"}) that
+this stat always computes as \emph{categorical} values, even when nothing
+maps that aesthetic before the stat runs (e.g. a Cox-model geom whose
+\code{y} is a set of treatment-arm labels the stat itself derives). The
+build's scale-type detection normally infers continuous vs. discrete
+from the raw, pre-stat mapping - the one signal it cannot see for an
+aesthetic that is \emph{entirely} stat-computed; listing it here is that
+missing signal. When set, the discrete scale's levels are trained
+from the layer's \code{group} aesthetic (present pre-stat for every layer)
+rather than from the (absent) raw \code{x}/\code{y}.}
 }
 \value{
 An S7 object of class \code{Stat}, the base class for statistical transformations.

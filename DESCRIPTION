@@ -7,11 +7,15 @@ Description: An implementation of the Grammar of Graphics described by
     Wilkinson (2005, ISBN:978-0-387-24544-7), built on 'S7' classes. The
     familiar grammar vocabulary of aesthetics, geometries, statistics,
     scales, coordinates, facets and themes composed with '+' is
-    preserved, and extended with built-in interactivity, animation, an
-    exact-data export, and a catalogue covering layout diagrams (Sankey,
-    treemap, network, radar), machine-learning diagnostics (SHAP,
-    receiver operating characteristic, calibration, partial dependence)
-    and clinical reporting (Kaplan-Meier, forest, swimmer, CONSORT).
+    preserved; every constructor that takes an argument also accepts a
+    plot as the first argument of a native pipe ('|>') stage, so the two
+    styles are interchangeable. The package is extended with built-in
+    interactivity, animation, an exact-data export, a plot linter that
+    flags common statistical-graphics mistakes before a figure ships,
+    and a catalogue covering layout diagrams (Sankey, treemap, network,
+    radar), machine-learning diagnostics (SHAP, receiver operating
+    characteristic, calibration, partial dependence) and clinical
+    reporting (Kaplan-Meier, forest, swimmer, CONSORT).
     Static output is written to Scalable Vector Graphics; interactive
     output is a self-contained 'HTML' document using a canvas element
     and vanilla 'JavaScript'. Both render targets consume the same
@@ -32,6 +36,7 @@ Depends: R (>= 4.1.0)
 Imports:
     S7,
     grDevices,
+    stats,
     utils
 Suggests:
     knitr,
@@ -61,15 +66,18 @@ Collate:
     'json.R'
     'labels.R'
     'logo.R'
+    'scale-discrete.R'
+    'theme.R'
+    'pipe.R'
     'plot-data.R'
     'render.R'
-    'scale-discrete.R'
     'scale-math.R'
     'site.R'
     'stats-base.R'
     'stats-clinical.R'
     'stats-layout.R'
+    'stats-layout2.R'
     'stats-ml.R'
     'svg.R'
-    'theme.R'
+    'validate.R'
 Config/roxygen2/version: 8.1.0

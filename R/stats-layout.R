@@ -210,13 +210,14 @@ method(compute_stat, StatNetwork) <- function(stat, values) {
 
   # Deterministic initial placement on a circle plus a seeded jitter: a
   # circle avoids the degenerate all-forces-cancel start that a uniform
-  # random cloud can produce for small graphs. with_seed() keeps the
-  # caller's random stream untouched.
+  # random cloud can produce for small graphs. local_rng() draws from a
+  # private stream, never touching R's global RNG state.
   ang <- 2 * pi * (seq_len(n) - 1) / n
-  nudge <- with_seed(stat@seed, list(
-    x = stats::runif(n, -0.02, 0.02),
-    y = stats::runif(n, -0.02, 0.02)
-  ))
+  rng <- local_rng(stat@seed)
+  nudge <- list(
+    x = rng$unif(n, -0.02, 0.02),
+    y = rng$unif(n, -0.02, 0.02)
+  )
   px <- 0.5 + 0.3 * cos(ang) + nudge$x
   py <- 0.5 + 0.3 * sin(ang) + nudge$y
 

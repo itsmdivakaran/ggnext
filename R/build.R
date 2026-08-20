@@ -35,13 +35,18 @@ Y_POS_COLS <- c(
 # output is already in [0, 1], so the build gives them bare unit axes and
 # hides the axis chrome (see panel_span() in R/stats-layout.R).
 PANEL_SPAN_GEOMS <- c(
-  "treemap", "network", "sankey", "chord", "upset", "funnel", "consort"
+  "treemap", "network", "sankey", "alluvial", "chord", "upset", "funnel",
+  "consort"
 )
 
 # Geoms that span the panel from their own parameters rather than from
 # data. Their placeholder rows must not widen the axis domain - a
 # reference line should never change the scales it is drawn against.
-NON_TRAINING_GEOMS <- "abline"
+# geom_km_risktable()'s x placeholder spans [0, max(time)] only so it can
+# train the domain by itself when used without geom_km(); paired with
+# geom_km(), the curve's own event times are the real training data and
+# the table must never widen (or narrow) that shared time axis.
+NON_TRAINING_GEOMS <- c("abline", "km_risktable")
 
 # Rows whose position cannot be drawn. Numeric positions must be finite
 # (NA, NaN, Inf all fail); a categorical position must simply be present.
@@ -243,7 +248,8 @@ stage_values <- function(plot) {
     scale_types[[aes_name]] <- plot@scales[[aes_name]] %||% {
       is_discrete <- any(vapply(all_layers, function(lv) {
         v <- lv$values[[aes_name]]
-        !is.null(v) && (is.character(v) || is.factor(v) || is.logical(v))
+        (!is.null(v) && (is.character(v) || is.factor(v) || is.logical(v))) ||
+          aes_name %in% lv$layer@stat@discrete_provides
       }, logical(1)))
       if (is_discrete) ScaleDiscrete(aesthetic = aes_name) else {
         ScaleContinuous(aesthetic = aes_name)
@@ -254,6 +260,12 @@ stage_values <- function(plot) {
     if (S7_inherits(scale_types[[aes_name]], ScaleDiscrete)) {
       pooled <- do.call(c, lapply(all_layers, function(lv) {
         v <- lv$values[[aes_name]]
+        if (aes_name %in% lv$layer@stat@discrete_provides) {
+          # This aesthetic is entirely stat-computed (see
+          # Stat's `discrete_provides`); `group` is what carries its raw,
+          # pre-stat categories instead.
+          v <- lv$values$group %||% v
+        }
         if (is.null(v) || is.numeric(v)) NULL else v
       }))
       if (is.null(pooled)) {

@@ -89,7 +89,8 @@ test_that("the reference index covers every export", {
 
 test_that("drawing a plot never disturbs the caller's random stream", {
   # CRAN policy, and plain good manners: rendering must not reset a user's
-  # simulation. Every seeded layout goes through with_seed().
+  # simulation. Every seeded layout goes through local_rng(), which never
+  # reads or writes .Random.seed.
   set.seed(99)
   before <- .Random.seed
 
@@ -107,13 +108,20 @@ test_that("drawing a plot never disturbs the caller's random stream", {
   expect_identical(ggnext_logo(), ggnext_logo())
 })
 
-test_that("with_seed() restores an absent .Random.seed", {
-  if (exists(".Random.seed", globalenv())) {
-    rm(".Random.seed", envir = globalenv())
-  }
-  x <- ggnext:::with_seed(1, stats::runif(3))
+test_that("local_rng() never touches .Random.seed", {
+  had_seed <- exists(".Random.seed", globalenv())
+  if (had_seed) rm(".Random.seed", envir = globalenv())
+
+  rng <- ggnext:::local_rng(1)
+  x <- rng$unif(3)
+
   expect_length(x, 3)
   expect_false(exists(".Random.seed", globalenv()))
+})
+
+test_that("local_rng() is deterministic for a given seed", {
+  expect_identical(ggnext:::local_rng(1)$unif(5), ggnext:::local_rng(1)$unif(5))
+  expect_identical(ggnext:::local_rng(7)$norm(5), ggnext:::local_rng(7)$norm(5))
 })
 
 test_that("the cookbook page knits the shipped reference document", {

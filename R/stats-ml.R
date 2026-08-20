@@ -173,6 +173,106 @@ method(compute_stat, StatLiftGain) <- function(stat, values) {
   )
 }
 
+# --- Precision-Recall ---------------------------------------------------------
+
+#' StatPR: empirical precision-recall curve
+#'
+#' Consumes `truth` (actual class: logical, 0/1, or a two-level factor
+#' whose *second* level is the positive class) and `score` (predicted
+#' score, higher = more positive) aesthetics; emits recall (`x`) /
+#' precision (`y`) rows (`role = "curve"`) plus two `role = "ref"` rows
+#' for the prevalence baseline. Mirrors `StatROC` with the axes swapped
+#' for a class-imbalance-aware read.
+#'
+#' @noRd
+StatPR <- new_class("StatPR", parent = Stat,
+  constructor = function() new_object(Stat(name = "pr", provides = c("x", "y")))
+)
+
+method(compute_stat, StatPR) <- function(stat, values) {
+  if (is.null(values$truth) || is.null(values$score)) {
+    stop("stat_pr() requires aes(truth = , score = ).", call. = FALSE)
+  }
+  out <- stat_by_group(values, function(sub) {
+    truth <- sub$truth
+    if (is.factor(truth)) truth <- truth == levels(truth)[2]
+    truth <- as.logical(truth)
+    ord <- order(sub$score, decreasing = TRUE)
+    truth <- truth[ord]
+    n_pos <- sum(truth)
+    if (n_pos == 0) {
+      stop("stat_pr() needs at least one positive case in `truth`.", call. = FALSE)
+    }
+    # Sweeping the threshold from +Inf downward admits one observation at
+    # a time; by convention the curve starts at (recall = 0, precision = 1).
+    tp <- cumsum(truth)
+    k <- seq_along(truth)
+    recall <- c(0, tp / n_pos)
+    precision <- c(1, tp / k)
+    prevalence <- n_pos / length(truth)
+    list(
+      x = c(recall, 0, 1),
+      y = c(precision, prevalence, prevalence),
+      role = c(rep("curve", length(recall)), "ref", "ref")
+    )
+  })
+  with_labels(out, x = "recall", y = "precision")
+}
+
+#' Empirical precision-recall curve
+#' @return A `StatPR` object, to pass as a layer's `stat`.
+#' @export
+stat_pr <- function() StatPR()
+
+# --- Feature importance ---------------------------------------------------
+
+#' StatImportance: prep interval bounds for a forest-style dot plot
+#'
+#' By the time a stat runs, a categorical `y` has already been resolved to
+#' its discrete scale's integer slots (trained, alphabetically by
+#' default, from the *raw* data before this stat ever sees it) — so
+#' re-sorting slots here cannot also re-sort the axis's own tick labels,
+#' which are fixed at training time. Getting the classic "most important
+#' at the top" order therefore has to happen the same way every other
+#' category-order geom in this package handles it (see [geom_waterfall()]):
+#' the caller supplies `y` as a factor whose levels are already in the
+#' desired order (ascending, since slot 1 sits at the panel bottom).
+#'
+#' @noRd
+StatImportance <- new_class("StatImportance", parent = Stat,
+  constructor = function() new_object(Stat(name = "importance"))
+)
+
+method(compute_stat, StatImportance) <- function(stat, values) {
+  if (!is.null(values$ymin)) {
+    values$xmin <- values$ymin
+    values$xmax <- values$ymax
+    values$ymin <- NULL
+    values$ymax <- NULL
+  } else {
+    values$xmin <- values$x
+    values$xmax <- values$x
+  }
+  values$xref <- rep(0, length(values$x))
+  values
+}
+
+# --- Leverage / Cook's distance -----------------------------------------------
+
+#' StatLeverage: pass leverage/residual values through with a zero line
+#' @noRd
+StatLeverage <- new_class("StatLeverage", parent = Stat,
+  constructor = function() new_object(Stat(name = "leverage"))
+)
+
+method(compute_stat, StatLeverage) <- function(stat, values) {
+  # `size`, when mapped (typically to Cook's distance), is already turned
+  # into an area-proportional radius by the generic build pipeline
+  # (map_size()); nothing extra to do with it here.
+  values$yzero <- rep(0, length(values$x))
+  values
+}
+
 # --- Residuals ---------------------------------------------------------------
 
 #' StatResidual: pass residuals through and add a loess trend

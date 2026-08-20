@@ -235,10 +235,24 @@ method(build_marks, GeomKM) <- function(geom, scaled) {
     col <- scaled$color[idx][1]
     curve <- idx[scaled$role[idx] == "curve"]
     censor <- idx[scaled$role[idx] == "censor"]
-    marks <- list(mk_line(
+    marks <- list()
+    # Confidence ribbon first, so the curve line draws on top of it. Built
+    # from the same step-interpolated x/y as the curve, so the band's
+    # edges follow the staircase shape rather than cutting corners.
+    if (isTRUE(p$conf_int) && !is.null(scaled$ymin)) {
+      band <- curve[is.finite(scaled$ymin[curve]) & is.finite(scaled$ymax[curve])]
+      if (length(band) > 1) {
+        marks[[length(marks) + 1]] <- mk_polygon(
+          c(scaled$x[band], rev(scaled$x[band])),
+          c(scaled$ymax[band], rev(scaled$ymin[band])),
+          fill = col, alpha = 0.18
+        )
+      }
+    }
+    marks[[length(marks) + 1]] <- mk_line(
       scaled$x[curve], scaled$y[curve],
       stroke = col, width = p$linewidth, alpha = scaled$alpha[idx][1]
-    ))
+    )
     # Censoring ticks: short vertical dashes on the curve.
     for (ci in censor) {
       marks[[length(marks) + 1]] <- mk_line(
@@ -254,18 +268,177 @@ method(build_marks, GeomKM) <- function(geom, scaled) {
 #' Kaplan-Meier survival curve layer
 #'
 #' Map `time` and `status` (1/TRUE = event, 0/FALSE = censored); map
-#' `color` to compare groups. The at-risk table is a milestone.
+#' `color` to compare groups. Pair with [geom_km_risktable()] for the
+#' classic number-at-risk strip.
 #'
 #' @param mapping,data,color,alpha As in [geom_point()].
 #' @param linewidth Curve width.
+#' @param conf_int Draw a 95% confidence band (Greenwood's formula, with a
+#'   log-log transform that keeps the bounds inside \[0, 1\]).
 #' @return A [Layer].
+#' @examples
+#' set.seed(1)
+#' d <- data.frame(
+#'   t = c(rexp(40, 0.1), rexp(40, 0.07)),
+#'   ev = rbinom(80, 1, 0.7),
+#'   arm = rep(c("placebo", "drug"), each = 40)
+#' )
+#' ggnext(d, aes(time = t, status = ev, color = arm)) +
+#'   geom_km(conf_int = TRUE)
 #' @export
 geom_km <- function(mapping = NULL, data = NULL, color = NULL,
-                    alpha = NULL, linewidth = NULL) {
+                    alpha = NULL, linewidth = NULL, conf_int = FALSE) {
   Layer(
-    geom = GeomKM(), stat = stat_km(), mapping = mapping, data = data,
-    params = drop_null(list(color = color, alpha = alpha, linewidth = linewidth))
+    geom = GeomKM(), stat = stat_km(conf_int = conf_int), mapping = mapping,
+    data = data,
+    params = drop_null(list(color = color, alpha = alpha,
+                            linewidth = linewidth, conf_int = conf_int))
   )
+}
+
+# --- Nelson-Aalen --------------------------------------------------------
+
+#' GeomNelsonAalen: cumulative hazard step curve
+#' @noRd
+GeomNelsonAalen <- new_class("GeomNelsonAalen", parent = Geom,
+  constructor = function() {
+    new_object(Geom(
+      name = "nelson_aalen",
+      default_params = list(color = "#4A6DB5", linewidth = 1.8, alpha = 1),
+      required_aes = c("time", "status")
+    ))
+  }
+)
+
+method(build_marks, GeomNelsonAalen) <- function(geom, scaled) {
+  p <- scaled$params
+  unname(lapply(group_rows(scaled), function(idx) {
+    ord <- idx[order(scaled$x[idx])]
+    mk_line(
+      scaled$x[ord], scaled$y[ord], stroke = scaled$color[[ord[1]]],
+      width = p$linewidth, alpha = scaled$alpha[[ord[1]]]
+    )
+  }))
+}
+
+#' Nelson-Aalen cumulative hazard curve layer
+#'
+#' Map `time` and `status` (1/TRUE = event, 0/FALSE = censored) exactly as
+#' for [geom_km()]; map `color` to compare groups. The cumulative hazard
+#' H(t) is the additive counterpart of the Kaplan-Meier survival curve —
+#' useful when the *rate* of events, not the surviving fraction, is what
+#' matters.
+#'
+#' @param mapping,data,color,alpha As in [geom_point()].
+#' @param linewidth Curve width.
+#' @return A [Layer] to add with `+`.
+#' @examples
+#' set.seed(1)
+#' d <- data.frame(t = rexp(80, 0.08), ev = rbinom(80, 1, 0.75))
+#' ggnext(d, aes(time = t, status = ev)) +
+#'   geom_nelson_aalen() +
+#'   labs(title = "Cumulative hazard", x = "Time", y = "H(t)")
+#' @export
+geom_nelson_aalen <- function(mapping = NULL, data = NULL, color = NULL,
+                              alpha = NULL, linewidth = NULL) {
+  layer_new(GeomNelsonAalen(), StatNelsonAalen(), mapping, data,
+            list(color = color, alpha = alpha, linewidth = linewidth))
+}
+
+# --- KM risk table -----------------------------------------------------------
+
+#' GeomKMRiskTable: number-at-risk table drawn in the lower panel strip
+#'
+#' `build_marks()` reads the precomputed group/tick table off `scaled$table`
+#' (see `StatKMRiskTable`) and converts tick times into normalized x
+#' through `scaled$xdomain` — the panel's real, already-expanded x
+#' domain — exactly like `geom_abline()` does. That is what lets the
+#' table's columns line up with a `geom_km()` curve sharing the same
+#' panel, expansion and all, without the table needing its own x scale.
+#'
+#' @noRd
+GeomKMRiskTable <- new_class("GeomKMRiskTable", parent = Geom,
+  constructor = function() {
+    new_object(Geom(
+      name = "km_risktable",
+      default_params = list(label_size = 11, band_height = 0.18),
+      required_aes = c("time", "status")
+    ))
+  }
+)
+
+method(build_marks, GeomKMRiskTable) <- function(geom, scaled) {
+  tb <- scaled$table
+  if (is.null(tb) || length(tb$groups) == 0) {
+    return(list())
+  }
+  p <- scaled$params
+  xd <- scaled$xdomain
+  span <- xd[2] - xd[1]
+  if (!is.finite(span) || span <= 0) span <- 1
+
+  n <- length(tb$groups)
+  band <- p$band_height %||% 0.18
+  row_h <- band / (n + 1)
+  size <- p$label_size %||% 11
+
+  marks <- list(mk_text(
+    0.02, band - row_h * 0.4, "Number at risk", size = size,
+    color = "#4A5568", alpha = 1, anchor = "start"
+  ))
+  for (i in seq_len(n)) {
+    y <- band - (i + 0.6) * row_h
+    col <- if (!is.null(tb$colors)) tb$colors[[i]] else "#1A2233"
+    marks[[length(marks) + 1]] <- mk_text(
+      0.02, y, tb$groups[[i]], size = size, color = col, alpha = 1,
+      anchor = "start"
+    )
+    counts <- tb$counts[[i]]
+    for (j in seq_along(tb$breaks)) {
+      xt <- (tb$breaks[[j]] - xd[1]) / span
+      marks[[length(marks) + 1]] <- mk_text(
+        xt, y, as.character(counts[[j]]), size = size, color = col,
+        alpha = 1, anchor = "middle"
+      )
+    }
+  }
+  marks
+}
+
+#' Number-at-risk table for a Kaplan-Meier curve
+#'
+#' Draws the classic "number at risk" strip beneath a survival curve: for
+#' each group, the count of subjects still at risk (`time >= tick`) at a
+#' handful of tick times, laid out as an overlay in the bottom ~18% of the
+#' panel. It is a single layer, not a separate sub-panel — add it
+#' alongside [geom_km()] on the same plot.
+#'
+#' This layer must share the same `time`/`status`/grouping mapping and
+#' data as the [geom_km()] layer it accompanies, so the two are trained on
+#' the same time domain and its tick columns line up with the curve above
+#' them.
+#'
+#' @param mapping,data Standard layer overrides. Map `time`, `status`, and
+#'   (optionally) `color`/`group` exactly as for [geom_km()].
+#' @param breaks Tick times to report counts at; `NULL` (default) picks
+#'   about six round numbers spanning the data with `pretty()`.
+#' @param label_size Text size in px.
+#' @return A [Layer] to add with `+`.
+#' @examples
+#' set.seed(1)
+#' d <- data.frame(
+#'   t = c(rexp(40, 0.1), rexp(40, 0.07)),
+#'   ev = rbinom(80, 1, 0.7),
+#'   arm = rep(c("placebo", "drug"), each = 40)
+#' )
+#' ggnext(d, aes(time = t, status = ev, color = arm)) +
+#'   geom_km() +
+#'   geom_km_risktable()
+#' @export
+geom_km_risktable <- function(mapping = NULL, data = NULL, breaks = NULL,
+                              label_size = NULL) {
+  layer_new(GeomKMRiskTable(), StatKMRiskTable(breaks = breaks), mapping, data,
+            list(label_size = label_size))
 }
 
 # --- ROC ---------------------------------------------------------------------

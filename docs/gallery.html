@@ -177,29 +177,29 @@ h3 { scroll-margin-top: 70px; }
 }), aes(var, val, group = id, color = sp)) + geom_parallel() + 
     theme_minimal()</code></pre></div><div class="item"><h3 id="upset">UpSet (set intersections)</h3><p>Intersection sizes with a membership matrix - readable where a 4-way Venn diagram is not.</p><p class="aes">Aesthetics: <code>label (membership, e.g. "A&amp;B")</code></p><figure class="fig"><img src="fig-upset.svg" alt="UpSet (set intersections)"></figure><pre><code>ggnext(data.frame(sets = c("A", "A&amp;B", "B", "A&amp;B&amp;C", "C", "A&amp;B", 
     "A", "B&amp;C", "A&amp;C", "A&amp;B")), aes(label = sets)) + geom_upset()</code></pre></div><h2 id="machine-learning">Machine learning</h2><p>Model diagnostics as first-class layers. Each takes a tidy data frame rather than a fitted model object, so any framework that can produce the columns will work.</p><div class="item"><h3 id="shap">SHAP beeswarm</h3><p>Every observation's contribution per feature, nudged vertically where values collide; colour shows the direction of effect.</p><p class="aes">Aesthetics: <code>x (SHAP value), y (feature), color (feature value)</code></p><figure class="fig"><img src="fig-shap.svg" alt="SHAP beeswarm"></figure><pre><code>ggnext(local({
-    set.seed(1)
+    rng &lt;- local_rng(1)
     data.frame(feature = rep(c("age", "income", "tenure"), each = 40), 
-        shap = c(rnorm(40, 0.3, 0.2), rnorm(40, -0.1, 0.3), rnorm(40, 
-            0, 0.15)), value = runif(120))
+        shap = c(rng$norm(40, 0.3, 0.2), rng$norm(40, -0.1, 0.3), 
+            rng$norm(40, 0, 0.15)), value = rng$unif(120))
 }), aes(shap, feature, color = value)) + geom_shap() + geom_vline(0, 
     dash = "3,3") + labs(x = "SHAP value", y = NULL) + theme_minimal()</code></pre></div><div class="item"><h3 id="pdp">Partial dependence + ICE</h3><p>Thin per-observation ICE curves under a bold average, so heterogeneous effects are visible.</p><p class="aes">Aesthetics: <code>x (feature), y (prediction), group</code></p><figure class="fig"><img src="fig-pdp.svg" alt="Partial dependence + ICE"></figure><pre><code>ggnext(local({
-    set.seed(9)
+    rng &lt;- local_rng(9)
     data.frame(x = rep(1:10, 8), id = rep(1:8, each = 10), pred = as.vector(sapply(1:8, 
         function(i) {
-            (1:10) * 0.1 * i + rnorm(10, 0, 0.15)
+            (1:10) * 0.1 * i + rng$norm(10, 0, 0.15)
         })))
 }), aes(x, pred, group = id)) + geom_partial_dependence() + theme_minimal()</code></pre></div><div class="item"><h3 id="roc">ROC curve</h3><p>The true-positive against false-positive staircase over every score threshold.</p><p class="aes">Aesthetics: <code>score, truth</code></p><figure class="fig"><img src="fig-roc.svg" alt="ROC curve"></figure><pre><code>ggnext(local({
-    set.seed(2)
-    s &lt;- runif(300)
-    data.frame(score = s, truth = rbinom(300, 1, s))
+    rng &lt;- local_rng(2)
+    s &lt;- rng$unif(300)
+    data.frame(score = s, truth = rng$bernoulli(300, s))
 }), aes(score = score, truth = truth)) + geom_roc() + theme_minimal()</code></pre></div><div class="item"><h3 id="calibration">Calibration curve</h3><p>Binned predictions against observed rates; distance from the diagonal is over- or under-confidence.</p><p class="aes">Aesthetics: <code>x (predicted prob), y (outcome)</code></p><figure class="fig"><img src="fig-calibration.svg" alt="Calibration curve"></figure><pre><code>ggnext(local({
-    set.seed(3)
-    p &lt;- runif(400)
-    data.frame(pred = p, obs = rbinom(400, 1, p^1.3))
+    rng &lt;- local_rng(3)
+    p &lt;- rng$unif(400)
+    data.frame(pred = p, obs = rng$bernoulli(400, p^1.3))
 }), aes(pred, obs)) + geom_calibration() + theme_minimal()</code></pre></div><div class="item"><h3 id="lift">Cumulative gain</h3><p>Share of positives captured against share of population targeted - how to size a cutoff.</p><p class="aes">Aesthetics: <code>score, truth</code></p><figure class="fig"><img src="fig-lift.svg" alt="Cumulative gain"></figure><pre><code>ggnext(local({
-    set.seed(11)
-    s &lt;- runif(250)
-    data.frame(score = s, y = rbinom(250, 1, s))
+    rng &lt;- local_rng(11)
+    s &lt;- rng$unif(250)
+    data.frame(score = s, y = rng$bernoulli(250, s))
 }), aes(score = score, truth = y)) + geom_lift_gain() + theme_minimal()</code></pre></div><div class="item"><h3 id="confusion">Confusion matrix</h3><p>Row-normalised shading with raw counts annotated, so class imbalance cannot hide errors.</p><p class="aes">Aesthetics: <code>x (predicted), y (actual), size (count)</code></p><figure class="fig"><img src="fig-confusion.svg" alt="Confusion matrix"></figure><pre><code>ggnext(data.frame(predicted = c(rep("cat", 14), rep("dog", 9), 
     rep("bird", 6)), actual = c(rep("cat", 11), rep("dog", 3), 
     rep("dog", 7), rep("cat", 2), rep("bird", 5), "cat")), aes(predicted, 
@@ -210,13 +210,13 @@ h3 { scroll-margin-top: 70px; }
     0.8, 0.85, 0.88, 0.9, 0.66, 0.75, 0.81, 0.85, 0.88), split = rep(c("train", 
     "validation"), each = 5)), aes(n, score, color = split)) + 
     geom_learning_curve() + theme_minimal()</code></pre></div><div class="item"><h3 id="embedding">Embedding with hulls</h3><p>A t-SNE/UMAP/PCA scatter with convex hulls, so cluster shape is visible rather than inferred from colour.</p><p class="aes">Aesthetics: <code>x, y, color (cluster)</code></p><figure class="fig"><img src="fig-embedding.svg" alt="Embedding with hulls"></figure><pre><code>ggnext(local({
-    set.seed(4)
-    data.frame(d1 = c(rnorm(40), rnorm(40, 4)), d2 = c(rnorm(40), 
-        rnorm(40, 3)), cluster = rep(c("a", "b"), each = 40))
+    rng &lt;- local_rng(4)
+    data.frame(d1 = c(rng$norm(40), rng$norm(40, 4)), d2 = c(rng$norm(40), 
+        rng$norm(40, 3)), cluster = rep(c("a", "b"), each = 40))
 }), aes(d1, d2, color = cluster)) + geom_embedding() + theme_minimal()</code></pre></div><div class="item"><h3 id="silhouette">Silhouette</h3><p>Sorted silhouette widths per cluster - the standard visual check on cluster separation.</p><p class="aes">Aesthetics: <code>x (width), y (cluster)</code></p><figure class="fig"><img src="fig-silhouette.svg" alt="Silhouette"></figure><pre><code>ggnext(local({
-    set.seed(12)
-    data.frame(cluster = rep(c("1", "2", "3"), each = 25), width = c(runif(25, 
-        0.3, 0.9), runif(25, 0.1, 0.7), runif(25, -0.1, 0.6)))
+    rng &lt;- local_rng(12)
+    data.frame(cluster = rep(c("1", "2", "3"), each = 25), width = c(rng$unif(25, 
+        0.3, 0.9), rng$unif(25, 0.1, 0.7), rng$unif(25, -0.1, 0.6)))
 }), aes(width, cluster, color = cluster)) + geom_silhouette() + 
     theme(legend_position = "none")</code></pre></div><div class="item"><h3 id="boundary">Decision boundary</h3><p>A shaded prediction grid; overlay geom_point() for the training data.</p><p class="aes">Aesthetics: <code>x, y, color (predicted class)</code></p><figure class="fig"><img src="fig-boundary.svg" alt="Decision boundary"></figure><pre><code>ggnext(local({
     g &lt;- expand.grid(x = seq(0, 1, 0.04), y = seq(0, 1, 0.04))
@@ -227,13 +227,13 @@ h3 { scroll-margin-top: 70px; }
     7), 9.5, 11, 12.5, 14, 15.5), part = rep(c("actual", "forecast"), 
     c(7, 5))), aes(t, v, ymin = lo, ymax = hi, group = part)) + 
     geom_forecast_band() + theme_minimal()</code></pre></div><h2 id="clinical">Clinical</h2><p>Figures that clinical reporting needs constantly and that otherwise take dozens of lines of manual layering. Estimators such as Kaplan-Meier and Aalen-Johansen are computed in-package.</p><div class="item"><h3 id="km">Kaplan-Meier</h3><p>Product-limit survival curves with censoring ticks, per treatment arm.</p><p class="aes">Aesthetics: <code>time, status, color (arm)</code></p><figure class="fig"><img src="fig-km.svg" alt="Kaplan-Meier"></figure><pre><code>ggnext(local({
-    set.seed(5)
-    data.frame(t = c(rexp(60, 0.08), rexp(60, 0.14)), ev = rbinom(120, 
-        1, 0.75), arm = rep(c("Treatment", "Control"), each = 60))
+    rng &lt;- local_rng(5)
+    data.frame(t = c(rng$exp(60, 0.08), rng$exp(60, 0.14)), ev = rng$bernoulli(120, 
+        0.75), arm = rep(c("Treatment", "Control"), each = 60))
 }), aes(time = t, status = ev, color = arm)) + geom_km() + theme_minimal()</code></pre></div><div class="item"><h3 id="cuminc">Cumulative incidence</h3><p>Aalen-Johansen curves per event type - the correct estimator when competing risks make 1 - KM biased upward.</p><p class="aes">Aesthetics: <code>time, status (0 = censored, 1..k = event types)</code></p><figure class="fig"><img src="fig-cuminc.svg" alt="Cumulative incidence"></figure><pre><code>ggnext(local({
-    set.seed(8)
-    data.frame(t = rexp(150, 0.1), ev = sample(0:2, 150, replace = TRUE, 
-        prob = c(0.4, 0.35, 0.25)))
+    rng &lt;- local_rng(8)
+    data.frame(t = rng$exp(150, 0.1), ev = rng$choice(0:2, 150, 
+        c(0.4, 0.35, 0.25)))
 }), aes(time = t, status = ev)) + geom_cuminc() + theme_minimal()</code></pre></div><div class="item"><h3 id="forest">Forest plot</h3><p>Estimates with confidence intervals and a no-effect reference; marker area encodes study weight.</p><p class="aes">Aesthetics: <code>x (estimate), y (study), ymin, ymax, size (weight)</code></p><figure class="fig"><img src="fig-forest.svg" alt="Forest plot"></figure><pre><code>ggnext(data.frame(study = c("Trial A", "Trial B", "Trial C", "Trial D", 
     "Pooled"), hr = c(0.82, 0.71, 0.95, 0.88, 0.83), lo = c(0.65, 
     0.52, 0.78, 0.7, 0.74), hi = c(1.03, 0.97, 1.16, 1.1, 0.93), 
@@ -249,20 +249,20 @@ h3 { scroll-margin-top: 70px; }
     0, -30, -45, -50, -48), subject = rep(c("S1", "S2", "S3", "S4"), 
     each = 5)), aes(month, pct, color = subject)) + geom_spider_response() + 
     labs(x = "Month", y = "% change from baseline") + theme_minimal()</code></pre></div><div class="item"><h3 id="waterfall_response">RECIST waterfall</h3><p>Best response per subject, ordered worst to best and shaded by RECIST category.</p><p class="aes">Aesthetics: <code>x (subject), y (% change)</code></p><figure class="fig"><img src="fig-waterfall_response.svg" alt="RECIST waterfall"></figure><pre><code>ggnext(local({
-    set.seed(6)
-    data.frame(subject = paste0("S", 1:24), pct = sort(runif(24, 
+    rng &lt;- local_rng(6)
+    data.frame(subject = paste0("S", 1:24), pct = sort(rng$unif(24, 
         -78, 48), decreasing = TRUE))
 }), aes(subject, pct)) + geom_waterfall_response() + labs(y = "% change from baseline", 
     x = NULL) + theme(axis_text_x = FALSE)</code></pre></div><div class="item"><h3 id="spaghetti">Spaghetti trajectories</h3><p>Individual longitudinal paths with a bold group mean - shows change without hiding spread.</p><p class="aes">Aesthetics: <code>x (time), y (measure), group (subject)</code></p><figure class="fig"><img src="fig-spaghetti.svg" alt="Spaghetti trajectories"></figure><pre><code>ggnext(local({
-    set.seed(7)
+    rng &lt;- local_rng(7)
     data.frame(week = rep(0:5, 10), id = rep(1:10, each = 6), score = as.vector(sapply(1:10, 
         function(i) {
-            50 + i + (0:5) * 2 + rnorm(6, 0, 3)
+            50 + i + (0:5) * 2 + rng$norm(6, 0, 3)
         })))
 }), aes(week, score, group = id)) + geom_spaghetti() + theme_minimal()</code></pre></div><div class="item"><h3 id="bland">Bland-Altman</h3><p>Difference against mean with bias and 95% limits of agreement - the standard method-comparison plot.</p><p class="aes">Aesthetics: <code>x, y (the two methods)</code></p><figure class="fig"><img src="fig-bland.svg" alt="Bland-Altman"></figure><pre><code>ggnext(local({
-    set.seed(13)
-    a &lt;- rnorm(80, 100, 12)
-    data.frame(method_a = a, method_b = a + rnorm(80, 2, 5))
+    rng &lt;- local_rng(13)
+    a &lt;- rng$norm(80, 100, 12)
+    data.frame(method_a = a, method_b = a + rng$norm(80, 2, 5))
 }), aes(method_a, method_b)) + geom_bland_altman() + theme_minimal()</code></pre></div><div class="item"><h3 id="dose">Dose-response</h3><p>A four-parameter log-logistic fit with the EC50 marked; pair with scale_x_log10().</p><p class="aes">Aesthetics: <code>x (dose), y (response)</code></p><figure class="fig"><img src="fig-dose.svg" alt="Dose-response"></figure><pre><code>ggnext(data.frame(dose = rep(c(0.1, 1, 10, 100, 1000), each = 3), 
     resp = c(5, 7, 6, 18, 22, 20, 52, 48, 55, 82, 79, 85, 95, 97, 
         93)), aes(dose, resp)) + geom_dose_response() + scale_x_log10() + 

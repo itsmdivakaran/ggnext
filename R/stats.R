@@ -408,7 +408,8 @@ stat_smooth <- function(method = "loess", se = TRUE, n = 80, level = 0.95) {
 
 #' StatJitter: add uniform noise to positions (strip charts)
 #'
-#' Deterministic for a given seed; the global RNG state is left untouched.
+#' Deterministic for a given seed, via a private stream; R's global RNG is
+#' never read or written.
 #'
 #' @param width Horizontal jitter half-range in data units; defaults to 40%
 #'   of the x resolution.
@@ -426,11 +427,11 @@ method(compute_stat, StatJitter) <- function(stat, values) {
   w <- stat@width %||% (0.4 * resolution(values$x))
   h <- stat@height %||% 0
   n <- length(values$x)
-  # Local RNG: jitter must not perturb the user's random stream.
-  noise <- with_seed(stat@seed, list(
-    x = stats::runif(n, -w, w),
-    y = if (h > 0) stats::runif(n, -h, h) else NULL
-  ))
+  rng <- local_rng(stat@seed)
+  noise <- list(
+    x = rng$unif(n, -w, w),
+    y = if (h > 0) rng$unif(n, -h, h) else NULL
+  )
   values$x <- values$x + noise$x
   if (h > 0) values$y <- values$y + noise$y
   values

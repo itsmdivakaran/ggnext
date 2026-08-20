@@ -17,7 +17,9 @@
 #' Renders every gallery example with the package itself and writes a
 #' self-contained static site. No external site generator, no CDN assets.
 #'
-#' @param dir Output directory (created if needed).
+#' @param dir Output directory (created if needed). There is no default —
+#'   CRAN policy prohibits writing to the user's home filespace by default,
+#'   so a path must always be supplied explicitly.
 #' @param quiet Suppress progress messages.
 #' @param gallery Render the gallery figures. Every example is drawn with
 #'   ggnext itself at build time, which is the bulk of the build cost.
@@ -32,12 +34,13 @@
 #' @return The output directory, invisibly.
 #' @examples
 #' # The figures and the cookbook are the slow parts of a real build; this
-#' # writes the pages only. Use build_site("docs") for the full site.
+#' # writes the pages only. For the full site, pass a directory of your
+#' # choosing, e.g. build_site("docs").
 #' out <- file.path(tempdir(), "ggnext-site")
 #' build_site(out, quiet = TRUE, gallery = FALSE, cookbook = FALSE)
 #' list.files(out)
 #' @export
-build_site <- function(dir = "docs", quiet = FALSE, gallery = TRUE,
+build_site <- function(dir, quiet = FALSE, gallery = TRUE,
                        cookbook = TRUE) {
   dir.create(dir, showWarnings = FALSE, recursive = TRUE)
   say <- function(...) if (!quiet) message(...)
@@ -601,12 +604,12 @@ gallery_examples <- function() {
       quote(
         ggnext(
           local({
-            set.seed(1)
+            rng <- local_rng(1)
             data.frame(
               feature = rep(c("age", "income", "tenure"), each = 40),
-              shap = c(rnorm(40, 0.3, 0.2), rnorm(40, -0.1, 0.3),
-                       rnorm(40, 0, 0.15)),
-              value = runif(120)
+              shap = c(rng$norm(40, 0.3, 0.2), rng$norm(40, -0.1, 0.3),
+                       rng$norm(40, 0, 0.15)),
+              value = rng$unif(120)
             )
           }),
           aes(shap, feature, color = value)
@@ -619,11 +622,11 @@ gallery_examples <- function() {
       quote(
         ggnext(
           local({
-            set.seed(9)
+            rng <- local_rng(9)
             data.frame(
               x = rep(1:10, 8), id = rep(1:8, each = 10),
               pred = as.vector(sapply(1:8, function(i) {
-                (1:10) * 0.1 * i + rnorm(10, 0, 0.15)
+                (1:10) * 0.1 * i + rng$norm(10, 0, 0.15)
               }))
             )
           }),
@@ -636,9 +639,9 @@ gallery_examples <- function() {
       quote(
         ggnext(
           local({
-            set.seed(2)
-            s <- runif(300)
-            data.frame(score = s, truth = rbinom(300, 1, s))
+            rng <- local_rng(2)
+            s <- rng$unif(300)
+            data.frame(score = s, truth = rng$bernoulli(300, s))
           }),
           aes(score = score, truth = truth)
         ) + geom_roc() + theme_minimal()
@@ -649,9 +652,9 @@ gallery_examples <- function() {
       quote(
         ggnext(
           local({
-            set.seed(3)
-            p <- runif(400)
-            data.frame(pred = p, obs = rbinom(400, 1, p^1.3))
+            rng <- local_rng(3)
+            p <- rng$unif(400)
+            data.frame(pred = p, obs = rng$bernoulli(400, p^1.3))
           }),
           aes(pred, obs)
         ) + geom_calibration() + theme_minimal()
@@ -662,9 +665,9 @@ gallery_examples <- function() {
       quote(
         ggnext(
           local({
-            set.seed(11)
-            s <- runif(250)
-            data.frame(score = s, y = rbinom(250, 1, s))
+            rng <- local_rng(11)
+            s <- rng$unif(250)
+            data.frame(score = s, y = rng$bernoulli(250, s))
           }),
           aes(score = score, truth = y)
         ) + geom_lift_gain() + theme_minimal()
@@ -713,9 +716,9 @@ gallery_examples <- function() {
       quote(
         ggnext(
           local({
-            set.seed(4)
-            data.frame(d1 = c(rnorm(40), rnorm(40, 4)),
-                       d2 = c(rnorm(40), rnorm(40, 3)),
+            rng <- local_rng(4)
+            data.frame(d1 = c(rng$norm(40), rng$norm(40, 4)),
+                       d2 = c(rng$norm(40), rng$norm(40, 3)),
                        cluster = rep(c("a", "b"), each = 40))
           }),
           aes(d1, d2, color = cluster)
@@ -727,10 +730,10 @@ gallery_examples <- function() {
       quote(
         ggnext(
           local({
-            set.seed(12)
+            rng <- local_rng(12)
             data.frame(cluster = rep(c("1", "2", "3"), each = 25),
-                       width = c(runif(25, .3, .9), runif(25, .1, .7),
-                                 runif(25, -.1, .6)))
+                       width = c(rng$unif(25, .3, .9), rng$unif(25, .1, .7),
+                                 rng$unif(25, -.1, .6)))
           }),
           aes(width, cluster, color = cluster)
         ) + geom_silhouette() + theme(legend_position = "none")
@@ -768,10 +771,10 @@ gallery_examples <- function() {
       quote(
         ggnext(
           local({
-            set.seed(5)
+            rng <- local_rng(5)
             data.frame(
-              t = c(rexp(60, 0.08), rexp(60, 0.14)),
-              ev = rbinom(120, 1, 0.75),
+              t = c(rng$exp(60, 0.08), rng$exp(60, 0.14)),
+              ev = rng$bernoulli(120, 0.75),
               arm = rep(c("Treatment", "Control"), each = 60)
             )
           }),
@@ -784,10 +787,9 @@ gallery_examples <- function() {
       quote(
         ggnext(
           local({
-            set.seed(8)
-            data.frame(t = rexp(150, 0.1),
-                       ev = sample(0:2, 150, replace = TRUE,
-                                   prob = c(.4, .35, .25)))
+            rng <- local_rng(8)
+            data.frame(t = rng$exp(150, 0.1),
+                       ev = rng$choice(0:2, 150, c(.4, .35, .25)))
           }),
           aes(time = t, status = ev)
         ) + geom_cuminc() + theme_minimal()
@@ -843,9 +845,9 @@ gallery_examples <- function() {
       quote(
         ggnext(
           local({
-            set.seed(6)
+            rng <- local_rng(6)
             data.frame(subject = paste0("S", 1:24),
-                       pct = sort(runif(24, -78, 48), decreasing = TRUE))
+                       pct = sort(rng$unif(24, -78, 48), decreasing = TRUE))
           }),
           aes(subject, pct)
         ) + geom_waterfall_response() +
@@ -858,11 +860,11 @@ gallery_examples <- function() {
       quote(
         ggnext(
           local({
-            set.seed(7)
+            rng <- local_rng(7)
             data.frame(
               week = rep(0:5, 10), id = rep(1:10, each = 6),
               score = as.vector(sapply(1:10, function(i) {
-                50 + i + (0:5) * 2 + rnorm(6, 0, 3)
+                50 + i + (0:5) * 2 + rng$norm(6, 0, 3)
               }))
             )
           }),
@@ -875,9 +877,9 @@ gallery_examples <- function() {
       quote(
         ggnext(
           local({
-            set.seed(13)
-            a <- rnorm(80, 100, 12)
-            data.frame(method_a = a, method_b = a + rnorm(80, 2, 5))
+            rng <- local_rng(13)
+            a <- rng$norm(80, 100, 12)
+            data.frame(method_a = a, method_b = a + rng$norm(80, 2, 5))
           }),
           aes(method_a, method_b)
         ) + geom_bland_altman() + theme_minimal()
@@ -938,6 +940,10 @@ site_index <- function(figs, examples) {
       "59 geoms in the box: essentials through Sankey, treemap, network, radar, SHAP, ROC, Kaplan-Meier, forest, and CONSORT - no extension hunting."),
     c("Exact data export",
       "plot_data(p) returns precisely the values drawn - post-stat, post-position, post-facet - so you can publish the numbers beside the figure."),
+    c("Pipe-native, if you prefer",
+      "Every constructor that takes an argument also accepts a plot as its first pipe stage: p |> geom_point() |> theme_minimal() runs the same as p + geom_point() + theme_minimal()."),
+    c("A linter for the plot itself",
+      "validate_plot() checks for common statistical-graphics mistakes - categorical y on a continuous geom, a sqrt scale fed negative values, an unreadable legend - before the figure ships."),
     c("Themes and deep customization",
       "Six presets plus 35 theme settings, custom palettes, titles, axis breaks, labels, transforms, and limits.")
   )
@@ -1009,6 +1015,51 @@ site_index <- function(figs, examples) {
     "<a href=\"gallery.html\">Gallery</a> for ", length(examples),
     " worked examples, or the <a href=\"cookbook.html\">Cookbook</a> for ",
     "every function and option demonstrated end to end.</p>",
+
+    "<h2>Pipe sugar</h2>",
+    "<p><code>+</code> stays the grammar's one true composition operator - ",
+    "it's what lets a <code>theme_minimal() + theme(legend.position = ",
+    "\"bottom\")</code> bundle be built once and reused across a report's ",
+    "plots, or a list of layers folded in with ",
+    "<code>Reduce(`+`, layers, p)</code>. Neither has a clean pipe ",
+    "equivalent, so <code>+</code> is not going anywhere. But a ",
+    "straight-line pipeline reads better piped, so every constructor that ",
+    "takes an argument also accepts a plot as its first pipe stage - a ",
+    "call-site convenience layered on the same grammar, not a second one.</p>",
+    code_block(c(
+      "cars |>",
+      "  ggnext(aes(speed, dist)) |>",
+      "  geom_point(alpha = 0.6) |>",
+      "  geom_smooth(method = \"lm\") |>",
+      "  labs(title = \"Stopping distance rises with speed\")"
+    )),
+    "<p>is exactly the <code>+</code> chain above, same object. Non-standard ",
+    "evaluation is preserved, so <code>p |> facet_wrap(cyl)</code> resolves ",
+    "<code>cyl</code> against the data exactly as ",
+    "<code>p + facet_wrap(cyl)</code> always has. A handful of ",
+    "constructors that take no arguments at all - <code>theme_minimal()</code>, ",
+    "<code>coord_flip()</code>, and the other bare theme presets - have no ",
+    "slot to route a piped plot through, so those stay ",
+    "<code>+</code>-only.</p>",
+
+    "<h2>Plot validation</h2>",
+    "<p>The grammar will happily build a plot that misleads: a point geom ",
+    "on a categorical y that should have been a boxplot, a ",
+    "<code>sqrt()</code> scale fed negative values, a legend with forty ",
+    "color levels no one can read. <code>validate_plot()</code> checks for ",
+    "exactly this class of mistake; <code>plot_check()</code> does the ",
+    "same but prints the report and returns the plot unchanged, so it ",
+    "drops into a pipeline without breaking it. It's a heuristic, not a ",
+    "guarantee - it flags what commonly goes wrong, not what's definitely ",
+    "wrong with this particular plot.</p>",
+    code_block(c(
+      "mtcars |>",
+      "  ggnext(aes(mpg, as.character(cyl))) |>",
+      "  geom_point() |>",
+      "  plot_check()",
+      "#> \u26a0 GeomPoint-based layer maps y to a categorical column; consider",
+      "#>   geom_boxplot(), geom_violin(), or geom_bar() instead."
+    )),
 
     "<h2>Interactivity</h2>",
     "<p>Interactivity is an additive grammar verb, not a separate package ",
@@ -1825,7 +1876,7 @@ theme_settings_table <- function() {
   )
 }
 
-site_reference <- function(dir = "docs") {
+site_reference <- function(dir) {
   fns <- sort(getNamespaceExports("ggnext"))
   # If per-function HTML help pages exist alongside the site (e.g. from a
   # previous `pkgdown::build_site()`), link the index into them. Only files
@@ -1851,6 +1902,7 @@ site_reference <- function(dir = "docs") {
     "Themes" = c(grep("^theme", fns, value = TRUE)),
     "Labels and limits" = c("labs", "ggtitle", "xlab", "ylab", "xlim", "ylim", "lims"),
     "Interactivity and animation" = c("interact", "animate"),
+    "Validation" = c("validate_plot", "plot_check"),
     "Data and utilities" = c("plot_data", "write_plot_data", "build_site",
                              "ggnext_logo")
   )

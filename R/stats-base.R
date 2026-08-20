@@ -225,6 +225,55 @@ rq_fit <- function(x, y, tau) {
                control = list(reltol = 1e-10, maxit = 2000))$par
 }
 
+# --- correlation matrix -------------------------------------------------------
+
+#' StatCor: expand a precomputed correlation cell into tile corners
+#'
+#' The correlation matrix itself is computed in [geom_cor()]'s constructor
+#' (it needs the whole wide data frame at once, not row-wise aesthetic
+#' vectors); this stat only does the generic "cell center -> tile
+#' corners" expansion, the same job `StatAEHeatmap` does.
+#'
+#' @noRd
+StatCor <- new_class("StatCor", parent = Stat,
+  constructor = function() new_object(Stat(name = "cor"))
+)
+
+method(compute_stat, StatCor) <- function(stat, values) {
+  list(
+    x = values$x, y = values$y,
+    xmin = values$x - 0.5, xmax = values$x + 0.5,
+    ymin = values$y - 0.5, ymax = values$y + 0.5,
+    fill = values$fill,
+    label = values$label,
+    group = as.character(seq_along(values$x))
+  )
+}
+
+# --- missing-data pattern -------------------------------------------------
+
+#' StatMissingPattern: expand a precomputed pattern cell into tile corners
+#'
+#' Same "cell center -> tile corners" expansion as `StatCor`; the
+#' missingness pattern grid itself is built in [geom_missing_pattern()]'s
+#' constructor from the raw wide data frame.
+#'
+#' @noRd
+StatMissingPattern <- new_class("StatMissingPattern", parent = Stat,
+  constructor = function() new_object(Stat(name = "missing_pattern"))
+)
+
+method(compute_stat, StatMissingPattern) <- function(stat, values) {
+  list(
+    x = values$x, y = values$y,
+    xmin = values$x - 0.5, xmax = values$x + 0.5,
+    ymin = values$y - 0.5, ymax = values$y + 0.5,
+    fill = values$fill,
+    label = values$label,
+    group = as.character(seq_along(values$x))
+  )
+}
+
 #' Quantile regression lines
 #'
 #' Fits a linear model to chosen conditional quantiles, showing how the

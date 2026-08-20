@@ -71,6 +71,34 @@ layers remain unimplemented.
 * `interact()` gains `brush = TRUE` (drag a rectangle to zoom) and accepts
   a character vector of data columns for `tooltip`.
 
+## Pipe sugar
+
+* Every `geom_*()`, `theme_*()`, `scale_*()`, `coord_*()`, `facet_*()`,
+  `labs()`, `interact()`, `animate()` and `plot_size()` that takes at least
+  one argument now also accepts a plot as its first pipe argument:
+  `p |> geom_point() |> theme_minimal()` runs the same as
+  `p + geom_point() + theme_minimal()`. `+` remains the grammar's one true
+  composition operator — reusable `Theme`/`Scale` bundles built independently
+  of any plot, and `Reduce(`+`, layers, p)`, both still work exactly as
+  before; the pipe form is an additive call-site convenience, not a
+  replacement. Non-standard evaluation is preserved, so
+  `p |> facet_wrap(cyl)` resolves `cyl` against the data exactly as
+  `p + facet_wrap(cyl)` always has. A handful of genuinely zero-argument
+  constructors (`theme_minimal()`, `theme_classic()`, `theme_modern()`,
+  `theme_dark()`, `theme_void()`, `theme_ggnext()`, `coord_flip()`) have no
+  parameter to route a piped plot through and stay `+`-only.
+
+## Plot validation
+
+* `validate_plot()` checks a plot for common statistical-graphics mistakes —
+  an empty plot, a continuous geom (`geom_point()`, `geom_line()`, ...)
+  mapped to a categorical `y`, a mapped aesthetic that is mostly missing, a
+  discrete color/fill scale with more levels than a legend can usefully
+  show, and a `sqrt`-transformed scale fed negative values — and returns
+  the findings.
+* `plot_check()` prints that report and returns the plot unchanged, so it
+  sits inside a pipeline: `p |> plot_check() |> render()`.
+
 ## Titles, axes, and scales
 
 * `labs()`, `ggtitle()`, `xlab()`, `ylab()` for the title block (title,

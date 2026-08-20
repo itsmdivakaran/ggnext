@@ -2,18 +2,9 @@
 % Please edit documentation in R/geoms-layout.R
 \name{geom_sankey}
 \alias{geom_sankey}
-\alias{geom_alluvial}
 \title{Sankey / alluvial flow diagram}
 \usage{
 geom_sankey(
-  mapping = NULL,
-  data = NULL,
-  alpha = NULL,
-  node_width = NULL,
-  label = TRUE
-)
-
-geom_alluvial(
   mapping = NULL,
   data = NULL,
   alpha = NULL,

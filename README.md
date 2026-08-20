@@ -5,9 +5,10 @@
 **Data Visualisations, Reimagined, Using a Next-Generation Grammar of Graphics**
 
 ggnext keeps the grammar you already know — `data + aes() + geoms + scales
-+ coords + facets + theme`, composed with `+` — and extends it: native
-interactivity, animation, an exact-data export, and a much larger geom
-catalog spanning layout diagrams, ML diagnostics, and clinical reporting.
++ coords + facets + theme`, composed with `+` (or piped with `|>`, if you
+prefer) — and extends it: native interactivity, animation, an exact-data
+export, a plot linter, and a much larger geom catalog spanning layout
+diagrams, ML diagnostics, and clinical reporting.
 
 One plot object renders to a standalone **SVG** or a self-contained
 **interactive HTML page** from a single computed-geometry buffer, so the
@@ -72,10 +73,55 @@ plot_data(ggnext(cars, aes(speed)) + geom_histogram(bins = 5))
 write_plot_data(p, "figure-1-data.csv")   # publish the numbers with the figure
 ```
 
+**Pipe-native, if you prefer.** `+` stays the grammar's one true
+composition operator — it's what lets you build a `theme_minimal() +
+theme(legend.position = "bottom")` bundle once and reuse it across a whole
+report's plots, or `Reduce(`+`, layers, p)` over a list built
+programmatically. Neither of those has a clean pipe equivalent, which is
+why `+` isn't going anywhere. But a straight-line pipeline reads better
+piped, so every constructor that takes an argument also accepts a plot as
+its first pipe stage:
+
+```r
+cars |>
+  ggnext(aes(speed, dist)) |>
+  geom_point(alpha = 0.6) |>
+  geom_smooth(method = "lm") |>
+  labs(title = "Stopping distance rises with speed")
+```
+
+is exactly `ggnext(cars, aes(speed, dist)) + geom_point(alpha = 0.6) +
+geom_smooth(method = "lm") + labs(title = "...")` — same object, either
+spelling. (A handful of constructors that take no arguments at all —
+`theme_minimal()`, `coord_flip()`, and the other bare theme presets — have
+no slot to route a piped plot through, so those stay `+`-only: append them
+with `+` at the end of a pipe chain.)
+
+**A linter for the plot itself.** The grammar will happily build a plot
+that misleads: a point geom on a categorical y that should have been a
+boxplot, a `sqrt()` scale fed negative values, a legend with forty color
+levels no one can read. `validate_plot()` checks for exactly this class of
+mistake and reports what it finds; `plot_check()` does the same but prints
+the report and returns the plot unchanged, so it drops into a pipeline
+without breaking it:
+
+```r
+mtcars |>
+  ggnext(aes(mpg, as.character(cyl))) |>
+  geom_point() |>
+  plot_check()
+#> ⚠ GeomPoint-based layer maps y to a categorical column; consider
+#>   geom_boxplot(), geom_violin(), or geom_bar() instead.
+```
+
+It's a heuristic, not a guarantee — it reports what commonly goes wrong,
+not what's definitely wrong with this particular plot — but ggnext's
+catalog spans clinical and ML geoms with their own well-known misuse
+patterns, which a general-purpose grammar has no reason to check for.
+
 **A broad catalog in one package.** 78 geoms: the everyday layers you would
 expect, plus violin, ridgeline, Sankey, treemap, network, radar, SHAP, ROC,
-Kaplan-Meier, forest and CONSORT — all using the same `aes()` and the
-same `+`.
+Kaplan-Meier, forest and CONSORT — all using the same `aes()`.
 
 Not yet implemented: 2D density and contouring (`contour`, `density_2d`,
 `bin_2d`, `hex`) and spatial layers (`sf`, `map`).

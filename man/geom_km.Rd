@@ -9,18 +9,33 @@ geom_km(
   data = NULL,
   color = NULL,
   alpha = NULL,
-  linewidth = NULL
+  linewidth = NULL,
+  conf_int = FALSE
 )
 }
 \arguments{
 \item{mapping, data, color, alpha}{As in \code{\link[=geom_point]{geom_point()}}.}
 
 \item{linewidth}{Curve width.}
+
+\item{conf_int}{Draw a 95\% confidence band (Greenwood's formula, with a
+log-log transform that keeps the bounds inside [0, 1]).}
 }
 \value{
 A \link{Layer}.
 }
 \description{
 Map \code{time} and \code{status} (1/TRUE = event, 0/FALSE = censored); map
-\code{color} to compare groups. The at-risk table is a milestone.
+\code{color} to compare groups. Pair with \code{\link[=geom_km_risktable]{geom_km_risktable()}} for the
+classic number-at-risk strip.
+}
+\examples{
+set.seed(1)
+d <- data.frame(
+  t = c(rexp(40, 0.1), rexp(40, 0.07)),
+  ev = rbinom(80, 1, 0.7),
+  arm = rep(c("placebo", "drug"), each = 40)
+)
+ggnext(d, aes(time = t, status = ev, color = arm)) +
+  geom_km(conf_int = TRUE)
 }

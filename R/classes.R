@@ -27,11 +27,22 @@
 #'   aesthetics are validated against the user's mapping *plus* these, so
 #'   e.g. `geom_point(stat = stat_bin())` is accepted even though the user
 #'   maps only `x` - the stat supplies `y`.
+#' @param discrete_provides Positional aesthetics (`"x"` and/or `"y"`) that
+#'   this stat always computes as *categorical* values, even when nothing
+#'   maps that aesthetic before the stat runs (e.g. a Cox-model geom whose
+#'   `y` is a set of treatment-arm labels the stat itself derives). The
+#'   build's scale-type detection normally infers continuous vs. discrete
+#'   from the raw, pre-stat mapping - the one signal it cannot see for an
+#'   aesthetic that is *entirely* stat-computed; listing it here is that
+#'   missing signal. When set, the discrete scale's levels are trained
+#'   from the layer's `group` aesthetic (present pre-stat for every layer)
+#'   rather than from the (absent) raw `x`/`y`.
 #' @return An S7 object of class `Stat`, the base class for statistical transformations.
 #' @export
 Stat <- new_class("Stat", properties = list(
   name = class_character,
-  provides = new_property(class_character, default = character())
+  provides = new_property(class_character, default = character()),
+  discrete_provides = new_property(class_character, default = character())
 ))
 
 #' StatIdentity: pass data through unchanged

@@ -4,10 +4,12 @@
 \alias{build_site}
 \title{Build the ggnext documentation site}
 \usage{
-build_site(dir = "docs", quiet = FALSE, gallery = TRUE, cookbook = TRUE)
+build_site(dir, quiet = FALSE, gallery = TRUE, cookbook = TRUE)
 }
 \arguments{
-\item{dir}{Output directory (created if needed).}
+\item{dir}{Output directory (created if needed). There is no default —
+CRAN policy prohibits writing to the user's home filespace by default,
+so a path must always be supplied explicitly.}
 
 \item{quiet}{Suppress progress messages.}
 
@@ -32,7 +34,8 @@ self-contained static site. No external site generator, no CDN assets.
 }
 \examples{
 # The figures and the cookbook are the slow parts of a real build; this
-# writes the pages only. Use build_site("docs") for the full site.
+# writes the pages only. For the full site, pass a directory of your
+# choosing, e.g. build_site("docs").
 out <- file.path(tempdir(), "ggnext-site")
 build_site(out, quiet = TRUE, gallery = FALSE, cookbook = FALSE)
 list.files(out)

@@ -23,30 +23,45 @@ utils::globalVariables(c(
   "g", "v", "grp"
 ))
 
-#' Evaluate an expression under a fixed seed, then restore the RNG
+#' A small self-contained, seedable random stream
 #'
 #' Several layouts need reproducible randomness (jitter offsets, the
-#' force-layout starting positions). Seeding the global generator directly
-#' would silently reset the caller's random stream, so the previous
-#' `.Random.seed` is saved and put back on exit — drawing a plot must never
-#' change a user's simulation.
+#' force-layout starting positions, the gallery's illustrative data). Calling
+#' `set.seed()` would reset R's global generator out from under the caller,
+#' so this implements its own minimal-standard Lehmer generator (Park &
+#' Miller 1988) instead — it never reads or writes `.Random.seed` and has no
+#' effect outside the returned object.
 #'
 #' @param seed Integer seed.
-#' @param expr Expression to evaluate.
-#' @return The value of `expr`.
+#' @return A list of draw functions (`unif`, `norm`, `exp`, `bernoulli`,
+#'   `choice`), each advancing the same private stream.
 #' @noRd
-with_seed <- function(seed, expr) {
-  had_seed <- exists(".Random.seed", globalenv())
-  old <- if (had_seed) get(".Random.seed", globalenv())
-  on.exit({
-    if (had_seed) {
-      assign(".Random.seed", old, globalenv())
-    } else {
-      suppressWarnings(rm(".Random.seed", envir = globalenv()))
+local_rng <- function(seed) {
+  state <- (abs(as.integer(seed)) %% 2147483646L) + 1L
+  step <- function() {
+    state <<- (state * 16807) %% 2147483647
+    state / 2147483647
+  }
+  draws <- function(n) vapply(seq_len(n), function(i) step(), numeric(1))
+  list(
+    unif = function(n, min = 0, max = 1) min + draws(n) * (max - min),
+    norm = function(n, mean = 0, sd = 1) {
+      # Box-Muller: each pair of uniforms yields two normals (cos and sin
+      # branches), so half as many pairs as n are needed, not n.
+      half <- ceiling(n / 2)
+      u <- draws(2L * half)
+      r <- sqrt(-2 * log(pmax(u[seq_len(half)], .Machine$double.eps)))
+      theta <- 2 * pi * u[half + seq_len(half)]
+      z <- c(r * cos(theta), r * sin(theta))
+      mean + sd * z[seq_len(n)]
+    },
+    exp = function(n, rate = 1) -log(pmax(draws(n), .Machine$double.eps)) / rate,
+    bernoulli = function(n, prob) as.integer(draws(n) < prob),
+    choice = function(values, n, prob) {
+      cum <- cumsum(prob) / sum(prob)
+      values[findInterval(draws(n), cum) + 1L]
     }
-  })
-  set.seed(seed)
-  expr
+  )
 }
 
 # --- knitr integration -------------------------------------------------------
@@ -85,6 +100,8 @@ knit_print_render <- function(x, ...) {
   registerS3method("print", "ggnext_aes", print.ggnext_aes,
                    envir = asNamespace(pkgname))
   registerS3method("print", "ggnext_render", print.ggnext_render,
+                   envir = asNamespace(pkgname))
+  registerS3method("print", "ggnext_check", print.ggnext_check,
                    envir = asNamespace(pkgname))
 
   ## Plots render inline in R Markdown / Quarto when knitr is present.

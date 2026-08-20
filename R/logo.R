@@ -85,9 +85,9 @@ ggnext_logo <- function(file = NULL, width = 520, dark = FALSE,
   # inside the widest part — neither can collide with the tapering edges.
   n <- 26
   gx <- seq(0.16, 0.84, length.out = n)
-  # Fixed seed so the sticker is byte-identical every time, without
-  # disturbing the caller's random stream.
-  gy <- 0.30 + 0.34 * gx + with_seed(3, stats::rnorm(n, 0, 0.055))
+  # Fixed seed so the sticker is byte-identical every time; local_rng()
+  # draws from a private stream, never touching R's global RNG state.
+  gy <- 0.30 + 0.34 * gx + local_rng(3)$norm(n, 0, 0.055)
   art_top <- height * 0.12
   art_bottom <- height * 0.52
   to_x <- function(t) t * width

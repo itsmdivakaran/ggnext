@@ -4,7 +4,10 @@
 \alias{stat_km}
 \title{Kaplan-Meier survival estimate}
 \usage{
-stat_km()
+stat_km(conf_int = FALSE)
+}
+\arguments{
+\item{conf_int}{Compute a 95\% confidence band (Greenwood's formula).}
 }
 \value{
 A \code{StatKM} object, to pass as a layer's \code{stat}.

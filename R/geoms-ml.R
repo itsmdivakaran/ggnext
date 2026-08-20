@@ -303,6 +303,157 @@ method(build_marks, GeomLiftGain) <- function(geom, scaled) {
   )))
 }
 
+# --- Precision-Recall ---------------------------------------------------------
+
+#' Precision-recall curve
+#'
+#' Sweeps the classification threshold and plots recall (x) against
+#' precision (y), with a horizontal baseline at the class prevalence
+#' (instead of the diagonal [geom_roc()] uses) — the more informative
+#' curve when positives are rare.
+#'
+#' @param mapping,data Standard layer overrides. Map `truth` (actual
+#'   class; for factors the second level is the positive class) and
+#'   `score` (predicted score); map `color` to compare models.
+#' @param color,alpha As in [geom_point()].
+#' @param linewidth Curve width.
+#' @return A [Layer] to add with `+`.
+#' @examples
+#' set.seed(1)
+#' s <- runif(200)
+#' d <- data.frame(truth = rbinom(200, 1, s * 0.3), score = s)
+#' ggnext(d, aes(truth = truth, score = score)) + geom_pr()
+#' @export
+geom_pr <- function(mapping = NULL, data = NULL, color = NULL,
+                    alpha = NULL, linewidth = NULL) {
+  layer_new(GeomPR(), StatPR(), mapping, data,
+            list(color = color, alpha = alpha, linewidth = linewidth))
+}
+
+#' GeomPR: precision-recall curve with a prevalence baseline
+#' @noRd
+GeomPR <- new_class("GeomPR", parent = Geom,
+  constructor = function() {
+    new_object(Geom(
+      name = "pr",
+      default_params = list(color = "#4A6DB5", linewidth = 1.8, alpha = 1),
+      required_aes = c("truth", "score")
+    ))
+  }
+)
+
+method(build_marks, GeomPR) <- function(geom, scaled) {
+  p <- scaled$params
+  groups <- group_rows(scaled)
+  marks <- list()
+  ref <- which(scaled$role == "ref")[1:2]
+  marks[[1]] <- mk_line(
+    scaled$x[ref], scaled$y[ref], stroke = "#8A8A94", width = 1, dash = "4,3"
+  )
+  for (idx in groups) {
+    curve <- idx[scaled$role[idx] == "curve"]
+    marks[[length(marks) + 1]] <- mk_line(
+      scaled$x[curve], scaled$y[curve],
+      stroke = scaled$color[idx][1], width = p$linewidth,
+      alpha = scaled$alpha[idx][1]
+    )
+  }
+  marks
+}
+
+# --- Feature importance ---------------------------------------------------
+
+#' Feature importance plot
+#'
+#' A ranked point-and-whisker plot of feature importance, with optional
+#' whiskers from `ymin`/`ymax` (e.g. permutation-importance standard
+#' errors) and a reference line at zero importance. Built on the same
+#' point+whisker rendering as [geom_forest()].
+#'
+#' A discrete axis otherwise sorts alphabetically; pass `y` as a factor
+#' already ordered by importance (ascending, since the first level sits
+#' at the panel's bottom) to get the classic "most important at the top"
+#' layout — the same convention [geom_waterfall()] uses for category
+#' order.
+#'
+#' @param mapping,data Standard layer overrides. Map the importance value
+#'   to `x` and the feature name to `y`; map `ymin`/`ymax` for whiskers.
+#' @param color Marker and whisker color.
+#' @param linewidth Whisker width.
+#' @return A [Layer] to add with `+`.
+#' @examples
+#' d <- data.frame(
+#'   feature = c("age", "income", "tenure", "region"),
+#'   imp = c(0.42, 0.31, 0.18, 0.05),
+#'   se = c(0.05, 0.04, 0.03, 0.02)
+#' )
+#' d$feature <- factor(d$feature, levels = d$feature[order(d$imp)])
+#' ggnext(d, aes(imp, feature, ymin = imp - se, ymax = imp + se)) +
+#'   geom_importance() +
+#'   labs(title = "Permutation importance", x = "Importance", y = NULL)
+#' @export
+geom_importance <- function(mapping = NULL, data = NULL, color = NULL,
+                            linewidth = NULL) {
+  layer_new(GeomForest(), StatImportance(), mapping, data,
+            list(color = color, linewidth = linewidth, ref = 0))
+}
+
+# --- Leverage / Cook's distance -----------------------------------------------
+
+#' Leverage / Cook's distance plot
+#'
+#' Standardized residual against leverage (hat value), the companion to
+#' [geom_residual()] for spotting influential observations. Map `size` to
+#' Cook's distance for the classic three-way read (leverage, residual
+#' size, influence) in one scatter.
+#'
+#' @param mapping,data Standard layer overrides. Map leverage to `x` and
+#'   the standardized residual to `y`; map `size` to Cook's distance.
+#' @param color Point color.
+#' @param size Point radius (used when `size` is not mapped).
+#' @param alpha Point opacity.
+#' @return A [Layer] to add with `+`.
+#' @examples
+#' m <- lm(dist ~ speed, cars)
+#' d <- data.frame(
+#'   hat = hatvalues(m), rstd = rstandard(m), cooksd = cooks.distance(m)
+#' )
+#' ggnext(d, aes(hat, rstd, size = cooksd)) +
+#'   geom_leverage() +
+#'   labs(title = "Leverage vs standardized residual",
+#'        x = "Leverage (hat value)", y = "Standardized residual")
+#' @export
+geom_leverage <- function(mapping = NULL, data = NULL, color = NULL,
+                          size = NULL, alpha = NULL) {
+  layer_new(GeomLeverage(), StatLeverage(), mapping, data,
+            list(color = color, size = size, alpha = alpha))
+}
+
+#' GeomLeverage: leverage/residual scatter with a zero-residual line
+#' @noRd
+GeomLeverage <- new_class("GeomLeverage", parent = Geom,
+  constructor = function() {
+    new_object(Geom(
+      name = "leverage",
+      default_params = list(color = "#4A5568", size = 3, alpha = 0.75)
+    ))
+  }
+)
+
+method(build_marks, GeomLeverage) <- function(geom, scaled) {
+  marks <- list()
+  if (!is.null(scaled$yzero)) {
+    marks <- c(marks, list(mk_line(
+      c(0, 1), rep(scaled$yzero[[1]], 2), stroke = "#9A9AA6", width = 1,
+      dash = "4,3"
+    )))
+  }
+  c(marks, lapply(seq_along(scaled$x), function(i) {
+    mk_circle(scaled$x[[i]], scaled$y[[i]], scaled$size[[i]],
+              scaled$color[[i]], alpha = scaled$alpha[[i]])
+  }))
+}
+
 # --- Residual diagnostics ----------------------------------------------------
 
 #' Residual diagnostic plot
@@ -471,6 +622,95 @@ method(build_marks, GeomSilhouette) <- function(geom, scaled) {
     mk_rect(
       scaled$xmin[[i]], scaled$xmax[[i]], scaled$ymin[[i]], scaled$ymax[[i]],
       fill = scaled$color[[i]], alpha = scaled$params$alpha
+    )
+  })
+}
+
+# --- Dendrogram ----------------------------------------------------------
+
+#' Hierarchical clustering dendrogram
+#'
+#' Runs [stats::hclust()] (base R, not an added dependency) on the
+#' Euclidean distances between rows of `data` and draws the merge tree as
+#' the classic bracket shape: two vertical drops joined by one horizontal
+#' bar at the merge height. Takes the raw wide data frame directly (like
+#' [geom_cor()]), since the layout needs the whole numeric block at once,
+#' not row-wise aesthetics.
+#'
+#' @param data A data frame with one row per observation to cluster.
+#' @param vars Character vector of numeric columns to cluster on; default
+#'   all numeric columns in `data`.
+#' @param method Linkage method, passed to [stats::hclust()] (default
+#'   `"complete"`).
+#' @param color,linewidth Line appearance.
+#' @return A [Layer] to add with `+`.
+#' @examples
+#' ggnext() +
+#'   geom_dendrogram(mtcars[1:10, c("mpg", "hp", "wt", "qsec")]) +
+#'   theme_void()
+#' @export
+geom_dendrogram <- function(data, vars = NULL, method = "complete",
+                            color = NULL, linewidth = NULL) {
+  if (!is.data.frame(data)) {
+    stop("geom_dendrogram() needs a data.frame as `data`.", call. = FALSE)
+  }
+  nums <- vars %||% names(data)[vapply(data, is.numeric, logical(1))]
+  if (length(nums) < 1) {
+    stop("geom_dendrogram() needs at least one numeric column.", call. = FALSE)
+  }
+  if (nrow(data) < 2) {
+    stop("geom_dendrogram() needs at least two observations to cluster.", call. = FALSE)
+  }
+  dm <- stats::dist(data[nums])
+  hc <- stats::hclust(dm, method = method)
+  n <- length(hc$order)
+  leaf_rank <- integer(n)
+  leaf_rank[hc$order] <- seq_len(n)
+  node_x <- numeric(nrow(hc$merge))
+  # hc$merge[k, ]: negative entries are leaf indices, positive entries are
+  # earlier merge rows; each merge's own x sits midway between its two
+  # children so the tree stays visually balanced.
+  child_xy <- function(idx) {
+    if (idx < 0) list(x = leaf_rank[-idx], y = 0) else list(x = node_x[idx], y = hc$height[idx])
+  }
+  x0 <- x1 <- y0 <- y1 <- numeric(0)
+  for (k in seq_len(nrow(hc$merge))) {
+    a <- child_xy(hc$merge[k, 1])
+    b <- child_xy(hc$merge[k, 2])
+    h <- hc$height[k]
+    node_x[k] <- (a$x + b$x) / 2
+    x0 <- c(x0, a$x, b$x, a$x)
+    x1 <- c(x1, a$x, b$x, b$x)
+    y0 <- c(y0, a$y, b$y, h)
+    y1 <- c(y1, h, h, h)
+  }
+  segs <- data.frame(x0 = x0, x1 = x1, y0 = y0, y1 = y1)
+  layer_new(
+    GeomDendrogram(), stat_identity(),
+    mapping = aes_internal(x = "x0", y = "y0", xend = "x1", yend = "y1"),
+    data = segs, inherit = FALSE,
+    params = list(color = color, linewidth = linewidth)
+  )
+}
+
+#' GeomDendrogram: merge-tree brackets from precomputed segments
+#' @noRd
+GeomDendrogram <- new_class("GeomDendrogram", parent = Geom,
+  constructor = function() {
+    new_object(Geom(
+      name = "dendrogram",
+      default_params = list(color = "#2A3F5F", linewidth = 1.3, alpha = 1),
+      required_aes = c("x", "y", "xend", "yend")
+    ))
+  }
+)
+
+method(build_marks, GeomDendrogram) <- function(geom, scaled) {
+  p <- scaled$params
+  lapply(seq_along(scaled$x), function(i) {
+    mk_line(
+      c(scaled$x[[i]], scaled$xend[[i]]), c(scaled$y[[i]], scaled$yend[[i]]),
+      stroke = scaled$color[[i]], width = p$linewidth, alpha = scaled$alpha[[i]]
     )
   })
 }
