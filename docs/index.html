@@ -110,8 +110,8 @@ h3 { scroll-margin-top: 70px; }
 <body>
 <header><nav><img src="logo.svg" alt="ggnext"><span class="brand">ggnext</span><a href="index.html" class="on">Overview</a><a href="guide.html">Guide</a><a href="gallery.html">Gallery</a><a href="cookbook.html">Cookbook</a><a href="reference.html">Reference</a><a href="themes.html">Themes</a><a href="credits.html">Credits</a><a class="repo" href="https://github.com/itsmdivakaran/ggnext">GitHub</a></nav></header>
 <main>
-<div class="hero"><img src="logo.svg" alt="ggnext hex logo"><div><h1>ggnext</h1><p class="lead">Data visualisations, reimagined, using a next-generation Grammar of Graphics — the familiar grammar, extended with native interactivity, animation, exact data export, and a far larger geom catalog.</p><span class="tag">S7 &middot; SVG &middot; canvas &middot; 59 geoms</span></div></div><h2>Install</h2><pre><code># install.packages("remotes")
-remotes::install_github("itsmdivakaran/ggnext")</code></pre><h2>Quick start</h2><pre><code>library(ggnext)
+<div class="hero"><img src="logo.svg" alt="ggnext hex logo"><div><h1>ggnext</h1><p class="lead">Data visualisations, reimagined, using a next-generation Grammar of Graphics — the familiar grammar, extended with native interactivity, animation, exact data export, and a far larger geom catalog.</p><span class="tag">S7 &middot; SVG &middot; canvas &middot; 59 geoms</span></div></div><h2>Install</h2><pre><code> install.packages("ggnext")
+</code></pre><h2>Quick start</h2><pre><code>library(ggnext)
 
 p &lt;- ggnext(cars, aes(speed, dist)) +
   geom_point(alpha = 0.6) +
