@@ -6,7 +6,7 @@ Authors@R: c(
       email = "itsmdivakaran@gmail.com", role = c("aut", "cre", "cph"),
       comment = c(ORCID = "0000-0002-3488-0857",
                   affiliation = "Senior Technical Lead - R Developer, Ephicacy LifeScience Analytics Pvt Ltd")),
-    person("Rasin", "R S", role = "ctb",
+    person("Dr. Rasin", "R S", role = "ctb",
       comment = c(ORCID = "0000-0002-8393-5869",
                   affiliation = "Assistant Professor, St. Thomas' College (Autonomous), Thrissur")),
     person("Rakesh", "Poduval", role = "ctb",
