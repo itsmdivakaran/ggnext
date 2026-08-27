@@ -14,16 +14,23 @@ Useful links:
 \itemize{
   \item \url{https://itsmdivakaran.github.io/ggnext/}
   \item \url{https://github.com/itsmdivakaran/ggnext}
+  \item \url{https://cran.r-project.org/web/packages/ggnext/index.html}
   \item Report bugs at \url{https://github.com/itsmdivakaran/ggnext/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Mahesh Divakaran \email{itsmdivakaran@gmail.com} [copyright holder]
+\strong{Maintainer}: Mahesh Divakaran \email{itsmdivakaran@gmail.com} (\href{https://orcid.org/0000-0002-3488-0857}{ORCID}) (affiliation: Senior Technical Lead - R Developer, Ephicacy LifeScience Analytics Pvt Ltd) [copyright holder]
 
 Authors:
 \itemize{
-  \item Mahesh Divakaran \email{itsmdivakaran@gmail.com} [copyright holder]
+  \item Mahesh Divakaran \email{itsmdivakaran@gmail.com} (\href{https://orcid.org/0000-0002-3488-0857}{ORCID}) (affiliation: Senior Technical Lead - R Developer, Ephicacy LifeScience Analytics Pvt Ltd) [copyright holder]
+}
+
+Other contributors:
+\itemize{
+  \item Rasin R S (\href{https://orcid.org/0000-0002-8393-5869}{ORCID}) (affiliation: Assistant Professor, St. Thomas' College (Autonomous), Thrissur) [contributor]
+  \item Rakesh Poduval (affiliation: Data Science Manager, IMMO Information Technology Private Limited) [contributor]
 }
 
 }

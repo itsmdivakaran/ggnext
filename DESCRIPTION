@@ -1,8 +1,16 @@
 Package: ggnext
 Title: A Next-Generation Grammar of Graphics
 Version: 0.1.0
-Authors@R: person("Mahesh", "Divakaran",
-    email = "itsmdivakaran@gmail.com", role = c("aut", "cre", "cph"))
+Authors@R: c(
+    person("Mahesh", "Divakaran",
+      email = "itsmdivakaran@gmail.com", role = c("aut", "cre", "cph"),
+      comment = c(ORCID = "0000-0002-3488-0857",
+                  affiliation = "Senior Technical Lead - R Developer, Ephicacy LifeScience Analytics Pvt Ltd")),
+    person("Rasin", "R S", role = "ctb",
+      comment = c(ORCID = "0000-0002-8393-5869",
+                  affiliation = "Assistant Professor, St. Thomas' College (Autonomous), Thrissur")),
+    person("Rakesh", "Poduval", role = "ctb",
+      comment = c(affiliation = "Data Science Manager, IMMO Information Technology Private Limited")))
 Description: An implementation of the Grammar of Graphics described by
     Wilkinson (2005, ISBN:978-0-387-24544-7), built on 'S7' classes. The
     familiar grammar vocabulary of aesthetics, geometries, statistics,
@@ -27,7 +35,8 @@ Description: An implementation of the Grammar of Graphics described by
     force-directed graphs, and Kaplan and Meier (1958)
     <doi:10.1080/01621459.1958.10501452> for survival curves.
 URL: https://itsmdivakaran.github.io/ggnext/,
-    https://github.com/itsmdivakaran/ggnext
+    https://github.com/itsmdivakaran/ggnext,
+    https://cran.r-project.org/web/packages/ggnext/index.html
 BugReports: https://github.com/itsmdivakaran/ggnext/issues
 License: MIT + file LICENSE
 Encoding: UTF-8

@@ -16,9 +16,16 @@ two targets can never disagree.
 
 **[Documentation and gallery](https://itsmdivakaran.github.io/ggnext/)** |
 [Cookbook](https://itsmdivakaran.github.io/ggnext/cookbook.html) |
-[Source](https://github.com/itsmdivakaran/ggnext)
+[Source](https://github.com/itsmdivakaran/ggnext) |
+[CRAN](https://cran.r-project.org/web/packages/ggnext/index.html)
 
 ## Install
+
+```r
+install.packages("ggnext")
+```
+
+The development version is available from GitHub:
 
 ```r
 # install.packages("remotes")
@@ -96,6 +103,41 @@ spelling. (A handful of constructors that take no arguments at all —
 `theme_minimal()`, `coord_flip()`, and the other bare theme presets — have
 no slot to route a piped plot through, so those stay `+`-only: append them
 with `+` at the end of a pipe chain.)
+
+**Wrangling and plotting in one chain.** Because `|>` is base R, not a
+ggnext feature, the pipe does not stop at `ggnext()` — the same chain that
+filters and derives columns with `dplyr` (or `subset()`/`transform()`, if
+you'd rather stay dependency-free) can carry straight on into the plot,
+with no adapter and no intermediate variable:
+
+```r
+mtcars |>
+  dplyr::filter(cyl %in% c(4, 6)) |>                     # keep 4- and 6-cyl cars
+  dplyr::mutate(kmpl = mpg * 0.4251, cyl = factor(cyl)) |>  # derive a column
+  ggnext(aes(wt, kmpl, color = cyl)) |>                  # <- wrangling ends, plotting starts
+  geom_point(size = 3) |>
+  geom_smooth(method = "lm") |>
+  labs(title = "Fuel efficiency vs weight, by cylinder count",
+       x = "Weight (1000 lbs)", y = "Efficiency (km/L)")
+```
+
+Everything left of `ggnext()` is ordinary data wrangling; everything from
+`ggnext()` on is the grammar. Because both halves compose with the same
+`|>`, there is nothing to switch between — a `dplyr::filter()` step and a
+`geom_point()` step are just two stages of one pipeline. Swap `dplyr::mutate()`
+for base R:
+
+```r
+mtcars |>
+  subset(cyl %in% c(4, 6)) |>
+  transform(kmpl = mpg * 0.4251, cyl = factor(cyl)) |>
+  ggnext(aes(wt, kmpl, color = cyl)) |>
+  geom_point(size = 3) |>
+  geom_smooth(method = "lm")
+```
+
+and the plot is identical — the grammar has no opinion on what wrangled
+the data before it arrived.
 
 **A linter for the plot itself.** The grammar will happily build a plot
 that misleads: a point geom on a categorical y that should have been a
@@ -231,6 +273,17 @@ Implementation note: ggnext is written from scratch on
 packages, so the only hard dependency is S7 itself. The packages above are
 credited as design references, not as code ancestry — no code is copied
 from any of them.
+
+## Authors and contributors
+
+* **Mahesh Divakaran** — author, maintainer. Senior Technical Lead - R
+  Developer, Ephicacy LifeScience Analytics Pvt Ltd.
+  [ORCID: 0000-0002-3488-0857](https://orcid.org/0000-0002-3488-0857)
+* **Dr. Rasin R S** — contributor. Assistant Professor, St. Thomas' College
+  (Autonomous), Thrissur.
+  [ORCID: 0000-0002-8393-5869](https://orcid.org/0000-0002-8393-5869)
+* **Rakesh Poduval** — contributor. Data Science Manager, IMMO Information
+  Technology Private Limited.
 
 ## License
 

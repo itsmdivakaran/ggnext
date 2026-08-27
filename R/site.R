@@ -1041,6 +1041,34 @@ site_index <- function(figs, examples) {
     "<code>coord_flip()</code>, and the other bare theme presets - have no ",
     "slot to route a piped plot through, so those stay ",
     "<code>+</code>-only.</p>",
+    "<p>Because <code>|></code> is base R, not a ggnext feature, the pipe ",
+    "does not stop at <code>ggnext()</code> - the same chain that filters ",
+    "and derives columns with <code>dplyr</code> can carry straight on ",
+    "into the plot, with no adapter and no intermediate variable:</p>",
+    code_block(c(
+      "mtcars |>",
+      "  dplyr::filter(cyl %in% c(4, 6)) |>",
+      "  dplyr::mutate(kmpl = mpg * 0.4251, cyl = factor(cyl)) |>",
+      "  ggnext(aes(wt, kmpl, color = cyl)) |>",
+      "  geom_point(size = 3) |>",
+      "  geom_smooth(method = \"lm\") |>",
+      "  labs(title = \"Fuel efficiency vs weight, by cylinder count\")"
+    )),
+    "<p>Everything left of <code>ggnext()</code> is ordinary data ",
+    "wrangling; everything from <code>ggnext()</code> on is the grammar. ",
+    "Both halves compose with the same <code>|></code>, so there is ",
+    "nothing to switch between - a <code>dplyr::filter()</code> step and a ",
+    "<code>geom_point()</code> step are just two stages of one pipeline. ",
+    "The grammar has no opinion on what wrangled the data before it ",
+    "arrived, so plain base R works just as well:</p>",
+    code_block(c(
+      "mtcars |>",
+      "  subset(cyl %in% c(4, 6)) |>",
+      "  transform(kmpl = mpg * 0.4251, cyl = factor(cyl)) |>",
+      "  ggnext(aes(wt, kmpl, color = cyl)) |>",
+      "  geom_point(size = 3) |>",
+      "  geom_smooth(method = \"lm\")"
+    )),
 
     "<h2>Plot validation</h2>",
     "<p>The grammar will happily build a plot that misleads: a point geom ",
@@ -1086,7 +1114,22 @@ site_index <- function(figs, examples) {
     "and the algorithm references.</p>",
     "<p>The implementation is independent: it is written on ",
     "<a href=\"reference.html\">S7</a> from first principles, and no code ",
-    "is derived from those packages.</p>"
+    "is derived from those packages.</p>",
+
+    "<h2>Authors and contributors</h2>",
+    "<ul>",
+    "<li><strong>Mahesh Divakaran</strong> \u2014 author, maintainer. ",
+    "Senior Technical Lead - R Developer, Ephicacy LifeScience Analytics ",
+    "Pvt Ltd. ",
+    "<a href=\"https://orcid.org/0000-0002-3488-0857\">ORCID: ",
+    "0000-0002-3488-0857</a></li>",
+    "<li><strong>Dr. Rasin R S</strong> \u2014 contributor. Assistant ",
+    "Professor, St. Thomas\u2019 College (Autonomous), Thrissur. ",
+    "<a href=\"https://orcid.org/0000-0002-8393-5869\">ORCID: ",
+    "0000-0002-8393-5869</a></li>",
+    "<li><strong>Rakesh Poduval</strong> \u2014 contributor. Data Science ",
+    "Manager, IMMO Information Technology Private Limited.</li>",
+    "</ul>"
   ) |> site_page(title = "ggnext - Grammar of Graphics for R", active = "index")
 }
 
@@ -1183,7 +1226,22 @@ site_credits <- function() {
     "is copied from any of them.</p>",
     "<div class=\"note\"><p>If your work depends on one of the packages ",
     "listed here, please cite it directly \u2014 they remain the reference ",
-    "implementations in their areas.</p></div>"
+    "implementations in their areas.</p></div>",
+
+    "<h2>Authors and contributors</h2>",
+    "<ul>",
+    "<li><strong>Mahesh Divakaran</strong> \u2014 author, maintainer. ",
+    "Senior Technical Lead - R Developer, Ephicacy LifeScience Analytics ",
+    "Pvt Ltd. ",
+    "<a href=\"https://orcid.org/0000-0002-3488-0857\">ORCID: ",
+    "0000-0002-3488-0857</a></li>",
+    "<li><strong>Dr. Rasin R S</strong> \u2014 contributor. Assistant ",
+    "Professor, St. Thomas\u2019 College (Autonomous), Thrissur. ",
+    "<a href=\"https://orcid.org/0000-0002-8393-5869\">ORCID: ",
+    "0000-0002-8393-5869</a></li>",
+    "<li><strong>Rakesh Poduval</strong> \u2014 contributor. Data Science ",
+    "Manager, IMMO Information Technology Private Limited.</li>",
+    "</ul>"
   )
   site_page("Credits - ggnext", "credits", body)
 }
