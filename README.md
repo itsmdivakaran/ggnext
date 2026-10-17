@@ -279,6 +279,7 @@ from any of them.
 * **Mahesh Divakaran** — author, maintainer. Senior Technical Lead - R
   Developer, Ephicacy LifeScience Analytics Pvt Ltd.
   [ORCID: 0000-0002-3488-0857](https://orcid.org/0000-0002-3488-0857)
+* **Prashant V P** —  contributor. Associate Director – Biostatistics at IQVIA
 * **Dr. Rasin R S** — contributor. Assistant Professor, St. Thomas' College
   (Autonomous), Thrissur.
   [ORCID: 0000-0002-8393-5869](https://orcid.org/0000-0002-8393-5869)
